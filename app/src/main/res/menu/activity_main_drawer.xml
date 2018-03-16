@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_proizvodi"
+            android:icon="@drawable/ic_view_list_black_24dp"
+            android:title="Svi proizvodi" />
+        <item
+            android:id="@+id/nav_snizeno"
+            android:icon="@drawable/ic_arrow_downward_black_24dp"
+            android:title="Sniženja" />
+        <item
+            android:id="@+id/nav_novi_proizvodi"
+            android:icon="@drawable/ic_fiber_new_black_24dp"
+            android:title="Novi proizvodi" />
+        <item
+            android:id="@+id/nav_korpa"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="Korpa" />
+        <item
+            android:id="@+id/nav_kupac"
+            android:icon="@drawable/ic_group_add_black_24dp"
+            android:title="Novi kupac" />
+
+        <item
+            android:id="@+id/nav_napomene"
+            android:icon="@drawable/ic_event_note_black_24dp"
+            android:title="Nova napomena" />
+    </group>
+
+
+
+</menu>
