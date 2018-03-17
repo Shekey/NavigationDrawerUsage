@@ -76,6 +76,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         View view = inflater.inflate(R.layout.fragment_newproducts, container, false);
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
+        fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliNEW);
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerNEW);
         spin.setOnItemSelectedListener(this);
@@ -182,10 +183,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
+                ft.hide(NewproductsFragment.this);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
-                ft.replace(R.id.content_main,fragment);
-                ft.addToBackStack("detail_fragment");
+                ft.add(R.id.content_main,fragment,"details_frag").addToBackStack("details_frag");
                 ft.commit();
 
             }
@@ -231,10 +232,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
+                ft.hide(NewproductsFragment.this);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
-                ft.addToBackStack("detail_fragment");
-                ft.replace(R.id.content_main,fragment);
+                ft.add(R.id.content_main,fragment,"details_frag").addToBackStack("details_frag");
                 ft.commit();
 
             }
@@ -287,11 +288,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                         DetailFragment fragment=new DetailFragment();
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
+                        ft.hide(NewproductsFragment.this);
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);
-                        ft.replace(R.id.content_main,fragment);
-                        ft.addToBackStack("detail_fragment");
-
+                        ft.add(R.id.content_main,fragment,"details_frag").addToBackStack("details_frag");
                         ft.commit();
 
                     }

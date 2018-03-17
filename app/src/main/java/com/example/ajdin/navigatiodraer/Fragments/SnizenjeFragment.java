@@ -78,6 +78,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         View view = inflater.inflate(R.layout.fragment_snizenje, container, false);
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
+        fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliSnizeno);
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerSnizeno);
         spin.setOnItemSelectedListener(this);

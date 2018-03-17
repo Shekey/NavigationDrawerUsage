@@ -100,6 +100,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         db=new DatabaseHelper(getContext());
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
+        fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinner);

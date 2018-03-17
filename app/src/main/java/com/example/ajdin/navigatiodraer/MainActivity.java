@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NewproductsFragment;
+import com.example.ajdin.navigatiodraer.Fragments.NoteFragment;
 import com.example.ajdin.navigatiodraer.Fragments.ProductFragment;
 import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
 import com.example.ajdin.navigatiodraer.adapters.MovieAdapter;
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity
 //        lvArtikli.setAdapter(adapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.dodaj_osobu);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,14 +161,24 @@ public class MainActivity extends AppCompatActivity
 
         } else if (count != 0) {
             MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
+            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
 
             getSupportFragmentManager().popBackStack();
+            if (fragment!=null){
             if (fragment.isVisible()){
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
                 ft.commit();
             }
-              } else {
+            }
+            else if(fragment1!=null){
+            if (fragment1.isVisible()){
+                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                ft.show(fragment1);
+                ft.commit();
+            }
+              }
+        } else {
             super.onBackPressed();
 
         }
@@ -228,6 +240,7 @@ public class MainActivity extends AppCompatActivity
 
         android.support.v4.app.Fragment fragment = null;
         int id = item.getItemId();
+        String tag="";
 
         if (id == R.id.nav_korpa) {
             fragment = new ProductFragment();
@@ -245,14 +258,17 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_novi_proizvodi) {
             fragment = new NewproductsFragment();
+            tag="new_prod_frag";
 
         } else {
+            fragment=new NoteFragment();
+            tag="note_fragment";
 
         }
 
         if (fragment != null) {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment);
+            ft.replace(R.id.content_main, fragment,tag);
             ft.commit();
 
         }
