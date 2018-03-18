@@ -328,6 +328,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
     }
+    public ArrayList<String> GetKategorije(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ArrayList<String> kategorije =new ArrayList<>();
+        Cursor listKategory = db.rawQuery("select distinct Kategorija from Artikli ",null);
+        if (listKategory!=null){
+            listKategory.moveToFirst();
+            while (!listKategory.isAfterLast()){
+                String data = listKategory.getString(listKategory.getColumnIndex("Kategorija"));
+                kategorije.add(data);
+            }
+        }
+        return kategorije;
+
+    }
     public ArrayList<Product> getAllNEW() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Product> list = new ArrayList<Product>();

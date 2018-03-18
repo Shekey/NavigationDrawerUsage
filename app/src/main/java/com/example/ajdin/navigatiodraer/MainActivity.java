@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -31,9 +30,8 @@ import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NewproductsFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NoteFragment;
-import com.example.ajdin.navigatiodraer.Fragments.ProductFragment;
+import com.example.ajdin.navigatiodraer.Fragments.CartFragment;
 import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
-import com.example.ajdin.navigatiodraer.adapters.MovieAdapter;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.google.gson.Gson;
@@ -54,7 +52,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -222,7 +219,7 @@ public class MainActivity extends AppCompatActivity
 
         }
         if (id == R.id.nav_cart) {
-            ProductFragment fragment=new ProductFragment();
+            CartFragment fragment=new CartFragment();
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
             ft.replace(R.id.content_main, fragment).addToBackStack("korpa_nav");
@@ -243,7 +240,7 @@ public class MainActivity extends AppCompatActivity
         String tag="";
 
         if (id == R.id.nav_korpa) {
-            fragment = new ProductFragment();
+            fragment = new CartFragment();
             // Handle the camera action
         } else if (id == R.id.nav_proizvodi) {
             fragment = new MenuFragment();

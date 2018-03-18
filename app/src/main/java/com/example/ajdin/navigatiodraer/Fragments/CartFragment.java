@@ -27,12 +27,12 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProductFragment extends Fragment {
+public class CartFragment extends Fragment {
 
 
     private TextView tvTotalPrice;
 
-    public ProductFragment() {
+    public CartFragment() {
         // Required empty public constructor
     }
 
