@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     private Context mContext = MainActivity.this;
     SearchView searchView;
     private ProgressDialog dialog;
+    private NavigationView navigationView;
 
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -112,10 +113,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
         ImageLoader.getInstance().init(config); // Do it on Application start
 
-        final MenuFragment fragment = new MenuFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.content_main, fragment,"first_frag");
-        ft.commit();
 
         db = new DatabaseHelper(MainActivity.this);
         ArrayList<String> arrayList = new ArrayList<>();
@@ -143,11 +140,31 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        final MenuFragment fragment = new MenuFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.content_main, fragment,"first_frag");
+        ft.commit();
+        navigationView.setCheckedItem(R.id.nav_proizvodi);
 
     }
 
+    public android.support.v4.app.Fragment getCurrentFragment() {
+        return this.getSupportFragmentManager().findFragmentById(R.id.content_main);
+    }
+    public android.support.v4.app.Fragment getVisibleFragment(){
+        android.support.v4.app.FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<android.support.v4.app.Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(android.support.v4.app.Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -166,6 +183,8 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
                 ft.commit();
+                navigationView.setCheckedItem(R.id.nav_proizvodi);
+
             }
             }
             else if(fragment1!=null){
@@ -173,6 +192,8 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment1);
                 ft.commit();
+                navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+
             }
               }
         } else {
@@ -244,11 +265,13 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_proizvodi) {
             fragment = new MenuFragment();
+            tag="menu_frag";
 
         } else if (id == R.id.nav_kupac) {
 
             KupacFragment fragment1=new KupacFragment();
             fragment1.show(getSupportFragmentManager(),"Mydialog");
+            tag="dialog_kupac";
 
         } else if (id == R.id.nav_snizeno) {
             fragment = new SnizenjeFragment();
@@ -265,7 +288,7 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment,tag);
+            ft.replace(R.id.content_main, fragment,tag).addToBackStack(tag);
             ft.commit();
 
         }

@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ajdin on 6.3.2018..
@@ -328,20 +329,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
     }
-    public ArrayList<String> GetKategorije(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        ArrayList<String> kategorije =new ArrayList<>();
-        Cursor listKategory = db.rawQuery("select distinct Kategorija from Artikli ",null);
-        if (listKategory!=null){
-            listKategory.moveToFirst();
-            while (!listKategory.isAfterLast()){
-                String data = listKategory.getString(listKategory.getColumnIndex("Kategorija"));
-                kategorije.add(data);
-            }
-        }
-        return kategorije;
+    public List<Product> getProductsKategory(String kategory){
+        List<Product> labels = new ArrayList<Product>();
 
+        // Select All Query
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from Artikli WHERE Kategorija='"+kategory+"';",null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+
+            Product product = new Product(cursor.getString(cursor.getColumnIndex("Naziv")), cursor.getInt(cursor.getColumnIndex("Artikal_id")),
+                    cursor.getString(cursor.getColumnIndex("Bar_kod")), cursor.getString(cursor.getColumnIndex("JM")), cursor.getString(cursor.getColumnIndex("Kategorija")), cursor.getString(cursor.getColumnIndex("Cijena")), cursor.getString(cursor.getColumnIndex("ImageUrl")), cursor.getString(cursor.getColumnIndex("ImageDevice")),cursor.getString(cursor.getColumnIndex("isSnizeno")),cursor.getString(cursor.getColumnIndex("datumkreiranja")));
+            labels.add(product);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+
+        // returning lables
+        return labels;
     }
+    public List<String> getAllLabels(){
+        List<String> labels = new ArrayList<String>();
+
+        // Select All Query
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select distinct Kategorija from Artikli",null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                labels.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+
+        // closing connection
+        cursor.close();
+        db.close();
+
+        // returning lables
+        return labels;
+    }
+
     public ArrayList<Product> getAllNEW() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Product> list = new ArrayList<Product>();

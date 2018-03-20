@@ -69,9 +69,10 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     private MenuAdapter adapter;
     private List<Product> productList;
     String[] bankNames={"Odaberi redoslijed","Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
-    String[] kategoies={"Odaberi kategoriju","Igračke","Prehrana ","Tekstil","Obuća"};
+    String[] kategoies;
     private List<Product> filteredValues;
     private Parcelable state;
+    private Spinner spin2;
 
     @Override
     public void onResume() {
@@ -105,18 +106,21 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinner);
-        Spinner spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
+        spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
         spin2.setOnItemSelectedListener(this);
 
+
+
 //Creating the ArrayAdapter instance having the bank name list
         ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,bankNames);
-        ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,kategoies);
+//        ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,li);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //Setting the ArrayAdapter data on the Spinner
         spin.setAdapter(aa);
-        spin2.setAdapter(aa2);
+        loadSpinnerData();
+//        spin2.setAdapter(aa2);
 
         if(db.isEmpty()){
             dialog = new ProgressDialog(getActivity());
@@ -226,65 +230,64 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             usedList=new ArrayList<Product>(filteredValues);
 
         }
-        if (i==0){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+        switch(adapterView.getId()) {
+            case R.id.simpleSpinner: {
+                if (i == 0) {
+                    Collections.sort(usedList, new Comparator<Product>() {
+                        @Override
+                        public int compare(Product product, Product t1) {
+                            return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+
+                        }
+
+
+                    });
                 }
+                if (i == 1) {
+                    Collections.sort(usedList, new Comparator<Product>() {
+                        @Override
+                        public int compare(Product product, Product t1) {
+                            return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+                        }
 
 
-            });
-        }
-        if (i==1){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+                    });
+                } else if (i == 2) {
+                    Collections.sort(usedList, new Comparator<Product>() {
+                        @Override
+                        public int compare(Product product, Product t1) {
+                            return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
+                        }
+
+
+                    });
+                } else if (i == 3) {
+                    Collections.sort(usedList, new Comparator<Product>() {
+                        @Override
+                        public int compare(Product p1, Product p2) {
+                            return p2.getPrice().compareTo(p1.getPrice());
+                        }
+
+
+                    });
+
+                } else {
+
+                    Collections.sort(usedList, new Comparator<Product>() {
+                        @Override
+                        public int compare(Product p1, Product p2) {
+                            return p1.getPrice().compareTo(p2.getPrice());
+                        }
+
+
+                    });
+
                 }
+            }
 
+            case R.id.kategorySpinner: {
 
-            });
-        }
-        else if(i==2) {
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
-                }
-
-
-            });
-        }
-        else if(i==3){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p2.getPrice().compareTo(p1.getPrice());
-                }
-
-
-
-            });
-
-        }
-        else {
-
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p1.getPrice().compareTo(p2.getPrice());
-                }
-
-
-            });
+            }
 
         }
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, usedList);
@@ -316,6 +319,23 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+    private void loadSpinnerData() {
+        // database handler
+
+        // Spinner Drop down elements
+        List<String> lables = db.getAllLabels();
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, lables);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spin2.setAdapter(dataAdapter);
     }
 
     public class JSONTask extends AsyncTask<String,String, List<Product> > {

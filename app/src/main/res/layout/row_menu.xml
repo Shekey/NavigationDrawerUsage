@@ -20,6 +20,7 @@
 
             <ImageView
                 android:id="@+id/ivIconM"
+                android:padding="4dp"
                 android:layout_width="120dp"
                 android:layout_height="160dp" />
 
@@ -40,6 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MovieName"
+                android:padding="8dp"
                 android:textColor="@color/colorPrimary"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -47,6 +49,7 @@
                 android:id="@+id/tvTaglineM"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="8dp"
                 android:textColor="@color/colorPrimary"
 
                 android:text="Tagline"
@@ -57,6 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Year"
+                android:padding="8dp"
                 android:textColor="@color/colorPrimary"
 
                 android:textAppearance="?android:attr/textAppearanceSmall" />

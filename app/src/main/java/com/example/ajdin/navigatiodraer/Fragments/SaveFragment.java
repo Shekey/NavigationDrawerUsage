@@ -103,7 +103,7 @@ public class SaveFragment extends DialogFragment {
             exportDir.mkdirs();
         }
         PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
-        writer.println(text);
+        writer.write(text);
         writer.close();
     }
     public void SaveFile(String text,String nazivFajla){

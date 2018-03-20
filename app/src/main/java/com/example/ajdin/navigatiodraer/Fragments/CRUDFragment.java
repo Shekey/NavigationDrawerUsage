@@ -135,7 +135,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             file.createNewFile();
 
             PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+pathfile, "UTF-8");
-            writer.println(editText1.getText().toString());
+            writer.write(editText1.getText().toString());
             writer.close();
 
         }
