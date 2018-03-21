@@ -11,7 +11,7 @@
         android:layout_marginTop="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="100dp"
         ></ListView>
 
     <TextView
@@ -32,7 +32,8 @@
     android:orientation="horizontal"
     android:weightSum="1"
     android:layout_gravity="bottom"
-    android:layout_margin="30dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginBottom="60dp"
     >
 
     <TextView
@@ -56,7 +57,38 @@
         />
 
 </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottom_panel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        >
 
+    <Button
+        android:id="@+id/zavrsi"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        android:layout_marginRight="10dp"
+        android:text="ZAVRSI NARUDZBU"/>
 
+    <Button
+        android:id="@+id/clearAll"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="13sp"
+        android:text="ODUSTANI "/>
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -1,10 +1,12 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
@@ -73,7 +75,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     private List<Product> filteredValues;
     private Parcelable state;
     private Spinner spin2;
-
     @Override
     public void onResume() {
         if(state != null) {
@@ -162,7 +163,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         }
 
         editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
-        editsearch.setOnQueryTextListener(this);
+        editsearch.setOnQueryTextListener(MenuFragment.this);
         return view;
     }
 
@@ -478,6 +479,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                     Log.d(TAG, "trying to restore listview state..");
                     lvArtikli.onRestoreInstanceState(state);
                 }
+
                 lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

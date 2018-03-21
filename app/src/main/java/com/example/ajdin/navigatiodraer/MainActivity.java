@@ -1,12 +1,14 @@
 package com.example.ajdin.navigatiodraer;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -165,6 +167,8 @@ public class MainActivity extends AppCompatActivity
         }
         return null;
     }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -242,7 +246,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_cart) {
             CartFragment fragment=new CartFragment();
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
+            navigationView.setCheckedItem(R.id.nav_korpa);
             ft.replace(R.id.content_main, fragment).addToBackStack("korpa_nav");
             ft.commit();
         }

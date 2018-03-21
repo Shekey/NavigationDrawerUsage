@@ -2,12 +2,15 @@ package com.example.ajdin.navigatiodraer.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.WriteMode;
+import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
+import com.example.ajdin.navigatiodraer.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +27,7 @@ public class UploadTask extends AsyncTask {
     private File file;
     private Context context;
 
-    UploadTask(DbxClientV2 dbxClient, File file, Context context) {
+    public UploadTask(DbxClientV2 dbxClient, File file, Context context) {
         this.dbxClient = dbxClient;
         this.file = file;
         this.context = context;
@@ -51,5 +54,7 @@ public class UploadTask extends AsyncTask {
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
         Toast.makeText(context, "File uploaded successfully", Toast.LENGTH_SHORT).show();
+
     }
+
 }
