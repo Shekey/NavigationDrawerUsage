@@ -16,7 +16,8 @@ public class Product implements Saleable, Serializable {
     @SerializedName("barkod")
     private String Barkod;
     private String JM;
-    private String Kategorija;
+    @SerializedName("Naziv")
+    private String KategoriaId;
     @SerializedName("cijena")
     private String Cijena;
     @SerializedName("image")
@@ -48,7 +49,7 @@ public class Product implements Saleable, Serializable {
         Artikal_id = artikal_id;
         Barkod = barkod;
         this.JM = JM;
-        Kategorija = kategorija;
+        KategoriaId = kategorija;
         this.snizeno=snizeno;
 
         Cijena = cijena;
@@ -90,11 +91,11 @@ public class Product implements Saleable, Serializable {
     }
 
     public String getKategorija() {
-        return Kategorija;
+        return KategoriaId;
     }
 
     public void setKategorija(String kategorija) {
-        Kategorija = kategorija;
+        KategoriaId = kategorija;
     }
 
     public String getCijena() {

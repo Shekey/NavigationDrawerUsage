@@ -1,6 +1,8 @@
 package com.example.ajdin.navigatiodraer.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,12 +57,12 @@ public class SnizenoAdapter extends ArrayAdapter {
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;
-        File file = new File(movieModelList.get(position).getImageDevice());
-        holder.ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
+        Bitmap bMap = BitmapFactory.decodeFile(movieModelList.get(position).getImageDevice());
+        holder.ivMovieIcon.setImageBitmap(bMap);
         progressBar.setVisibility(View.GONE);
         holder.tvMovie.setText(movieModelList.get(position).getNaziv());
         holder.tvTagline.setText(movieModelList.get(position).getBarkod());
-        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena());
+        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena() +" KM");
 
         // rating bar
 

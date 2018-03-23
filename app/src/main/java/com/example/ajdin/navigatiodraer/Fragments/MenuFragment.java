@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,6 +76,8 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     private List<Product> filteredValues;
     private Parcelable state;
     private Spinner spin2;
+    private List<String> lables;
+
     @Override
     public void onResume() {
         if(state != null) {
@@ -102,14 +105,68 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("ime","").isEmpty()) {
+            fab.setVisibility(View.VISIBLE);
+        }
+        else {
+            fab.setVisibility(View.INVISIBLE);
+        }
         fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinner);
+        final Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinner);
         spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
-        spin2.setOnItemSelectedListener(this);
+        spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (productList == null) {
+
+                } else {
+
+                    if (i == 0) {
+                        filteredValues = new ArrayList<Product>(productList);
+
+                    } else {
+
+                        filteredValues=new ArrayList<>(db.getProductsKategoryFiltered(lables.get(i),productList));
+                        spin.setSelection(0);
+                    }
+                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+                    lvArtikli.setAdapter(adapter);
+                    if (state != null) {
+                        Log.d(TAG, "trying to restore listview state..");
+                        lvArtikli.onRestoreInstanceState(state);
+                    }
+                    final List<Product> finalUsedList = filteredValues;
+                    lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Product movieModel = finalUsedList.get(position); // getting the model
+                            DetailFragment fragment = new DetailFragment();
+                            android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            Bundle bundle = new Bundle();
+                            ft.hide(MenuFragment.this);
+                            bundle.putSerializable("movieModel", movieModel);
+                            fragment.setArguments(bundle);
+
+                            ft.add(R.id.content_main, fragment);
+//                editsearch.setQuery("", false);
+                            ft.addToBackStack("detail_fragment");
+                            ft.commit();
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
 
@@ -124,23 +181,25 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 //        spin2.setAdapter(aa2);
 
         if(db.isEmpty()){
-            dialog = new ProgressDialog(getActivity());
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(false);
-            dialog.setMessage("Loading. Please wait...");
-            // Create default options which will be used for every
-            //  displayImage(...) call if no options will be passed to this method
-            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .build();
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-                    .defaultDisplayImageOptions(defaultOptions)
-                    .build();
-            ImageLoader.getInstance().init(config); // Do it on Application start
-
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
-            new JSONTask().execute(URL_TO_HIT);
+            lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
+//            dialog = new ProgressDialog(getActivity());
+//            dialog.setIndeterminate(true);
+//            dialog.setCancelable(false);
+//            dialog.setMessage("Loading. Please wait...");
+//            // Create default options which will be used for every
+//            //  displayImage(...) call if no options will be passed to this method
+//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                    .cacheInMemory(true)
+//                    .cacheOnDisk(true)
+//                    .build();
+//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
+//                    .defaultDisplayImageOptions(defaultOptions)
+//                    .build();
+//            ImageLoader.getInstance().init(config); // Do it on Application start
+//
+//            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+//            new JSONTask().execute(URL_TO_HIT);
 
         }else
         {
@@ -148,6 +207,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             dialog.setIndeterminate(true);
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
+
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
@@ -160,10 +220,11 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
 
             new JSONTaskDatabase().execute();
+            editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
+            editsearch.setOnQueryTextListener(MenuFragment.this);
         }
 
-        editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
-        editsearch.setOnQueryTextListener(MenuFragment.this);
+
         return view;
     }
 
@@ -185,7 +246,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             return false;
         }
 
-        filteredValues = new ArrayList<Product>(productList);
         for (Product value : productList) {
             if (!value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
                 filteredValues.remove(value);
@@ -222,98 +282,98 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (productList == null) {
 
-        final List<Product> usedList;
-        if (filteredValues==null){
-            usedList=new ArrayList<Product>(productList);
-        }
-        else {
-            usedList=new ArrayList<Product>(filteredValues);
-
-        }
-        switch(adapterView.getId()) {
-            case R.id.simpleSpinner: {
-                if (i == 0) {
-                    Collections.sort(usedList, new Comparator<Product>() {
-                        @Override
-                        public int compare(Product product, Product t1) {
-                            return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
-
-                        }
+        } else {
 
 
-                    });
-                }
-                if (i == 1) {
-                    Collections.sort(usedList, new Comparator<Product>() {
-                        @Override
-                        public int compare(Product product, Product t1) {
-                            return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
-                        }
+            if (filteredValues==null)
+                filteredValues = new ArrayList<Product>(productList);
 
 
-                    });
-                } else if (i == 2) {
-                    Collections.sort(usedList, new Comparator<Product>() {
-                        @Override
-                        public int compare(Product product, Product t1) {
-                            return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
-                        }
+
+            if (i == 0) {
+                Collections.sort(filteredValues, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+
+                    }
 
 
-                    });
-                } else if (i == 3) {
-                    Collections.sort(usedList, new Comparator<Product>() {
-                        @Override
-                        public int compare(Product p1, Product p2) {
-                            return p2.getPrice().compareTo(p1.getPrice());
-                        }
-
-
-                    });
-
-                } else {
-
-                    Collections.sort(usedList, new Comparator<Product>() {
-                        @Override
-                        public int compare(Product p1, Product p2) {
-                            return p1.getPrice().compareTo(p2.getPrice());
-                        }
-
-
-                    });
-
-                }
+                });
             }
+            if (i == 1) {
+                Collections.sort(filteredValues, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+                    }
 
-            case R.id.kategorySpinner: {
+
+                });
+            } else if (i == 2) {
+                Collections.sort(filteredValues, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
+                    }
+
+
+                });
+            } else if (i == 3) {
+                Collections.sort(filteredValues, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product p1, Product p2) {
+                        return p2.getPrice().compareTo(p1.getPrice());
+                    }
+
+
+                });
+
+            } else {
+
+                Collections.sort(filteredValues, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product p1, Product p2) {
+                        return p1.getPrice().compareTo(p2.getPrice());
+                    }
+
+
+                });
 
             }
 
-        }
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, usedList);
-        lvArtikli.setAdapter(adapter);
-        if(state != null) {
-            Log.d(TAG, "trying to restore listview state..");
-            lvArtikli.onRestoreInstanceState(state);
-        }
-        lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = usedList.get(position); // getting the model
-                DetailFragment fragment=new DetailFragment();
-                android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                Bundle bundle=new Bundle();
-                ft.hide(MenuFragment.this);
-                bundle.putSerializable("movieModel",movieModel);
-                fragment.setArguments(bundle);
-                ft.add(R.id.content_main,fragment);
+
+
+
+
+            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+            lvArtikli.setAdapter(adapter);
+            if (state != null) {
+                Log.d(TAG, "trying to restore listview state..");
+                lvArtikli.onRestoreInstanceState(state);
+            }
+            final List<Product> finalUsedList = filteredValues;
+            lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Product movieModel = finalUsedList.get(position); // getting the model
+                    DetailFragment fragment = new DetailFragment();
+                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    ft.hide(MenuFragment.this);
+                    bundle.putSerializable("movieModel", movieModel);
+                    fragment.setArguments(bundle);
+                    ft.add(R.id.content_main, fragment);
 //                editsearch.setQuery("", false);
-                ft.addToBackStack("detail_fragment");
-                ft.commit();
+                    ft.addToBackStack("detail_fragment");
+                    ft.commit();
 
-            }
-        });
+                }
+            });
+        }
+
 
     }
 
@@ -325,7 +385,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         // database handler
 
         // Spinner Drop down elements
-        List<String> lables = db.getAllLabels();
+        lables = db.getAllLabels();
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
@@ -453,6 +513,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         protected List<Product> doInBackground(Void... params) {
 
             productList = db.getAll();
+            filteredValues = new ArrayList<Product>(productList);
             return productList;
 
         }
@@ -752,8 +813,8 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     public void resetSearch() {
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, productList);
-        filteredValues=null;
+        filteredValues = new ArrayList<Product>(productList);
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
         lvArtikli.setAdapter(adapter);
 
     }

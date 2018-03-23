@@ -2,7 +2,9 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,6 +60,7 @@ public class CartFragment extends Fragment {
     SharedPreferences sharedPreferences;
     private Button bZavrsi;
     private String ime;
+    private Button clear;
 
     public CartFragment() {
         // Required empty public constructor
@@ -87,6 +91,58 @@ public class CartFragment extends Fragment {
         lvProducts.setEmptyView(view.findViewById(R.id.emptyElement));
         sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         ime=sharedPreferences.getString("ime","");
+        clear = view.findViewById(R.id.clearAll);
+        lvProducts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                if (position<0) {
+                    return false;
+                }
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.delete_item))
+                        .setMessage(getResources().getString(R.string.delete_item_message))
+                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                List<CartItem> cartItems = getCartItems(cart);
+
+                                cart.remove(cartItems.get(position).getProduct());
+                                cartItems.remove(position);
+                                cartItemAdapter.updateCartItems(cartItems);
+                                cartItemAdapter.notifyDataSetChanged();
+                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.Ne), null)
+                        .show();
+                return false;
+            }
+        });
+
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.zavrsetak_svega))
+                        .setMessage(getResources().getString(R.string.cisti_sve))
+                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+                                spreferencesEditor.clear();
+                                spreferencesEditor.commit();
+                                cart.clear();
+                                cartItemAdapter.updateCartItems(getCartItems(cart));
+                                cartItemAdapter.notifyDataSetChanged();
+                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.Ne), null)
+                        .show();
+
+            }
+        });
 
         bZavrsi = view.findViewById(R.id.zavrsi);
 

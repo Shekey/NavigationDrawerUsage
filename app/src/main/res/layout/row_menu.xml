@@ -42,7 +42,8 @@
                 android:layout_height="wrap_content"
                 android:text="MovieName"
                 android:padding="8dp"
-                android:textColor="@color/colorPrimary"
+                android:textAllCaps="true"
+                android:textColor="@color/primaryTtext"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
@@ -50,8 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:textColor="@color/colorPrimary"
-
+                android:textColor="@color/primaryTtext"
+                android:textStyle="italic"
                 android:text="Tagline"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -61,7 +62,8 @@
                 android:layout_height="wrap_content"
                 android:text="Year"
                 android:padding="8dp"
-                android:textColor="@color/colorPrimary"
+                android:textStyle="italic"
+                android:textColor="@color/primaryTtext"
 
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 

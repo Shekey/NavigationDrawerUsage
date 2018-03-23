@@ -4,6 +4,7 @@ package com.example.ajdin.navigatiodraer.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
 
@@ -52,7 +54,9 @@ public class KupacFragment extends DialogFragment {
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.putString("ime", unos.getText().toString());
                     editor.commit();
-                    Snackbar.make(getView(),"KUPAC JE USPJESNO DODAT",Snackbar.LENGTH_LONG);
+                    FloatingActionButton fab=(FloatingActionButton) getActivity().findViewById(R.id.fab);
+                    fab.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "KUPAC JE USPJESNO POHRANJEN", Toast.LENGTH_LONG).show();
                     dismiss();
 
                 }

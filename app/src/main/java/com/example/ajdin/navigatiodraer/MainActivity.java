@@ -2,10 +2,13 @@ package com.example.ajdin.navigatiodraer;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,12 +31,15 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.ajdin.navigatiodraer.Fragments.HistoryFragment;
 import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NewproductsFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NoteFragment;
 import com.example.ajdin.navigatiodraer.Fragments.CartFragment;
 import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
+import com.example.ajdin.navigatiodraer.helpers.CartItem;
+import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.google.gson.Gson;
@@ -49,6 +55,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     SearchView searchView;
     private ProgressDialog dialog;
     private NavigationView navigationView;
+    private FloatingActionButton fab;
 
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -124,8 +132,15 @@ public class MainActivity extends AppCompatActivity
         arrayList.add("Seval");
 //        adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,arrayList);
 //        lvArtikli.setAdapter(adapter);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (sharedPreferences.getString("ime","").isEmpty()) {
+            fab.setVisibility(View.VISIBLE);
+        }
+        else {
+            fab.setVisibility(View.INVISIBLE);
+        }
         fab.setImageResource(R.drawable.dodaj_osobu);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,26 +195,74 @@ public class MainActivity extends AppCompatActivity
         } else if (count != 0) {
             MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
             NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
+            NoteFragment fragment2  =(NoteFragment)getSupportFragmentManager().findFragmentByTag("note_fragment");
+            HistoryFragment fragment3  =(HistoryFragment)getSupportFragmentManager().findFragmentByTag("history_frag");
+            CartFragment fragment4  =(CartFragment)getSupportFragmentManager().findFragmentByTag("cart_frag");
+            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+
 
             getSupportFragmentManager().popBackStack();
             if (fragment!=null){
-            if (fragment.isVisible()){
+            if (fragment.isResumed()){
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
                 ft.commit();
+                setTitle("SVI PROIZVODI");
                 navigationView.setCheckedItem(R.id.nav_proizvodi);
+
 
             }
             }
             else if(fragment1!=null){
-            if (fragment1.isVisible()){
+            if (fragment1.isResumed()){
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment1);
                 ft.commit();
+                setTitle("NOVI PROIZVODI");
                 navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
 
             }
               }
+            else if(fragment2!=null){
+                if (fragment2.isResumed()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment2);
+                    ft.commit();
+                    setTitle("NAPOMENE ");
+                    navigationView.setCheckedItem(R.id.nav_napomene);
+
+                }
+            }
+            else if(fragment3!=null){
+                if (fragment3.isResumed()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment3);
+                    ft.commit(); setTitle("HISTORIJA ZAPISA");
+                    navigationView.setCheckedItem(R.id.nav_history);
+
+                }
+            }
+            else if(fragment4!=null){
+                if (fragment4.isResumed()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment4);
+                    ft.commit();
+                    navigationView.setCheckedItem(R.id.nav_korpa);
+                    setTitle("KORPA");
+
+                }
+            }
+            else if(fragment5!=null){
+                if (fragment5.isResumed()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment5);
+                    ft.commit();
+                    setTitle("SNIZENI PROIZVODI ");
+                    navigationView.setCheckedItem(R.id.nav_snizeno);
+
+                }
+            }
+
         } else {
             super.onBackPressed();
 
@@ -266,33 +329,79 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_korpa) {
             fragment = new CartFragment();
+            setTitle("KORPA");
+            tag="cart_frag";
             // Handle the camera action
         } else if (id == R.id.nav_proizvodi) {
             fragment = new MenuFragment();
+            setTitle("SVI PROIZVODI");
             tag="menu_frag";
 
-        } else if (id == R.id.nav_kupac) {
+        } else if (id == R.id.nav_history) {
+            fragment=new HistoryFragment();
+            setTitle("HISTORIJA ZAPISA");
 
-            KupacFragment fragment1=new KupacFragment();
-            fragment1.show(getSupportFragmentManager(),"Mydialog");
-            tag="dialog_kupac";
+            tag="history_frag";
+        }
+
+        else if (id == R.id.nav_kupac) {
+           final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+           String ime=sharedPreferences.getString("ime","");
+           if (!ime.isEmpty()) {
+               new AlertDialog.Builder(MainActivity.this)
+                       .setTitle(getResources().getString(R.string.brisanje_kupca))
+                       .setMessage(getResources().getString(R.string.delete_kupac))
+                       .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                               sharedPreferences.edit().clear().commit();
+                               fab.setVisibility(View.VISIBLE);
+
+                           }
+                       })
+                       .setNegativeButton(getResources().getString(R.string.Ne), null)
+                       .show();
+
+           }else {
+               KupacFragment fragment1=new KupacFragment();
+               fragment1.show(getSupportFragmentManager(),"Mydialog");
+               tag="dialog_kupac";
+           }
+
+
+
 
         } else if (id == R.id.nav_snizeno) {
             fragment = new SnizenjeFragment();
+            setTitle("SNIZENI PROIZVODI");
+
+            tag="snizenje_frag";
 
         } else if (id == R.id.nav_novi_proizvodi) {
             fragment = new NewproductsFragment();
+            setTitle("NOVI PROIZVODI");
             tag="new_prod_frag";
 
         } else {
             fragment=new NoteFragment();
+            setTitle("NAPOMENE ");
             tag="note_fragment";
 
         }
 
         if (fragment != null) {
+
+            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
+                           // do something with f
+
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment,tag).addToBackStack(tag);
+            if (getSupportFragmentManager().getBackStackEntryCount()>=1){
+                ft.replace(R.id.content_main, fragment,tag);
+            }
+            else {
+                ft.add(R.id.content_main, fragment, tag).addToBackStack(tag);
+            }
+            ft.hide(CurrentFragment);
             ft.commit();
 
         }

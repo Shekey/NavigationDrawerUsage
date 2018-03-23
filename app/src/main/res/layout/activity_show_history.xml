@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/history_frag"
+    tools:context="com.example.ajdin.navigatiodraer.Fragments.HistoryFragment">
+
+    <ListView
+        android:id="@+id/list_history1"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="false"
+        android:divider="@null"
+        android:isScrollContainer="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/emptyElement3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="HISTORIJA RACUNA JE PRZNA"
+        android:textSize="19.0sp"
+        android:visibility="gone" />
+
+</RelativeLayout>

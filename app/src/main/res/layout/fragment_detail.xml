@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Naziv"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/primary"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -66,7 +66,7 @@
                 android:id="@+id/tvCijena"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/primary"
                 android:text="Cijena"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -101,7 +101,7 @@
                 android:gravity="left"
 
                 android:text="Kolicina"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/primary"
 
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded"
@@ -146,7 +146,7 @@
                 android:gravity="left"
 
                 android:text="Nova cijena"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/primary"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded" />
 

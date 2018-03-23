@@ -59,8 +59,8 @@ public class NEWProductsAdapter extends ArrayAdapter {
         holder.ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
         progressBar.setVisibility(View.GONE);
         holder.tvMovie.setText(movieModelList.get(position).getNaziv());
-        holder.tvTagline.setText(movieModelList.get(position).getBarkod());
-        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena());
+        holder.tvTagline.setText(movieModelList.get(position).getKategorija());
+        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+" KM");
 
         // rating bar
 

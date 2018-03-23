@@ -40,14 +40,14 @@ android:padding="4dp">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MovieName"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primaryTtext"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/tvTaglineNEW"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primaryTtext"
 
             android:text="Tagline"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -57,7 +57,7 @@ android:padding="4dp">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Year"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primaryTtext"
 
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

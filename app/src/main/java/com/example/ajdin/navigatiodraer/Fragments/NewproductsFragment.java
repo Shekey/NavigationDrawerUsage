@@ -2,6 +2,8 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -75,7 +77,13 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_newproducts, container, false);
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("ime","").isEmpty()) {
+            fab.setVisibility(View.VISIBLE);
+        }
+        else {
+            fab.setVisibility(View.INVISIBLE);
+        }
         fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliNEW);
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerNEW);

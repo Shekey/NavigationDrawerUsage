@@ -12,9 +12,11 @@ import android.util.Log;
 import com.example.ajdin.navigatiodraer.models.Product;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,13 +74,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("PRAGMA encoding='UTF-16'");
         db.execSQL("CREATE TABLE `Artikli` (\n " +
                 "\t`Artikal_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "\t`Naziv`\tTEXT NOT NULL UNIQUE DEFAULT '---',\n" +
+                "\t`Naziv`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t`JM`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t datumkreiranja DATE NOT NULL,\n" +
                 "\t isSnizeno INTEGER DEFAULT 0 ,\n"+
                 "\t`Cijena`\tTEXT NOT NULL DEFAULT 0,\n" +
                 "\t`Kategorija`\tTEXT DEFAULT '----',\n" +
-                "\t`Bar_kod`\tTEXT NOT NULL, \n" +
+                "\t`Bar_kod`\tTEXT NOT NULL UNIQUE, \n" +
                 "\t`ImageUrl`\tTEXT NOT NULL, \n" +
                 "\t`ImageDevice`\tTEXT  \n" + ");");
 
@@ -87,16 +89,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         for (Product p:productList) {
 
-            db.execSQL("REPLACE INTO Artikli(Naziv,isSnizeno,Cijena,Bar_kod,ImageUrl,ImageDevice,datumkreiranja) VALUES('"+p.getNaziv()+"','"
+            db.execSQL("REPLACE INTO Artikli(Naziv,isSnizeno,Cijena,Bar_kod,ImageUrl,ImageDevice,datumkreiranja,Kategorija) VALUES('"+p.getNaziv()+"','"
                     +p.getSnizeno()+"','"
                     +p.getCijena()+"','"
                     +p.getBarkod()+"','"
                     +p.getImageUrl()+"','"+
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/YourFolderName/"+ p.getCijena()+".jpg"+"','"+
+                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/YourFolderName/"+ p.getBarkod()+".jpg"+"','"+
                     p.getDatum_kreiranja()+
-                    "');");
+                    "','"+p.getKategorija()+"');");
 
         }
+
         ArrayList<Product> allproducts=getAll();
         int sync_product=productList.size();
         String barkod_delete="";
@@ -121,6 +124,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
     }
+    public String getBarkod(String Naziv){
+        SQLiteDatabase db=this.getWritableDatabase();
+        String naziv;
+        Cursor productList=db.rawQuery("SELECT Bar_kod From Artikli WHERE Naziv='"+Naziv+"' ;",null);
+        if(productList!=null){
+            productList.moveToFirst();
+            naziv= productList.getString(productList.getColumnIndex("Bar_kod"));
+
+        }
+        else {
+            naziv="";
+        }
+        return naziv;
+
+    }
+    public Product getData(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
+        if (productList.getCount()==0){
+            Product product=null;
+            return product;
+        }
+        productList.moveToFirst();
+        Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
+                productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
+        db.close();
+        return product;
+
+    }
+    public String getDataString(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
+        if (productList.getCount()==0){
+
+            return null;
+        }
+        productList.moveToFirst();
+        Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
+                productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
+        db.close();
+        return product.getName();
+
+    }
+
+
 
     public void clearDatabase(Context context) {
         DatabaseHelper helper = new DatabaseHelper(context);
@@ -213,9 +261,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for (Product p : products) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put("Bar_kod", "---");
+            contentValues.put("Bar_kod", p.getBarkod());
             contentValues.put("JM", "KOM");
-            contentValues.put("Kategorija", "----");
+            contentValues.put("Kategorija", p.getKategorija());
             contentValues.put("ImageUrl", p.getImageUrl());
             contentValues.put("datumkreiranja", p.getDatum_kreiranja());
             contentValues.put("Naziv", p.getNaziv());
@@ -332,6 +380,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Product> getProductsKategory(String kategory){
         List<Product> labels = new ArrayList<Product>();
 
+
         // Select All Query
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -348,6 +397,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
+
+        // returning lables
+        return labels;
+    }
+    public List<Product> getProductsKategoryFiltered(String kategory,List<Product> filtered){
+        List<Product> labels = new ArrayList<Product>();
+
+
+        // Select All Query
+
+      for (Product p:filtered){
+          if (p.getKategorija().equals(kategory))
+              labels.add(p);
+      }
+
         // returning lables
         return labels;
     }
@@ -358,6 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select distinct Kategorija from Artikli",null);
+        labels.add("Izaberite kategoriju");
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {

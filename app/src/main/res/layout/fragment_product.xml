@@ -73,8 +73,8 @@
         android:layout_width="0dip"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:textColor="@android:color/white"
+        android:background="@color/accent"
+        android:textColor="@color/primaryTtext"
         android:textSize="13sp"
         android:layout_marginRight="10dp"
         android:text="ZAVRSI NARUDZBU"/>
@@ -83,9 +83,9 @@
         android:id="@+id/clearAll"
         android:layout_width="0dip"
         android:layout_weight="1"
-        android:background="@color/colorPrimary"
+        android:background="@color/accent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/primaryTtext"
         android:textSize="13sp"
         android:text="ODUSTANI "/>
 

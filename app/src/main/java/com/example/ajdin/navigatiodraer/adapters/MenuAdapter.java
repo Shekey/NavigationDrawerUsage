@@ -2,6 +2,7 @@ package com.example.ajdin.navigatiodraer.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -63,7 +64,17 @@ public class MenuAdapter extends ArrayAdapter {
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;
-        ImageLoader.getInstance().displayImage("http://192.168.1.103:80/artikli/"+movieModelList.get(position).getImageUrl(), holder.ivMovieIcon, new ImageLoadingListener() {
+
+
+        holder.tvMovie.setText(movieModelList.get(position).getNaziv());
+        holder.tvTagline.setText(movieModelList.get(position).getKategorija());
+        File file=new File(movieModelList.get(position).getImageDevice());
+        if (file.exists()) {
+            Bitmap bMap = BitmapFactory.decodeFile(movieModelList.get(position).getImageDevice());
+            holder.ivMovieIcon.setImageBitmap(bMap);
+        }
+        else {
+            ImageLoader.getInstance().displayImage("http://192.168.1.103:80/artikli/"+movieModelList.get(position).getImageUrl(), holder.ivMovieIcon, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 progressBar.setVisibility(View.VISIBLE);
@@ -80,7 +91,7 @@ public class MenuAdapter extends ArrayAdapter {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 progressBar.setVisibility(View.GONE);
                 finalHolder.ivMovieIcon.setVisibility(View.VISIBLE);
-                saveImage(movieModelList.get(position).getCijena(),finalHolder.ivMovieIcon);
+                saveImage(movieModelList.get(position).getBarkod(),finalHolder.ivMovieIcon);
             }
 
             @Override
@@ -89,10 +100,10 @@ public class MenuAdapter extends ArrayAdapter {
                 finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
             }
         });
+        }
 
-        holder.tvMovie.setText(movieModelList.get(position).getNaziv());
-        holder.tvTagline.setText(movieModelList.get(position).getBarkod());
-        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena());
+        progressBar.setVisibility(View.GONE);
+        holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+ " KM");
 
         // rating bar
 

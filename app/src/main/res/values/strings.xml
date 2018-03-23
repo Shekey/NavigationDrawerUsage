@@ -10,4 +10,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="order">KUPI</string>
     <string name="action_search">Search ...</string>
+    <string name="zavrsetak_svega">Prekid kupovine</string>
+    <string name="cisti_sve">Da li želite odustati od kupovine ?</string>
+    <string name="da">Da</string>
+    <string name="Ne">Ne</string>
+    <string name="delete_item">Brisanje stavke</string>
+    <string name="delete_item_message">Da li želite obrisati ?</string>
+    <string name="brisanje_kupca">Brisanje kupca</string>
+    <string name="delete_kupac">Da li želite prekinut kupovinu za trenutnog kupca ?</string>
+    <string name="odaberite_kupca_za_nastavak_kupovine">Odaberite kupca za nastavak kupovine</string>
 </resources>
