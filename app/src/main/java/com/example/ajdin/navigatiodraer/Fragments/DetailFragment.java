@@ -106,10 +106,8 @@ public class DetailFragment extends Fragment {
                 if (Kolicina.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {//unesena kolicina
                     if (new_price.getText().toString().trim().matches("")) { //nema cijene
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()) , "");//cijena ""
-                        MenuFragment fragment = new MenuFragment();
-                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_main, fragment);
-                        ft.commit();
+                       getActivity().getSupportFragmentManager().popBackStack();
+
 
                     } else {
                         if (!new_price.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {
@@ -121,13 +119,14 @@ public class DetailFragment extends Fragment {
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                         BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
 
+                        getActivity().getSupportFragmentManager().popBackStack();
 
                         // ovdje ne moze ici Main
-                        MenuFragment fragment = new MenuFragment();
-                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        getActivity().getSupportFragmentManager().popBackStack();
-                        ft.replace(R.id.content_main, fragment);
-                        ft.commit();
+//                        MenuFragment fragment = new MenuFragment();
+//                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//                        getActivity().getSupportFragmentManager().popBackStack();
+//                        ft.replace(R.id.content_main, fragment);
+//                        ft.commit();
 
                         return;
                     }

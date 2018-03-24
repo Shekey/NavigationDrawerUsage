@@ -76,6 +76,7 @@
         android:background="@color/accent"
         android:textColor="@color/primaryTtext"
         android:textSize="13sp"
+        android:textStyle="bold"
         android:layout_marginRight="10dp"
         android:text="ZAVRSI NARUDZBU"/>
 
@@ -87,6 +88,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/primaryTtext"
         android:textSize="13sp"
+        android:textStyle="bold"
         android:text="ODUSTANI "/>
 
     </LinearLayout>

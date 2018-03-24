@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -68,7 +69,8 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.name, container, false);
 
-
+        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         lstView = (ListView) view.findViewById(R.id.list_history);
         lstView.setEmptyView(view.findViewById(R.id.emptyElement4));
 

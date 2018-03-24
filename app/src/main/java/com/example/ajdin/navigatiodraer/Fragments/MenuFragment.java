@@ -74,9 +74,15 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     String[] bankNames={"Odaberi redoslijed","Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
     String[] kategoies;
     private List<Product> filteredValues;
+    private List<Product> filteredKategory;
+    private List<Product> filteredAll;
     private Parcelable state;
     private Spinner spin2;
     private List<String> lables;
+    private int odabraniSort;
+    private int odabranaKategorija;
+    private Spinner spin;
+    private String textGeteR;
 
     @Override
     public void onResume() {
@@ -115,7 +121,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        final Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinner);
+        spin = (Spinner)view.findViewById(R.id.simpleSpinner);
         spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
         spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -125,21 +131,41 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 } else {
 
+
+                    odabranaKategorija = i;
                     if (i == 0) {
-                        filteredValues = new ArrayList<Product>(productList);
+                        if (filteredAll==null) {
+                            filteredAll = new ArrayList<Product>(productList);
+                        }
+                        else {
+                            filteredAll = new ArrayList<Product>(productList);
+
+                        }
+
 
                     } else {
 
-                        filteredValues=new ArrayList<>(db.getProductsKategoryFiltered(lables.get(i),productList));
-                        spin.setSelection(0);
+                        filteredKategory = new ArrayList<>(db.getProductsKategoryFiltered(lables.get(i), productList));
+
+                        if (textGeteR != null) {
+                            for (Product p : filteredKategory) {
+                                if (!p.getNaziv().toLowerCase().contains(textGeteR)) {
+                                    filteredKategory.remove(p);
+                                }
+                            }
+
+                        }
+
+                        filteredAll=new ArrayList<>(filteredKategory);
                     }
-                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+
+                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (state != null) {
                         Log.d(TAG, "trying to restore listview state..");
                         lvArtikli.onRestoreInstanceState(state);
                     }
-                    final List<Product> finalUsedList = filteredValues;
+                    final List<Product> finalUsedList = filteredAll;
                     lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -246,13 +272,33 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             return false;
         }
 
-        for (Product value : productList) {
-            if (!value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
-                filteredValues.remove(value);
+        textGeteR = newText;
+        filteredValues = new ArrayList<Product>(productList);
+            for (Product value : productList) {
+                if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+                    if (odabranaKategorija > 0) {
+                            if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
+                                filteredValues.remove(value);
+                            }
+                        }
+                    }
+                    else {
+                    filteredValues.remove(value);
+                }
             }
-        }
 
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+//            if (odabranaKategorija > 0) {
+//                for (Product p : filteredValues) {
+//                    if (!p.getKategorija().equals(lables.get(odabranaKategorija))) {
+//                        filteredValues.remove(p);
+//                    }
+//                }
+//            }
+        filteredAll = new ArrayList<>(filteredValues);
+
+
+
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
 
         lvArtikli.setAdapter(adapter);
         if(state != null) {
@@ -262,7 +308,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = filteredValues.get(position); // getting the model
+                Product movieModel = filteredAll.get(position); // getting the model
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
@@ -287,13 +333,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         } else {
 
 
-            if (filteredValues==null)
-                filteredValues = new ArrayList<Product>(productList);
+            if (filteredAll==null)
+                filteredAll = new ArrayList<Product>(productList);
 
 
-
+            odabraniSort = i;
             if (i == 0) {
-                Collections.sort(filteredValues, new Comparator<Product>() {
+
+                Collections.sort(filteredAll, new Comparator<Product>() {
                     @Override
                     public int compare(Product product, Product t1) {
                         return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
@@ -304,7 +351,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 });
             }
             if (i == 1) {
-                Collections.sort(filteredValues, new Comparator<Product>() {
+                Collections.sort(filteredAll, new Comparator<Product>() {
                     @Override
                     public int compare(Product product, Product t1) {
                         return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
@@ -313,7 +360,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 });
             } else if (i == 2) {
-                Collections.sort(filteredValues, new Comparator<Product>() {
+                Collections.sort(filteredAll, new Comparator<Product>() {
                     @Override
                     public int compare(Product product, Product t1) {
                         return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
@@ -322,7 +369,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 });
             } else if (i == 3) {
-                Collections.sort(filteredValues, new Comparator<Product>() {
+                Collections.sort(filteredAll, new Comparator<Product>() {
                     @Override
                     public int compare(Product p1, Product p2) {
                         return p2.getPrice().compareTo(p1.getPrice());
@@ -333,7 +380,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
             } else {
 
-                Collections.sort(filteredValues, new Comparator<Product>() {
+                Collections.sort(filteredAll, new Comparator<Product>() {
                     @Override
                     public int compare(Product p1, Product p2) {
                         return p1.getPrice().compareTo(p2.getPrice());
@@ -348,13 +395,13 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
 
 
-            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
             if (state != null) {
                 Log.d(TAG, "trying to restore listview state..");
                 lvArtikli.onRestoreInstanceState(state);
             }
-            final List<Product> finalUsedList = filteredValues;
+            final List<Product> finalUsedList = filteredAll;
             lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -813,9 +860,17 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     public void resetSearch() {
-        filteredValues = new ArrayList<Product>(productList);
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredValues);
+        if (filteredKategory!=null)
+        filteredAll = new ArrayList<Product>(filteredKategory);
+        else{
+            filteredAll=new ArrayList<>(productList);
+        }
+        textGeteR=null;
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
+        spin.setSelection(0);
+
+
 
     }
 }

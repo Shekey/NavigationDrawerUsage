@@ -44,14 +44,14 @@
 
 
         <Spinner
-            android:id="@+id/simpleSpinner"
+            android:id="@+id/kategorySpinner"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:layout_weight="0.5" />
 
         <Spinner
-            android:id="@+id/kategorySpinner"
+            android:id="@+id/simpleSpinner"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"
