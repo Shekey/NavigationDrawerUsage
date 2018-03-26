@@ -8,6 +8,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -42,6 +43,9 @@ import com.example.ajdin.navigatiodraer.helpers.CartItem;
 import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.services.ConnectionService;
+import com.example.ajdin.navigatiodraer.services.MyServiceUploading;
+import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -63,7 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
     public ListView lvArtikli;
     private final String URL_TO_HIT = "http://192.168.1.103:80/artikli/getJson.php";
     private FragmentManager fragmentManager;
@@ -306,6 +310,15 @@ public class MainActivity extends AppCompatActivity
             new JSONTask().execute(URL_TO_HIT);
 
         }
+        if (id == R.id.serviceStart) {
+            Intent intent = new Intent(this, TimeService.class);
+            startService(intent);
+
+        }
+        if (id == R.id.stopService) {
+            Intent intent = new Intent(this, TimeService.class);
+            stopService(intent);
+        }
         if (id == R.id.nav_cart) {
             CartFragment fragment=new CartFragment();
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -415,6 +428,8 @@ drawer.postDelayed(new Runnable() {
 
         return true;
     }
+
+
 
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
 

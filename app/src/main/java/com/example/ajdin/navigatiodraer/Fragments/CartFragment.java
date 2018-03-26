@@ -147,6 +147,9 @@ public class CartFragment extends Fragment {
         bZavrsi = view.findViewById(R.id.zavrsi);
 
         bZavrsi.setOnClickListener(new View.OnClickListener() {
+
+            private String zadropBox;
+
             @Override
             public void onClick(View view) {
                 if (cartItemAdapter.getCount()==0){
@@ -158,7 +161,7 @@ public class CartFragment extends Fragment {
                 NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 if (info.isConnected()) {
                     if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
-                        String zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
                         spreferencesEditor.commit();
@@ -199,7 +202,21 @@ public class CartFragment extends Fragment {
                     }
                 }
                 else {
-                    Toast.makeText(getActivity(), "Morate ukljuciti WIFI", Toast.LENGTH_SHORT).show();
+                    DatabaseHelper db=new DatabaseHelper(getActivity());
+                    if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
+                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        db.addToStack(zadropBox);
+                        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+                        spreferencesEditor.clear();
+                    }
+                    else {
+                        db.addToStack(sharedPreferences.getString("path", ""));
+                    }
+                    Toast.makeText(getActivity(), "Added to stack", Toast.LENGTH_SHORT).show();
+                    cart.clear();
+                    cartItemAdapter.updateCartItems(getCartItems(cart));
+                    cartItemAdapter.notifyDataSetChanged();
+                    tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
 
                 }
                 //  helper.InsertIntoRacun(cartItemAdapter, cartItemAdapter.getCount());

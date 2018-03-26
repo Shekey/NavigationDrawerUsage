@@ -11,6 +11,7 @@ import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.WriteMode;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +54,8 @@ public class UploadTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
+        DatabaseHelper db=new DatabaseHelper(context);
+        db.setStacked(file.getPath());
         Toast.makeText(context, "File uploaded successfully", Toast.LENGTH_SHORT).show();
 
     }

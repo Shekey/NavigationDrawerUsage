@@ -46,6 +46,16 @@
                 <!--<category android:name="android.intent.category.DEFAULT" />-->
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".services.TimeService"
+            android:icon="@drawable/logo"
+            android:exported="false"
+            android:label="@string/service_name"
+            >
+        </service>
+
+
     </application>
 
 </manifest>

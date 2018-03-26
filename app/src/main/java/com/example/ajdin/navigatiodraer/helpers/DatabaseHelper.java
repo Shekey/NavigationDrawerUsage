@@ -84,7 +84,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "\t`ImageUrl`\tTEXT NOT NULL, \n" +
                 "\t`ImageDevice`\tTEXT  \n" + ");");
 
+        db.execSQL("CREATE TABLE `FileStack` (\n " +
+                "\t`Stack_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t`Path`\tTEXT NOT NULL DEFAULT '---',\n" +
+                "\t Synced INTEGER DEFAULT 0 "+");");
+
     }
+    public void addToStack(String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("Path",path );
+            contentValues.put("Synced", "0");
+
+            long result = db.insert("FileStack", null, contentValues);
+
+            Log.d(TAG, "Inserted " + result);
+        }
+    public ArrayList<String> getAllStacked() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String> list = new ArrayList<String>();
+        Cursor productList = db.rawQuery("select * from FileStack WHERE Synced=0 ", null);
+        productList.moveToFirst();
+        while (!productList.isAfterLast()) {
+            list.add(productList.getString(productList.getColumnIndex("Path")));
+            productList.moveToNext();
+        }
+        productList.close();
+
+        return list;
+    }
+    public void setStacked(String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE FileStack SET Synced = 1"+" WHERE Path='"+path+"'");
+    }
+
+
+
+
     public void replace(ArrayList<Product> productList){
         SQLiteDatabase db = this.getWritableDatabase();
         for (Product p:productList) {
