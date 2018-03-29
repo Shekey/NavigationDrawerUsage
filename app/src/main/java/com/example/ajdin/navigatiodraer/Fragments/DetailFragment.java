@@ -1,6 +1,7 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -60,7 +61,19 @@ public class DetailFragment extends Fragment {
         if (state!=null){
             list.onRestoreInstanceState(state);
         }
+        getActivity().setTitle("Detalji");
         super.onResume();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        getActivity().setTitle("DETALJI PROIZVODA");
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Override

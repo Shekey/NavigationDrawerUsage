@@ -123,6 +123,17 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
     }
 
     @Override
+    public void onAttach(Context context) {
+        getActivity().setTitle("SNIZENI PROIZVODI");
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         final List<Product> usedList;
         if (filteredValues==null){
@@ -249,7 +260,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
-                ft.replace(R.id.content_main,fragment);
+                ft.add(R.id.content_main,fragment);
                 ft.commit();
 
             }
@@ -303,7 +314,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);
-                        ft.replace(R.id.content_main,fragment);
+                        ft.add(R.id.content_main,fragment);
                         ft.addToBackStack("detail_fragment");
                         ft.commit();
 

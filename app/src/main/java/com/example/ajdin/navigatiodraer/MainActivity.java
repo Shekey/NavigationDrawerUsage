@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
 
         final MenuFragment fragment = new MenuFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.content_main, fragment,"first_frag");
+        ft.replace(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");
         ft.commit();
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         Intent intent = new Intent(this, TimeService.class);
@@ -204,52 +204,52 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
 
         } else if (count != 0) {
-            MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
-            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
-            NoteFragment fragment2  =(NoteFragment)getSupportFragmentManager().findFragmentByTag("note_fragment");
-            HistoryFragment fragment3  =(HistoryFragment)getSupportFragmentManager().findFragmentByTag("history_frag");
-            CartFragment fragment4  =(CartFragment)getSupportFragmentManager().findFragmentByTag("cart_frag");
-            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+//            MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
+//            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
+            NoteFragment fragment2 = (NoteFragment) getSupportFragmentManager().findFragmentByTag("note_fragment");
+            HistoryFragment fragment3 = (HistoryFragment) getSupportFragmentManager().findFragmentByTag("history_frag");
+//            CartFragment fragment4 = (CartFragment) getSupportFragmentManager().findFragmentByTag("cart_frag");
+//            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
 
 
             getSupportFragmentManager().popBackStack();
-            if (fragment!=null){
-            if (fragment.isResumed()){
-                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                ft.show(fragment);
-                ft.commit();
-                fab.setVisibility(View.VISIBLE);        fab.setImageResource(R.drawable.dodaj_osobu);
-
-
-                fab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        KupacFragment fragment1=new KupacFragment();
-                        fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-
+//            if (fragment!=null){
+//            if (fragment.isResumed()){
+//                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+//                ft.show(fragment);
+//                ft.commit();
+//                fab.setVisibility(View.VISIBLE);        fab.setImageResource(R.drawable.dodaj_osobu);
 //
-                    }
-                });
-                setTitle("SVI PROIZVODI");
-                navigationView.setCheckedItem(R.id.nav_proizvodi);
-
-
-            }
-            }
-            else if(fragment1!=null){
-            if (fragment1.isResumed()){
-                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                ft.show(fragment1);
-                ft.commit();
-                fab.setVisibility(View.VISIBLE);
-                setTitle("NOVI PROIZVODI");
-                navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
-
-            }
-              }
-            else if(fragment2!=null){
-                if (fragment2.isResumed()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+//
+//                fab.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        KupacFragment fragment1=new KupacFragment();
+//                        fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+//
+////
+//                    }
+//                });
+//                setTitle("SVI PROIZVODI");
+//                navigationView.setCheckedItem(R.id.nav_proizvodi);
+//
+//
+//            }
+//            }
+//            if(fragment1!=null){
+//            if (fragment1.isResumed()){
+//                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+//                ft.show(fragment1);
+//                ft.commit();
+//                fab.setVisibility(View.VISIBLE);
+//                setTitle("NOVI PROIZVODI");
+//                navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+//
+//            }
+//              }
+            if (fragment2 != null) {
+                if (fragment2.isResumed()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.show(fragment2);
                     ft.commit();
                     fab.setVisibility(View.VISIBLE);
@@ -257,44 +257,46 @@ public class MainActivity extends AppCompatActivity
                     navigationView.setCheckedItem(R.id.nav_napomene);
 
                 }
-            }
-            else if(fragment3!=null){
-                if (fragment3.isResumed()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            } else if (fragment3 != null) {
+                if (fragment3.isResumed()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.show(fragment3);
-                    ft.commit(); setTitle("HISTORIJA ZAPISA");
+                    ft.commit();
+                    setTitle("HISTORIJA ZAPISA");
                     fab.setVisibility(View.VISIBLE);
                     navigationView.setCheckedItem(R.id.nav_history);
 
                 }
-            }
-            else if(fragment4!=null){
-                if (fragment4.isResumed()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment4);
-                    ft.commit();
-                    navigationView.setCheckedItem(R.id.nav_korpa);
-                    setTitle("KORPA");
+//            } else if (fragment4 != null) {
+//                if (fragment4.isResumed()) {
+//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                    ft.show(fragment4);
+//                    ft.commit();
+//                    navigationView.setCheckedItem(R.id.nav_korpa);
+//                    setTitle("KORPA");
+//
+//                }
+//            }
+//            else if(fragment5!=null){
+//                if (fragment5.isResumed()){
+//                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+//                    ft.show(fragment5);
+//                    ft.commit();
+//                    fab.setVisibility(View.VISIBLE);
+//                    setTitle("SNIZENI PROIZVODI ");
+//                    navigationView.setCheckedItem(R.id.nav_snizeno);
+//
+//                }
+//            }
+//
+//        }
+                else {
+                    super.onBackPressed();
 
                 }
+
             }
-            else if(fragment5!=null){
-                if (fragment5.isResumed()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment5);
-                    ft.commit();
-                    fab.setVisibility(View.VISIBLE);
-                    setTitle("SNIZENI PROIZVODI ");
-                    navigationView.setCheckedItem(R.id.nav_snizeno);
-
-                }
-            }
-
-        } else {
-            super.onBackPressed();
-
         }
-
     }
 
 
@@ -342,12 +344,10 @@ public class MainActivity extends AppCompatActivity
             CartFragment fragment=new CartFragment();
             String  tag="cart_frag";
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
-            ft.add(R.id.content_main, fragment, tag).addToBackStack(tag);
+            ft.replace(R.id.content_main, fragment, tag).addToBackStack(tag);
             navigationView.setCheckedItem(R.id.nav_korpa);
             setTitle("KORPA");
 
-            ft.hide(CurrentFragment);
         ft.commit();
             // do something with f
 
@@ -435,12 +435,12 @@ public class MainActivity extends AppCompatActivity
                            // do something with f
 
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            if (getSupportFragmentManager().getBackStackEntryCount()>=1){
-                ft.replace(R.id.content_main, fragment,tag);
-            }
-            else {
+//            if (getSupportFragmentManager().getBackStackEntryCount()>=1){
+//                ft.replace(R.id.content_main, fragment,tag);
+//            }
+//            else {
                 ft.add(R.id.content_main, fragment, tag).addToBackStack(tag);
-            }
+//            }
             ft.hide(CurrentFragment);
             ft.commit();
 
