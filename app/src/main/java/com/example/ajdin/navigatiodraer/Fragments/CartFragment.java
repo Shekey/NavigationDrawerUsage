@@ -38,6 +38,7 @@ import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
 import com.example.ajdin.navigatiodraer.tasks.UploadTask;
 
@@ -86,7 +87,7 @@ public class CartFragment extends Fragment {
         cartItemAdapter.updateCartItems(getCartItems(cart));
        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+ Constant.CURRENCY));
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.INVISIBLE);
+        fab.setVisibility(View.GONE);
         lvProducts.setAdapter(cartItemAdapter);
         lvProducts.setEmptyView(view.findViewById(R.id.emptyElement));
         sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
@@ -170,10 +171,10 @@ public class CartFragment extends Fragment {
                         cartItemAdapter.updateCartItems(getCartItems(cart));
                         cartItemAdapter.notifyDataSetChanged();
                         tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-
                         File file = new File(zadropBox);
                         new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
-
+                        Intent intent = new Intent(getContext(), TimeService.class);
+                        getActivity().startService(intent);
 
                     } else {
 
@@ -193,9 +194,6 @@ public class CartFragment extends Fragment {
                         String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
                         File file = new File(putanja);
                         new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file,getActivity(). getApplicationContext()).execute();
-                        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
                         return;
 
 

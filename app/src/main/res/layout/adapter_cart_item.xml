@@ -33,7 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-    <TextView
+
+
+            <TextView
         android:id="@+id/tvCartItemName"
         android:layout_width="match_parent"
         android:layout_height="20dp"
@@ -78,7 +80,23 @@
         android:paddingRight="16dp"
         android:gravity="left"
         android:text=""/>
+            <TextView
+                android:id="@+id/tvKolicina"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:textSize="16sp"
+                android:layout_marginBottom="6dp"
+                android:textStyle="normal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:gravity="left"
+                android:text=""/>
+
+
+
+
     </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

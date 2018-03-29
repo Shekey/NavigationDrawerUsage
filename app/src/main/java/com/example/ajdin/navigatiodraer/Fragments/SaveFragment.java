@@ -2,6 +2,9 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.DialogFragment;
@@ -17,6 +20,11 @@ import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
+import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.services.TimeService;
+import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
+import com.example.ajdin.navigatiodraer.tasks.UploadTask;
+import com.example.ajdin.navigatiodraer.tasks.UploadTaskNapomena;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -97,7 +105,7 @@ public class SaveFragment extends DialogFragment {
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "napomene");
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 
-        File file = new File(exportDir,fileName+"//"+timeStamp+".txt");
+        File file = new File(exportDir,fileName+".txt");
         if (!exportDir.exists())
         {
             exportDir.mkdirs();
@@ -105,6 +113,19 @@ public class SaveFragment extends DialogFragment {
         PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
         writer.write(text);
         writer.close();
+        ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if(info.isConnected()){
+
+            new UploadTaskNapomena(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+
+        }
+        else {
+            DatabaseHelper db=new DatabaseHelper(getActivity());
+            db.addToStack(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt");
+            Intent intent = new Intent(getContext(), TimeService.class);
+            getActivity().startService(intent);
+        }
     }
     public void SaveFile(String text,String nazivFajla){
 

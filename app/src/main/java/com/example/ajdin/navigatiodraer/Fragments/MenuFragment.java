@@ -83,6 +83,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     private int odabranaKategorija;
     private Spinner spin;
     private String textGeteR;
+    private FloatingActionButton fab;
 
     @Override
     public void onResume() {
@@ -90,7 +91,31 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
         }
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
+        fab.setImageResource(R.drawable.dodaj_osobu);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                KupacFragment fragment1=new KupacFragment();
+                fragment1.show(getActivity().getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+            }
+        });
         super.onResume();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+            onResume();
+        }
     }
 
     @Override
@@ -104,13 +129,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         if (sharedPreferences.getString("ime","").isEmpty()) {
             fab.setVisibility(View.VISIBLE);

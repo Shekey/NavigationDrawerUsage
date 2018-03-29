@@ -88,6 +88,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         }
         fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliSnizeno);
+        lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementSn));
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerSnizeno);
         spin.setOnItemSelectedListener(this);
         db=new DatabaseHelper(getContext());

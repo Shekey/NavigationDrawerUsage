@@ -1,10 +1,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     tools:context="com.example.ajdin.navigatiodraer.Fragments.MenuFragment">
 
+    <TextView
+        android:id="@+id/emptyElementNEW"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="12dp"
+        android:text="NEMATE NOVIH ARTIKALA ! "
+        android:textColor="#525252"
+        android:textSize="19.0sp"
+        android:visibility="gone" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

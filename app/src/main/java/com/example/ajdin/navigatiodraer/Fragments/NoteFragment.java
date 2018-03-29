@@ -32,6 +32,8 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
     String naslov;
     ArrayList<String> files;
     String text;
+    private FloatingActionButton fab;
+
     public NoteFragment() {
         // Required empty public constructor
     }
@@ -41,13 +43,24 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_note, container, false);
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
-        files=getList();
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+            onResume();
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
+        fab.setImageResource(R.drawable.ic_note_add_white_24px);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +72,17 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
 //
             }
         });
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_note, container, false);
+        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+        files=getList();
         fab.setImageResource(R.drawable.ic_note_add_white_24px);
         ListView listView=view.findViewById(R.id.note_list);
         listView.setEmptyView(view.findViewById(R.id.emptyElementNote));

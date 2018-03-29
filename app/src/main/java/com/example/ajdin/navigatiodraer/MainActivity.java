@@ -11,11 +11,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -169,6 +173,9 @@ public class MainActivity extends AppCompatActivity
         ft.add(R.id.content_main, fragment,"first_frag");
         ft.commit();
         navigationView.setCheckedItem(R.id.nav_proizvodi);
+        Intent intent = new Intent(this, TimeService.class);
+        startService(intent);
+
 
     }
 
@@ -211,6 +218,7 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
                 ft.commit();
+                fab.setVisibility(View.VISIBLE);
                 setTitle("SVI PROIZVODI");
                 navigationView.setCheckedItem(R.id.nav_proizvodi);
 
@@ -222,6 +230,7 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment1);
                 ft.commit();
+                fab.setVisibility(View.VISIBLE);
                 setTitle("NOVI PROIZVODI");
                 navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
 
@@ -232,6 +241,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                     ft.show(fragment2);
                     ft.commit();
+                    fab.setVisibility(View.VISIBLE);
                     setTitle("NAPOMENE ");
                     navigationView.setCheckedItem(R.id.nav_napomene);
 
@@ -242,6 +252,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                     ft.show(fragment3);
                     ft.commit(); setTitle("HISTORIJA ZAPISA");
+                    fab.setVisibility(View.VISIBLE);
                     navigationView.setCheckedItem(R.id.nav_history);
 
                 }
@@ -261,6 +272,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                     ft.show(fragment5);
                     ft.commit();
+                    fab.setVisibility(View.VISIBLE);
                     setTitle("SNIZENI PROIZVODI ");
                     navigationView.setCheckedItem(R.id.nav_snizeno);
 
@@ -307,24 +319,28 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_sync) {
-            new JSONTask().execute(URL_TO_HIT);
+            ConnectivityManager wifi = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            if (info.isConnected()) {
+                new JSONTask().execute(URL_TO_HIT);
+            }
 
-        }
-        if (id == R.id.serviceStart) {
-            Intent intent = new Intent(this, TimeService.class);
-            startService(intent);
 
-        }
-        if (id == R.id.stopService) {
-            Intent intent = new Intent(this, TimeService.class);
-            stopService(intent);
         }
         if (id == R.id.nav_cart) {
             CartFragment fragment=new CartFragment();
+            String  tag="cart_frag";
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
+            ft.add(R.id.content_main, fragment, tag).addToBackStack(tag);
             navigationView.setCheckedItem(R.id.nav_korpa);
-            ft.replace(R.id.content_main, fragment).addToBackStack("korpa_nav");
-            ft.commit();
+            setTitle("KORPA");
+
+            ft.hide(CurrentFragment);
+        ft.commit();
+            // do something with f
+
+
         }
 
 

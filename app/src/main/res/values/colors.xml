@@ -2,10 +2,12 @@
 <resources>
     <color name="primary">#3F51B5</color>
     <color name="primaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#007ab4</color>
     <color name="primaryLight">#C5CAE9</color>
     <color name="accent">#FF9800</color>
     <color name="primaryTtext">#212121</color>
     <color name="secondaryText">#757575</color>
     <color name="icons">#FFFFFF</color>
+    <color name="colorAccent">#FF4081</color>
     <color name="divider">#BDBDBD</color>
 </resources>

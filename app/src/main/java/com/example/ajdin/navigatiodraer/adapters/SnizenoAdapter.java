@@ -61,7 +61,7 @@ public class SnizenoAdapter extends ArrayAdapter {
         holder.ivMovieIcon.setImageBitmap(bMap);
         progressBar.setVisibility(View.GONE);
         holder.tvMovie.setText(movieModelList.get(position).getNaziv());
-        holder.tvTagline.setText(movieModelList.get(position).getBarkod());
+        holder.tvTagline.setText(movieModelList.get(position).getKategorija());
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena() +" KM");
 
         // rating bar

@@ -8,16 +8,6 @@
         android:title="Sinhronizacija"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/serviceStart"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="Start a service"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/stopService"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:title="Stop a service"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/nav_cart"
         android:icon="@drawable/ic_stat_cart"
         android:title="Korpa"

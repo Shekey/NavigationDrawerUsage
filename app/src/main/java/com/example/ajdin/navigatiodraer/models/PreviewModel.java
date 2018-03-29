@@ -1,10 +1,12 @@
 package com.example.ajdin.navigatiodraer.models;
 
+import java.io.Serializable;
+
 /**
  * Created by ajdin on 23.3.2018..
  */
 
-public class PreviewModel {
+public class PreviewModel implements Serializable{
     private String naziv;
     private String cijena;
     private String kolicina;

@@ -58,29 +58,33 @@ public class CartItemAdapter extends BaseAdapter {
         TextView tvName;
         ImageView ivMovieIcon;
         TextView tvPrice;
+        TextView tvKolicina;
 
 //adapter_cart_item layout
         if (convertView == null) {
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.adapter_cart_item, parent, false);
             tvName = (TextView) convertView.findViewById(R.id.tvCartItemName);
+            tvKolicina = (TextView) convertView.findViewById(R.id.tvKolicina);
             ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIconcart);
 
 //            tvUnitPrice = (TextView) convertView.findViewById(R.id.tvCartItemUnitPrice);
 //            tvQuantity = (TextView) convertView.findViewById(R.id.tvCartItemQuantity);
             tvPrice = (TextView) convertView.findViewById(R.id.tvCartItemPrice);
-            convertView.setTag(new ViewHolder(tvName, tvPrice,ivMovieIcon));
+            convertView.setTag(new ViewHolder(tvName, tvPrice,tvKolicina,ivMovieIcon));
         } else {
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();
             tvName = viewHolder.tvCartItemName;
             ivMovieIcon=viewHolder.ivMovieIcon;
             tvPrice = viewHolder.tvCartItemPrice;
+            tvKolicina = viewHolder.tvKolicina;
         }
         final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBarcart);
         final Cart cart = CartHelper.getCart();
 
         final CartItem cartItem = getItem(position);
         tvName.setText(cartItem.getProduct().getName());
+        tvKolicina.setText(cartItem.getQuantity().toString()+" "+cartItem.getProduct().getJM());
         tvPrice.setText(String.valueOf(cart.getCost(cartItem.getProduct()).setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
         File file = new File(cartItem.getProduct().getImageDevice());
         ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
@@ -90,11 +94,13 @@ public class CartItemAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         public final TextView tvCartItemName;
+        public final TextView tvKolicina;
         private ImageView ivMovieIcon;
         public final TextView tvCartItemPrice;
 
-        public ViewHolder(TextView tvCartItemName,  TextView tvCartItemPrice,ImageView ivMovieIcon) {
+        public ViewHolder(TextView tvCartItemName,  TextView tvCartItemPrice,TextView tvKolicina,ImageView ivMovieIcon) {
             this.tvCartItemName = tvCartItemName;
+            this.tvKolicina = tvKolicina;
             this.ivMovieIcon=ivMovieIcon;
             this.tvCartItemPrice = tvCartItemPrice;
         }

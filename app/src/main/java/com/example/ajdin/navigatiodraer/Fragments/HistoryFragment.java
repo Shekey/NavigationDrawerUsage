@@ -49,8 +49,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +70,7 @@ public class HistoryFragment extends Fragment {
     ListView lstView;
 
     ArrayList<String> files;
+    private ArrayList<PreviewModel> model;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -130,21 +140,37 @@ public class HistoryFragment extends Fragment {
                     return;
                 }
                 String path = files.get(position);
-                Read(path);
+                try {
+                    model = Read(path);
 
-                //TREBA OVDJE URADITI
-                CartFragment fragment = new CartFragment();
-                android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("path", path);
-                editor.commit();
-                ft.replace(R.id.content_main, fragment);
-                ft.commit();
-                //DO OVDJE
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
+                if (model !=null && model.size()>0){
+                    PreviewFragment fragment=new PreviewFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putSerializable("listPreview",(Serializable) model);
+                    fragment.setArguments(bundle);
+                    fragment.show(getActivity().getSupportFragmentManager(),"dijalog_preview");
+                    fragment.setTargetFragment(HistoryFragment.this,1);
+                }
+                else {
+                    //TREBA OVDJE URADITI
+                    CartFragment fragment = new CartFragment();
+                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("path", path);
+                    editor.commit();
+                    ft.replace(R.id.content_main, fragment);
+                    ft.commit();
+                    //DO OVDJE
+
+                }
             }
         });
+
         return view;
     }
         private ArrayList<String> getList() {
@@ -182,69 +208,93 @@ public class HistoryFragment extends Fragment {
         }
 
 
+    private static long daysBetween(Date one, Date two) {
+        long difference = (one.getTime()-two.getTime())/86400000;
+        return Math.abs(difference);
+    }
 
 
 
+    public ArrayList<PreviewModel> Read(String path) throws ParseException {
+        Product products;
+        ArrayList<PreviewModel> models=new ArrayList<>();
+        Pattern MY_PATTERN = Pattern.compile("\\-(.*)");
+        Matcher m = MY_PATTERN.matcher(path);
+        String s=new String();
+        while (m.find()) {
+            s = m.group(0);
+            // s now contains "BAR"
+        }
 
-        public void Read(String path){
-            Product products;
+    String input = s, extracted;
+        DateFormat df = new SimpleDateFormat("dd MM yyyy HH:mm");
+    extracted = input.substring(3,19);
+    Date date=new Date();
+    Date date2=df.parse(extracted);
 
+
+        try {
+            // BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("myFile.csv"));
+            CSVReader csvReader = new CSVReader(new InputStreamReader
+                    (new BufferedInputStream(new FileInputStream(Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + path), 8192 * 32)), ';');
             try {
-                // BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("myFile.csv"));
-                CSVReader csvReader = new CSVReader(new InputStreamReader
-                        (new BufferedInputStream(new FileInputStream(Environment.getExternalStorageDirectory().toString()+"/racunidevice/"+path), 8192 * 32)),';');
-                try {
-                    DatabaseHelper db=new DatabaseHelper(getActivity());
-                    int count = 0;
-                    String[] line;
-                    long timeStart = System.nanoTime();
-                    while((line = csvReader.readNext()) != null) {
-                        if (line.length == 3) {
-                            count++;
-                            Product temp = db.getData(line[0]);
-                            if (temp != null) {
+                DatabaseHelper db = new DatabaseHelper(getActivity());
+                int count = 0;
+                String[] line;
+                long timeStart = System.nanoTime();
+                while ((line = csvReader.readNext()) != null) {
+                    Product temp = db.getData(line[0]);
+                    if (daysBetween(date,date2)>1) {
+                    models.add(new PreviewModel(temp.getNaziv(),line[2],line[1]));
+                    }
+                    if (line.length == 3) {
+                        count++;
 
-                                products = new Product(temp.getNaziv(),temp.getArtikal_id(),temp.getBarkod(),temp.getJM(),temp.getKategorija(),temp.getCijena(),temp.getImageUrl(),temp.getImageDevice(),temp.getSnizeno(),temp.getDatum_kreiranja());
-                                Cart cart = CartHelper.getCart();
-                                cart.add(products, Double.valueOf(line[1]), line[2]);
+                        if (temp != null) {
 
+                            products = new Product(temp.getNaziv(), temp.getArtikal_id(), temp.getBarkod(), temp.getJM(), temp.getKategorija(), temp.getCijena(), temp.getImageUrl(), temp.getImageDevice(), temp.getSnizeno(), temp.getDatum_kreiranja());
+                            Cart cart = CartHelper.getCart();
+                            cart.add(products, Double.valueOf(line[1]), line[2]);
 
-                            }
-                            if (count >= 150000) {
-                                break;
-                            }
-                        } else{
-                            count++;
-                            Product temp = db.getData(line[0]);
-                            if (temp != null) {
-                                BigDecimal decimal = temp.getPrice();
-                                products = new Product(temp.getNaziv(),temp.getArtikal_id(),temp.getBarkod(),temp.getJM(),temp.getKategorija(),temp.getCijena(),temp.getImageUrl(),temp.getImageDevice(),temp.getSnizeno(),temp.getDatum_kreiranja());
-                                Cart cart = CartHelper.getCart();
-                                cart.add(products, Double.valueOf(line[1]), decimal.toString());
-
-
-                            }
-                            if (count >= 150000) {
-                                break;
-                            }
 
                         }
+                        if (count >= 150000) {
+                            break;
+                        }
+                    } else {
+                        count++;
+                        if (temp != null) {
+                            BigDecimal decimal = temp.getPrice();
+                            products = new Product(temp.getNaziv(), temp.getArtikal_id(), temp.getBarkod(), temp.getJM(), temp.getKategorija(), temp.getCijena(), temp.getImageUrl(), temp.getImageDevice(), temp.getSnizeno(), temp.getDatum_kreiranja());
+                            Cart cart = CartHelper.getCart();
+                            cart.add(products, Double.valueOf(line[1]), decimal.toString());
+
+
+                        }
+                        if (count >= 150000) {
+                            break;
+                        }
+
                     }
-
-                    long timeEnd = System.nanoTime();
-                    System.out.println("Count: " + count);
-                    System.out.println("Time: " + (timeEnd - timeStart) * 1.0 / 1000000000 + " sec");
-
-
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-
                 }
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found");
+
+
+                long timeEnd = System.nanoTime();
+                System.out.println("Count: " + count);
+                System.out.println("Time: " + (timeEnd - timeStart) * 1.0 / 1000000000 + " sec");
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
         }
+return models;
+
+    }
+
 
 
 }

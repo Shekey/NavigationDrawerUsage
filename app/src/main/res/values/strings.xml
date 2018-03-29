@@ -20,4 +20,7 @@
     <string name="delete_kupac">Da li želite prekinut kupovinu za trenutnog kupca ?</string>
     <string name="odaberite_kupca_za_nastavak_kupovine">Odaberite kupca za nastavak kupovine</string>
     <string name="service_name">Uploading files</string>
+    <string name="NazivArtikla">Naziv_arikla</string>
+    <string name="Cijena">Cijena</string>
+    <string name="kolicina">Kolicina</string>
 </resources>

@@ -51,6 +51,8 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
     private Parcelable state;
     String[] bankNames={"Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
     private List<Product> filteredValues;
+    private List<Product> filteredKategory;
+    private List<Product> filteredAll;
 
     @Override
     public void onResume() {
@@ -86,6 +88,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         }
         fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliNEW);
+        lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementNEW));
         Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerNEW);
         spin.setOnItemSelectedListener(this);
         db=new DatabaseHelper(getContext());

@@ -1,7 +1,10 @@
 package com.example.ajdin.navigatiodraer.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
 import com.example.ajdin.navigatiodraer.tasks.UploadTask;
+import com.example.ajdin.navigatiodraer.tasks.UploadTaskNapomena;
 
 import java.io.File;
 import java.sql.Time;
@@ -32,6 +36,8 @@ public class TimeService extends Service {
     private Handler mHandler = new Handler();
     // timer handling
     private Timer mTimer = null;
+    private ArrayList<String> listaStack;
+    private DatabaseHelper db;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -47,8 +53,16 @@ public class TimeService extends Service {
             // recreate new
             mTimer = new Timer();
         }
-        // schedule task
+        db = new DatabaseHelper(TimeService.this);
+        listaStack = db.getAllStacked();
         mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, NOTIFY_INTERVAL);
+
+        // schedule task
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     class TimeDisplayTimerTask extends TimerTask {
@@ -60,20 +74,36 @@ public class TimeService extends Service {
 
                 @Override
                 public void run() {
-                    DatabaseHelper db=new DatabaseHelper(TimeService.this);
-                    ArrayList<String> listaStack=db.getAllStacked();
-                    if (listaStack.size()!=0){
-                        for (String s: listaStack) {
-                            File file = new File(s);
-                            new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, TimeService.this).execute();
+                    ConnectivityManager wifi = (ConnectivityManager)TimeService.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                    listaStack = db.getAllStacked();
+                    if (listaStack.size()!=0) {
+                        if (info.isConnected()) {
+                                for (String s : listaStack) {
+                                    File file = new File(s);
+                                    if (s.contains("napomene")){
+                                        new UploadTaskNapomena(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, TimeService.this).execute();
 
-                        }
+                                    }
+                                    else {
+                                        new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, TimeService.this).execute();
+                                    }
+                                    Toast.makeText(TimeService.this, "Upload has been started", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        // display toast
                     }
-                    // display toast
+                    else {
+                        mTimer.cancel();
+                        stopSelf();
+                        Toast.makeText(TimeService.this, "Zaustavljen servis", Toast.LENGTH_SHORT).show();
+                    }
 
 
-                    Toast.makeText(getApplicationContext(), getDateTime(),
-                            Toast.LENGTH_SHORT).show();
+
+//                    Toast.makeText(getApplicationContext(), getDateTime(),
+//                            Toast.LENGTH_SHORT).show();
                 }
 
             });

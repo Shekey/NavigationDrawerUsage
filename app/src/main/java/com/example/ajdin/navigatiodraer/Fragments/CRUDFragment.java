@@ -1,8 +1,12 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +22,9 @@ import android.widget.Toast;
 import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.services.TimeService;
+import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
+import com.example.ajdin.navigatiodraer.tasks.UploadTaskNapomena;
 import com.opencsv.CSVReader;
 
 import java.io.BufferedInputStream;
@@ -80,6 +87,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
                     ft.replace(R.id.content_main,fragment1,"NoteFragment").addToBackStack("NoteFragment");
                     ft.commit();
 
+
                 }
                 else {
                     SaveFragment fragment=new SaveFragment();
@@ -124,6 +132,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
 
 
         File file = new File(exportDir,pathfile);
+        File file2 = new File(exportDir,pathfile);
 
         if (file.delete()){
             Toast.makeText(getActivity(),"Uspjesno uredje fajl", Toast.LENGTH_SHORT);
@@ -132,11 +141,24 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
 
         try
         {
-            file.createNewFile();
+            file2.createNewFile();
 
             PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+pathfile, "UTF-8");
             writer.write(editText1.getText().toString());
             writer.close();
+            ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            if(info.isConnected()){
+
+                new UploadTaskNapomena(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file2, getActivity().getApplicationContext()).execute();
+
+            }
+            else {
+                DatabaseHelper db=new DatabaseHelper(getActivity());
+                db.addToStack(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+pathfile);
+                Intent intent = new Intent(getContext(), TimeService.class);
+                getActivity().startService(intent);
+            }
 
         }
         catch(Exception sqlEx)
