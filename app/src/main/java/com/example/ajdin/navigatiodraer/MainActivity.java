@@ -218,7 +218,18 @@ public class MainActivity extends AppCompatActivity
                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
                 ft.show(fragment);
                 ft.commit();
-                fab.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.VISIBLE);        fab.setImageResource(R.drawable.dodaj_osobu);
+
+
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        KupacFragment fragment1=new KupacFragment();
+                        fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+                    }
+                });
                 setTitle("SVI PROIZVODI");
                 navigationView.setCheckedItem(R.id.nav_proizvodi);
 
