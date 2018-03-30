@@ -196,6 +196,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
+                ArrayList<String> slike=new ArrayList<>();
+                slike.add(movieModel.getImageDevice());
+                slike.add(movieModel.getImageDevice());
+                bundle.putStringArrayList("listaSlike",slike);
                 ft.hide(NewproductsFragment.this);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
@@ -246,6 +250,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
                 ft.hide(NewproductsFragment.this);
+                ArrayList<String> slike=new ArrayList<>();
+                slike.add(movieModel.getImageDevice());
+                slike.add(movieModel.getImageDevice());
+                bundle.putStringArrayList("listaSlike",slike);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("detail_fragment");
@@ -301,6 +309,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                         DetailFragment fragment=new DetailFragment();
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
+                        ArrayList<String> slike=new ArrayList<>();
+                        slike.add(movieModel.getImageDevice());
+                        slike.add(movieModel.getImageDevice());
+                        bundle.putStringArrayList("listaSlike",slike);
                         ft.hide(NewproductsFragment.this);
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);

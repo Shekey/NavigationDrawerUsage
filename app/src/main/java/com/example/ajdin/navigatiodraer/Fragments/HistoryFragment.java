@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.MainActivity;
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.adapters.HistoryCustomAdapter;
 import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
@@ -71,6 +73,7 @@ public class HistoryFragment extends Fragment {
 
     ArrayList<String> files;
     private ArrayList<PreviewModel> model;
+    private HistoryCustomAdapter arrayAdapter;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -99,32 +102,33 @@ public class HistoryFragment extends Fragment {
             files = getList();
 
             //lv_arr = (String[]) listOfStrings.toArray();
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_2, android.R.id.text1, files) {
+//            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_2, android.R.id.text1, files) {
+//
+//                @NonNull
+//                @Override
+//                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//                    View view = super.getView(position, convertView, parent);
+//                    TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+//                    TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+//                    text1.setPadding(16, 0, 16, 0);
+//                    text2.setPadding(16, 0, 16, 0);
+//                    text1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//
+//                    text1.setAllCaps(true);
+//                    text2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//                    text2.setTextColor(Color.parseColor("#867e7e"));
+//                    String ime[] = files.get(position).split("[0-9_-]");
+//                    String datum[] = files.get(position).split("[a-zA-Z-]");
+//
+//                    text2.setText(datum[datum.length - 1]);
+//                    text1.setText(ime[0]);
+//                    return view;
+//
+//
+//                }
+//            };
 
-                @NonNull
-                @Override
-                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                    View view = super.getView(position, convertView, parent);
-                    TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                    TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-                    text1.setPadding(16, 0, 16, 0);
-                    text2.setPadding(16, 0, 16, 0);
-                    text1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-
-                    text1.setAllCaps(true);
-                    text2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                    text2.setTextColor(Color.parseColor("#867e7e"));
-                    String ime[] = files.get(position).split("[0-9_-]");
-                    String datum[] = files.get(position).split("[a-zA-Z-]");
-
-                    text2.setText(datum[datum.length - 1]);
-                    text1.setText(ime[0]);
-                    return view;
-
-
-                }
-            };
-
+            arrayAdapter = new HistoryCustomAdapter(getActivity(), R.layout.history_custom_row,files);
             lstView.setAdapter(arrayAdapter);
 
         }
@@ -162,6 +166,8 @@ public class HistoryFragment extends Fragment {
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("path", path);
+                    NavigationView navigationView =(NavigationView)getActivity().findViewById(R.id.nav_view);
+                    navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
                     ft.replace(R.id.content_main, fragment);
                     ft.commit();
@@ -209,7 +215,7 @@ public class HistoryFragment extends Fragment {
 
 
     private static long daysBetween(Date one, Date two) {
-        long difference = (one.getTime()-two.getTime())/86400000;
+        long difference = (one.getDay()-two.getDay());
         return Math.abs(difference);
     }
 
@@ -244,9 +250,10 @@ public class HistoryFragment extends Fragment {
                 long timeStart = System.nanoTime();
                 while ((line = csvReader.readNext()) != null) {
                     Product temp = db.getData(line[0]);
-                    if (daysBetween(date,date2)>1) {
-                    models.add(new PreviewModel(temp.getNaziv(),line[2],line[1]));
+                    if (daysBetween(date, date2) > 1) {
+                        models.add(new PreviewModel(temp.getNaziv(), line[2], line[1]));
                     }
+                else {
                     if (line.length == 3) {
                         count++;
 
@@ -276,6 +283,7 @@ public class HistoryFragment extends Fragment {
                         }
 
                     }
+                }
                 }
 
 

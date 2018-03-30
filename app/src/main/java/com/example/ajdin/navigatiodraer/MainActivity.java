@@ -22,6 +22,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -74,6 +75,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
+    private static final String TAG = "MAIN" ;
     public ListView lvArtikli;
     private final String URL_TO_HIT = "http://192.168.1.103:80/artikli/getJson.php";
     private FragmentManager fragmentManager;
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity
     private Context mContext = MainActivity.this;
     SearchView searchView;
     private ProgressDialog dialog;
-    private NavigationView navigationView;
+    public NavigationView navigationView;
     private FloatingActionButton fab;
 
 
@@ -207,163 +209,165 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
 
         } else if (count != 0) {
-            MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
-            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
-            NoteFragment fragment2  =(NoteFragment)getSupportFragmentManager().findFragmentByTag("note_fragment");
-            HistoryFragment fragment3  =(HistoryFragment)getSupportFragmentManager().findFragmentByTag("history_frag");
-            DetailFragment fragment6  =(DetailFragment)getSupportFragmentManager().findFragmentByTag("detail_fragment");
-            CartFragment fragment4  =(CartFragment)getSupportFragmentManager().findFragmentByTag("cart_frag");
-            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+            MenuFragment fragment = (MenuFragment) getSupportFragmentManager().findFragmentByTag("first_frag");
+            NewproductsFragment fragment1 = (NewproductsFragment) getSupportFragmentManager().findFragmentByTag("new_prod_frag");
+            NoteFragment fragment2 = (NoteFragment) getSupportFragmentManager().findFragmentByTag("note_fragment");
+            HistoryFragment fragment3 = (HistoryFragment) getSupportFragmentManager().findFragmentByTag("history_frag");
+            DetailFragment fragment6 = (DetailFragment) getSupportFragmentManager().findFragmentByTag("detail_fragment");
+            CartFragment fragment4 = (CartFragment) getSupportFragmentManager().findFragmentByTag("cart_frag");
+            SnizenjeFragment fragment5 = (SnizenjeFragment) getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+
 
 
             getSupportFragmentManager().popBackStack();
-
-           if (fragment!=null){
-                if (!fragment.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment);
-                    ft.commit();
-                    fab.setImageResource(R.drawable.dodaj_osobu);
-                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                    if (sharedPreferences.getString("ime","").isEmpty()) {
-                        fab.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        fab.setVisibility(View.INVISIBLE);
-                    }
+            android.support.v4.app.Fragment f= getCurrentFragment();
 
 
-                   fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            KupacFragment fragment1=new KupacFragment();
-                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-
+//              if (fragment4 != null) {
+//                if (fragment4.isDetached()) {
+//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                    ft.show(fragment4);
+//                    ft.commit();
+//                    fab.setVisibility(View.GONE);
+//                    navigationView.setCheckedItem(R.id.nav_korpa);
+//                    setTitle("Korpa");
 //
-                        }
-                    });
-                    setTitle("Svi proizvodi");
-                    navigationView.setCheckedItem(R.id.nav_proizvodi);
+//                }
+//            }
+                if (fragment6 != null && f.getTag() != fragment6.getTag()) {
 
-
-
-                }
-            }
-            else if(fragment1!=null){
-                if (!fragment1.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment1);
-                    ft.commit();
-                    fab.setImageResource(R.drawable.dodaj_osobu);
-                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                    if (sharedPreferences.getString("ime","").isEmpty()) {
-                        fab.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        fab.setVisibility(View.INVISIBLE);
-                    }
-
-
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            KupacFragment fragment1=new KupacFragment();
-                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-
-//
-                        }
-                    });
-                    setTitle("Novi proizvodi");
-                    navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
-
-                }
-            }
-
-            else if(fragment2!=null){
-                if (!fragment2.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment2);
-                    ft.commit();
-                    fab.setImageResource(R.drawable.ic_note_add_white_24px);
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            CRUDFragment fragment=new CRUDFragment();
-                            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                            ft.replace(R.id.content_main,fragment,"CRUDFragment").addToBackStack("CRUDFragment");
+                        if (!fragment6.isVisible()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment6);
                             ft.commit();
+                            fab.setVisibility(View.GONE);
+                            setTitle("Detalji proizvoda");
 
-//
                         }
-                    });
-                    setTitle("Napomene ");
-                    navigationView.setCheckedItem(R.id.nav_napomene);
-
-
-                }
-            }
-            else if(fragment3!=null){
-                if (!fragment3.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment3);
-                    ft.commit(); setTitle("Historija računa");
-                    fab.setVisibility(View.GONE);
-                    navigationView.setCheckedItem(R.id.nav_history);
-
-                }
-            }
-            else if(fragment4!=null){
-                if (!fragment4.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment4);
-                    ft.commit();
-                    fab.setVisibility(View.GONE);
-                    navigationView.setCheckedItem(R.id.nav_korpa);
-                    setTitle("Korpa");
-
-                }
-            }
-            else if(fragment5!=null){
-                if (fragment5.isResumed()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment5);
-                    ft.commit();
-                    fab.setImageResource(R.drawable.dodaj_osobu);
-                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                    if (sharedPreferences.getString("ime","").isEmpty()) {
-                        fab.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        fab.setVisibility(View.INVISIBLE);
                     }
 
+             else if (fragment2 != null && f.getTag() != fragment2.getTag()) {
 
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            KupacFragment fragment1=new KupacFragment();
-                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+                        if (!fragment2.isVisible()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment2);
+                            ft.commit();
+                            fab.setImageResource(R.drawable.ic_note_add_white_24px);
+                            fab.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    CRUDFragment fragment = new CRUDFragment();
+                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                    ft.replace(R.id.content_main, fragment, "CRUDFragment").addToBackStack("CRUDFragment");
+                                    ft.commit();
 
 //
+                                }
+                            });
+                            setTitle("Napomene ");
+                            navigationView.setCheckedItem(R.id.nav_napomene);
+
+
                         }
-                    });
-                    setTitle("Snizeni proizvodi");
-                    navigationView.setCheckedItem(R.id.nav_snizeno);
 
-                }
-            }
-           else if(fragment6!=null){
-                if (!fragment6.isVisible()){
-                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment6);
-                    ft.commit();
-                    fab.setVisibility(View.GONE);
-                    setTitle("Detalji proizvoda");
+            } else if (fragment3 != null && f.getTag() != fragment3.getTag() ) {
+
+                        if (!fragment3.isVisible()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment3);
+                            ft.commit();
+                            setTitle("Historija računa");
+                            fab.setVisibility(View.GONE);
+                            navigationView.setCheckedItem(R.id.nav_history);
+
+                        }
+
+            } else if (fragment != null && f.getTag() != fragment.getTag()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment);
+                            ft.commit();
+                            fab.setImageResource(R.drawable.dodaj_osobu);
+                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+                                fab.setVisibility(View.VISIBLE);
+                            } else {
+                                fab.setVisibility(View.INVISIBLE);
+                            }
+
+
+                            fab.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    KupacFragment fragment1 = new KupacFragment();
+                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+
+//
+                                }
+                            });
+                            setTitle("Svi proizvodi");
+                            navigationView.setCheckedItem(R.id.nav_proizvodi);
+
+
+                        }
+
+
+           else if (fragment1 != null && f.getTag() != fragment1.getTag()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment1);
+                            ft.commit();
+                            fab.setImageResource(R.drawable.dodaj_osobu);
+                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+                                fab.setVisibility(View.VISIBLE);
+                            } else {
+                                fab.setVisibility(View.INVISIBLE);
+                            }
+
+
+                            fab.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    KupacFragment fragment1 = new KupacFragment();
+                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+
+//
+                                }
+                            });
+                            setTitle("Novi proizvodi");
+                            navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+
+                        }
 
 
 
-                }
-            }
+
+            else if (fragment5 != null && f.getTag() != fragment5.getTag()) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.show(fragment5);
+                            ft.commit();
+                            fab.setImageResource(R.drawable.dodaj_osobu);
+                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+                                fab.setVisibility(View.VISIBLE);
+                            } else {
+                                fab.setVisibility(View.INVISIBLE);
+                            }
+
+
+                            fab.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    KupacFragment fragment1 = new KupacFragment();
+                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+
+//
+                                }
+                            });
+                            setTitle("Snizeni proizvodi");
+                            navigationView.setCheckedItem(R.id.nav_snizeno);
+
+                        }
+
 
         } else {
             new AlertDialog.Builder(this)
@@ -389,21 +393,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-//        MenuItem item=menu.findItem(R.id.action_search);
-//        SearchView searchView=(SearchView)item.getActionView();
-//
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                adapter.getFilter().filter(s);
-//                return  false;
-//            }
-//        });
+
         return true;
     }
 
@@ -435,7 +425,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_korpa);
             ft.addToBackStack(CurrentFragment.getTag());
             setTitle("Korpa");
-//            ft.hide(CurrentFragment);
+            ft.hide(CurrentFragment);
             ft.commit();
             // do something with f
 

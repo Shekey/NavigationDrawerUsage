@@ -197,10 +197,14 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
+                ArrayList<String> slike=new ArrayList<>();
+                slike.add(movieModel.getImageDevice());
+                slike.add(movieModel.getImageDevice());
+                bundle.putStringArrayList("listaSlike",slike);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
-                ft.replace(R.id.content_main,fragment);
-
+                ft.hide(SnizenjeFragment.this);
+                ft.add(R.id.content_main,fragment,"detail_fragment");
                 ft.addToBackStack("detail_fragment");
                 ft.commit();
 
@@ -248,10 +252,15 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 Bundle bundle=new Bundle();
+                ArrayList<String> slike=new ArrayList<>();
+                slike.add(movieModel.getImageDevice());
+                slike.add(movieModel.getImageDevice());
+                bundle.putStringArrayList("listaSlike",slike);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
-                ft.replace(R.id.content_main,fragment);
+                ft.hide(SnizenjeFragment.this);
+                ft.add(R.id.content_main,fragment,"detail_fragment");
                 ft.commit();
 
             }
@@ -303,9 +312,14 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                         DetailFragment fragment=new DetailFragment();
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
+                        ArrayList<String> slike=new ArrayList<>();
+                        slike.add(movieModel.getImageDevice());
+                        slike.add(movieModel.getImageDevice());
+                        bundle.putStringArrayList("listaSlike",slike);
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);
-                        ft.replace(R.id.content_main,fragment);
+                        ft.hide(SnizenjeFragment.this);
+                        ft.add(R.id.content_main,fragment,"detail_fragment");
                         ft.addToBackStack("detail_fragment");
                         ft.commit();
 
