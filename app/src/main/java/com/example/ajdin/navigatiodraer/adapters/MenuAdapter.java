@@ -137,7 +137,7 @@ public class MenuAdapter extends ArrayAdapter {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
         try {
             outStream.flush();
         } catch (IOException e) {

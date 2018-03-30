@@ -33,13 +33,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/ivIcon"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:scaleType="centerCrop"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/avengers" />
+
+              <com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager
+                  android:layout_width="match_parent"
+                  android:id="@+id/viewPager2"
+                  android:layout_height="match_parent">
+
+              </com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager>
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/ivIcon"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="400dp"-->
+                    <!--android:scaleType="centerCrop"-->
+                    <!--android:adjustViewBounds="true"-->
+                    <!--android:src="@drawable/avengers" />-->
 
                 <ProgressBar
                     android:id="@+id/progressBar"

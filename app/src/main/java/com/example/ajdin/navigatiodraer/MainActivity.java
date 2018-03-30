@@ -36,6 +36,8 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.ajdin.navigatiodraer.Fragments.CRUDFragment;
+import com.example.ajdin.navigatiodraer.Fragments.DetailFragment;
 import com.example.ajdin.navigatiodraer.Fragments.HistoryFragment;
 import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
@@ -170,8 +172,9 @@ public class MainActivity extends AppCompatActivity
 
         final MenuFragment fragment = new MenuFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");
+        ft.add(R.id.content_main, fragment,"first_frag");
         ft.commit();
+        setTitle("Svi proizvodi");
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         Intent intent = new Intent(this, TimeService.class);
         startService(intent);
@@ -204,99 +207,180 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
 
         } else if (count != 0) {
-//            MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
-//            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
-            NoteFragment fragment2 = (NoteFragment) getSupportFragmentManager().findFragmentByTag("note_fragment");
-            HistoryFragment fragment3 = (HistoryFragment) getSupportFragmentManager().findFragmentByTag("history_frag");
-//            CartFragment fragment4 = (CartFragment) getSupportFragmentManager().findFragmentByTag("cart_frag");
-//            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+            MenuFragment fragment  =(MenuFragment)getSupportFragmentManager().findFragmentByTag("first_frag");
+            NewproductsFragment fragment1  =(NewproductsFragment)getSupportFragmentManager().findFragmentByTag("new_prod_frag");
+            NoteFragment fragment2  =(NoteFragment)getSupportFragmentManager().findFragmentByTag("note_fragment");
+            HistoryFragment fragment3  =(HistoryFragment)getSupportFragmentManager().findFragmentByTag("history_frag");
+            DetailFragment fragment6  =(DetailFragment)getSupportFragmentManager().findFragmentByTag("detail_fragment");
+            CartFragment fragment4  =(CartFragment)getSupportFragmentManager().findFragmentByTag("cart_frag");
+            SnizenjeFragment fragment5  =(SnizenjeFragment)getSupportFragmentManager().findFragmentByTag("snizenje_frag");
 
 
             getSupportFragmentManager().popBackStack();
-//            if (fragment!=null){
-//            if (fragment.isResumed()){
-//                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-//                ft.show(fragment);
-//                ft.commit();
-//                fab.setVisibility(View.VISIBLE);        fab.setImageResource(R.drawable.dodaj_osobu);
-//
-//
-//                fab.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        KupacFragment fragment1=new KupacFragment();
-//                        fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-//
-////
-//                    }
-//                });
-//                setTitle("SVI PROIZVODI");
-//                navigationView.setCheckedItem(R.id.nav_proizvodi);
-//
-//
-//            }
-//            }
-//            if(fragment1!=null){
-//            if (fragment1.isResumed()){
-//                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-//                ft.show(fragment1);
-//                ft.commit();
-//                fab.setVisibility(View.VISIBLE);
-//                setTitle("NOVI PROIZVODI");
-//                navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
-//
-//            }
-//              }
-            if (fragment2 != null) {
-                if (fragment2.isResumed()) {
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment2);
+
+           if (fragment!=null){
+                if (!fragment.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment);
                     ft.commit();
-                    fab.setVisibility(View.VISIBLE);
-                    setTitle("NAPOMENE ");
-                    navigationView.setCheckedItem(R.id.nav_napomene);
+                    fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                    if (sharedPreferences.getString("ime","").isEmpty()) {
+                        fab.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+
+
+                   fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            KupacFragment fragment1=new KupacFragment();
+                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+                        }
+                    });
+                    setTitle("Svi proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_proizvodi);
+
+
 
                 }
-            } else if (fragment3 != null) {
-                if (fragment3.isResumed()) {
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.show(fragment3);
+            }
+            else if(fragment1!=null){
+                if (!fragment1.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment1);
                     ft.commit();
-                    setTitle("HISTORIJA ZAPISA");
-                    fab.setVisibility(View.VISIBLE);
+                    fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                    if (sharedPreferences.getString("ime","").isEmpty()) {
+                        fab.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            KupacFragment fragment1=new KupacFragment();
+                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+                        }
+                    });
+                    setTitle("Novi proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+
+                }
+            }
+
+            else if(fragment2!=null){
+                if (!fragment2.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment2);
+                    ft.commit();
+                    fab.setImageResource(R.drawable.ic_note_add_white_24px);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CRUDFragment fragment=new CRUDFragment();
+                            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                            ft.replace(R.id.content_main,fragment,"CRUDFragment").addToBackStack("CRUDFragment");
+                            ft.commit();
+
+//
+                        }
+                    });
+                    setTitle("Napomene ");
+                    navigationView.setCheckedItem(R.id.nav_napomene);
+
+
+                }
+            }
+            else if(fragment3!=null){
+                if (!fragment3.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment3);
+                    ft.commit(); setTitle("Historija računa");
+                    fab.setVisibility(View.GONE);
                     navigationView.setCheckedItem(R.id.nav_history);
 
                 }
-//            } else if (fragment4 != null) {
-//                if (fragment4.isResumed()) {
-//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                    ft.show(fragment4);
-//                    ft.commit();
-//                    navigationView.setCheckedItem(R.id.nav_korpa);
-//                    setTitle("KORPA");
-//
-//                }
-//            }
-//            else if(fragment5!=null){
-//                if (fragment5.isResumed()){
-//                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-//                    ft.show(fragment5);
-//                    ft.commit();
-//                    fab.setVisibility(View.VISIBLE);
-//                    setTitle("SNIZENI PROIZVODI ");
-//                    navigationView.setCheckedItem(R.id.nav_snizeno);
-//
-//                }
-//            }
-//
-//        }
-                else {
-                    super.onBackPressed();
+            }
+            else if(fragment4!=null){
+                if (!fragment4.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment4);
+                    ft.commit();
+                    fab.setVisibility(View.GONE);
+                    navigationView.setCheckedItem(R.id.nav_korpa);
+                    setTitle("Korpa");
 
                 }
-
             }
+            else if(fragment5!=null){
+                if (fragment5.isResumed()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment5);
+                    ft.commit();
+                    fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                    if (sharedPreferences.getString("ime","").isEmpty()) {
+                        fab.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+
+
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            KupacFragment fragment1=new KupacFragment();
+                            fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+                        }
+                    });
+                    setTitle("Snizeni proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_snizeno);
+
+                }
+            }
+           else if(fragment6!=null){
+                if (!fragment6.isVisible()){
+                    FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment6);
+                    ft.commit();
+                    fab.setVisibility(View.GONE);
+                    setTitle("Detalji proizvoda");
+
+
+
+                }
+            }
+
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage("Da li ste sigurni da želite izici?")
+                    .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MainActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton("Ne", null)
+                    .show();
+
+
+
         }
+
     }
 
 
@@ -343,12 +427,16 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_cart) {
             CartFragment fragment=new CartFragment();
             String  tag="cart_frag";
-            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment, tag).addToBackStack(tag);
-            navigationView.setCheckedItem(R.id.nav_korpa);
-            setTitle("KORPA");
 
-        ft.commit();
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
+            ft.add(R.id.content_main, fragment, tag);
+            ft.hide(CurrentFragment);
+            navigationView.setCheckedItem(R.id.nav_korpa);
+            ft.addToBackStack(CurrentFragment.getTag());
+            setTitle("Korpa");
+//            ft.hide(CurrentFragment);
+            ft.commit();
             // do something with f
 
 
@@ -369,62 +457,61 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_korpa) {
             fragment = new CartFragment();
-            setTitle("KORPA");
+            setTitle("Korpa");
             tag="cart_frag";
             // Handle the camera action
         } else if (id == R.id.nav_proizvodi) {
             fragment = new MenuFragment();
-            setTitle("SVI PROIZVODI");
-            tag="menu_frag";
+            setTitle("Svi proizvodi");
+            tag="first_frag";
 
         } else if (id == R.id.nav_history) {
             fragment=new HistoryFragment();
-            setTitle("HISTORIJA ZAPISA");
+            setTitle("Historija računa");
 
             tag="history_frag";
         }
 
         else if (id == R.id.nav_kupac) {
-           final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-           String ime=sharedPreferences.getString("ime","");
-           if (!ime.isEmpty()) {
-               new AlertDialog.Builder(MainActivity.this)
-                       .setTitle(getResources().getString(R.string.brisanje_kupca))
-                       .setMessage(getResources().getString(R.string.delete_kupac))
-                       .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                               sharedPreferences.edit().clear().commit();
-                               fab.setVisibility(View.VISIBLE);
+            final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+            String ime=sharedPreferences.getString("ime","");
+            if (!ime.isEmpty()) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(getResources().getString(R.string.brisanje_kupca))
+                        .setMessage(getResources().getString(R.string.delete_kupac))
+                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferences.edit().clear().commit();
+                                fab.setVisibility(View.VISIBLE);
 
-                           }
-                       })
-                       .setNegativeButton(getResources().getString(R.string.Ne), null)
-                       .show();
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.Ne), null)
+                        .show();
 
-           }else {
-               KupacFragment fragment1=new KupacFragment();
-               fragment1.show(getSupportFragmentManager(),"Mydialog");
-               tag="dialog_kupac";
-           }
+            }else {
+                KupacFragment fragment1=new KupacFragment();
+                fragment1.show(getSupportFragmentManager(),"Mydialog");
+                tag="dialog_kupac";
+            }
 
 
 
 
         } else if (id == R.id.nav_snizeno) {
             fragment = new SnizenjeFragment();
-            setTitle("SNIZENI PROIZVODI");
-
+            setTitle("Sniženi proizvodi");
             tag="snizenje_frag";
 
         } else if (id == R.id.nav_novi_proizvodi) {
             fragment = new NewproductsFragment();
-            setTitle("NOVI PROIZVODI");
+            setTitle("Novi proizvodi");
             tag="new_prod_frag";
 
         } else {
             fragment=new NoteFragment();
-            setTitle("NAPOMENE ");
+            setTitle("Napomene");
             tag="note_fragment";
 
         }
@@ -432,25 +519,22 @@ public class MainActivity extends AppCompatActivity
         if (fragment != null) {
 
             android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
-                           // do something with f
+            // do something with f
 
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            if (getSupportFragmentManager().getBackStackEntryCount()>=1){
-//                ft.replace(R.id.content_main, fragment,tag);
-//            }
-//            else {
-                ft.add(R.id.content_main, fragment, tag).addToBackStack(tag);
-//            }
-            ft.hide(CurrentFragment);
-            ft.commit();
+
+                ft.replace(R.id.content_main, fragment,tag);
+                ft.commit();
+
+
 
         }
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-drawer.postDelayed(new Runnable() {
-    @Override
-    public void run() {
-        drawer.closeDrawer(GravityCompat.START);
-    }
+        drawer.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                drawer.closeDrawer(GravityCompat.START);
+            }
         },300);
 
         return true;
@@ -531,263 +615,12 @@ drawer.postDelayed(new Runnable() {
             dialog.dismiss();
             MenuFragment fragment = new MenuFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment);
+            ft.replace(R.id.content_main, fragment,"first_frag");
             ft.commit();
 
         }
 
-        private void populateList() {
 
-            mAllValues = new ArrayList<>();
-
-            mAllValues.add("Afghanistan");
-            mAllValues.add("Åland Islands");
-            mAllValues.add("Albania");
-            mAllValues.add("Algeria");
-            mAllValues.add("American Samoa");
-            mAllValues.add("AndorrA");
-            mAllValues.add("Angola");
-            mAllValues.add("Anguilla");
-            mAllValues.add("Antarctica");
-            mAllValues.add("Antigua and Barbuda");
-            mAllValues.add("Argentina");
-            mAllValues.add("Armenia");
-            mAllValues.add("Aruba");
-            mAllValues.add("Australia");
-            mAllValues.add("Austria");
-            mAllValues.add("Azerbaijan");
-            mAllValues.add("Bahamas");
-            mAllValues.add("Bahrain");
-            mAllValues.add("Bangladesh");
-            mAllValues.add("Barbados");
-            mAllValues.add("Belarus");
-            mAllValues.add("Belgium");
-            mAllValues.add("Belize");
-            mAllValues.add("Benin");
-            mAllValues.add("Bermuda");
-            mAllValues.add("Bhutan");
-            mAllValues.add("Bolivia");
-            mAllValues.add("Bosnia and Herzegovina");
-            mAllValues.add("Botswana");
-            mAllValues.add("Bouvet Island");
-            mAllValues.add("Brazil");
-            mAllValues.add("British Indian Ocean Territory");
-            mAllValues.add("Brunei Darussalam");
-            mAllValues.add("Bulgaria");
-            mAllValues.add("Burkina Faso");
-            mAllValues.add("Burundi");
-            mAllValues.add("Cambodia");
-            mAllValues.add("Cameroon");
-            mAllValues.add("Canada");
-            mAllValues.add("Cape Verde");
-            mAllValues.add("Cayman Islands");
-            mAllValues.add("Central African Republic");
-            mAllValues.add("Chad");
-            mAllValues.add("Chile");
-            mAllValues.add("China");
-            mAllValues.add("Christmas Island");
-            mAllValues.add("Cocos (Keeling) Islands");
-            mAllValues.add("Colombia");
-            mAllValues.add("Comoros");
-            mAllValues.add("Congo");
-            mAllValues.add("Congo, The Democratic Republic of the");
-            mAllValues.add("Cook Islands");
-            mAllValues.add("Costa Rica");
-            mAllValues.add("Cote D\'Ivoire");
-            mAllValues.add("Croatia");
-            mAllValues.add("Cuba");
-            mAllValues.add("Cyprus");
-            mAllValues.add("Czech Republic");
-            mAllValues.add("Denmark");
-            mAllValues.add("Djibouti");
-            mAllValues.add("Dominica");
-            mAllValues.add("Dominican Republic");
-            mAllValues.add("Ecuador");
-            mAllValues.add("Egypt");
-            mAllValues.add("El Salvador");
-            mAllValues.add("Equatorial Guinea");
-            mAllValues.add("Eritrea");
-            mAllValues.add("Estonia");
-            mAllValues.add("Ethiopia");
-            mAllValues.add("Falkland Islands (Malvinas)");
-            mAllValues.add("Faroe Islands");
-            mAllValues.add("Fiji");
-            mAllValues.add("Finland");
-            mAllValues.add("France");
-            mAllValues.add("French Guiana");
-            mAllValues.add("French Polynesia");
-            mAllValues.add("French Southern Territories");
-            mAllValues.add("Gabon");
-            mAllValues.add("Gambia");
-            mAllValues.add("Georgia");
-            mAllValues.add("Germany");
-            mAllValues.add("Ghana");
-            mAllValues.add("Gibraltar");
-            mAllValues.add("Greece");
-            mAllValues.add("Greenland");
-            mAllValues.add("Grenada");
-            mAllValues.add("Guadeloupe");
-            mAllValues.add("Guam");
-            mAllValues.add("Guatemala");
-            mAllValues.add("Guernsey");
-            mAllValues.add("Guinea");
-            mAllValues.add("Guinea-Bissau");
-            mAllValues.add("Guyana");
-            mAllValues.add("Haiti");
-            mAllValues.add("Heard Island and Mcdonald Islands");
-            mAllValues.add("Holy See (Vatican City State)");
-            mAllValues.add("Honduras");
-            mAllValues.add("Hong Kong");
-            mAllValues.add("Hungary");
-            mAllValues.add("Iceland");
-            mAllValues.add("India");
-            mAllValues.add("Indonesia");
-            mAllValues.add("Iran, Islamic Republic Of");
-            mAllValues.add("Iraq");
-            mAllValues.add("Ireland");
-            mAllValues.add("Isle of Man");
-            mAllValues.add("Israel");
-            mAllValues.add("Italy");
-            mAllValues.add("Jamaica");
-            mAllValues.add("Japan");
-            mAllValues.add("Jersey");
-            mAllValues.add("Jordan");
-            mAllValues.add("Kazakhstan");
-            mAllValues.add("Kenya");
-            mAllValues.add("Kiribati");
-            mAllValues.add("Korea, Democratic People\'S Republic of");
-            mAllValues.add("Korea, Republic of");
-            mAllValues.add("Kuwait");
-            mAllValues.add("Kyrgyzstan");
-            mAllValues.add("Lao People\'S Democratic Republic");
-            mAllValues.add("Latvia");
-            mAllValues.add("Lebanon");
-            mAllValues.add("Lesotho");
-            mAllValues.add("Liberia");
-            mAllValues.add("Libyan Arab Jamahiriya");
-            mAllValues.add("Liechtenstein");
-            mAllValues.add("Lithuania");
-            mAllValues.add("Luxembourg");
-            mAllValues.add("Macao");
-            mAllValues.add("Macedonia, The Former Yugoslav Republic of");
-            mAllValues.add("Madagascar");
-            mAllValues.add("Malawi");
-            mAllValues.add("Malaysia");
-            mAllValues.add("Maldives");
-            mAllValues.add("Mali");
-            mAllValues.add("Malta");
-            mAllValues.add("Marshall Islands");
-            mAllValues.add("Martinique");
-            mAllValues.add("Mauritania");
-            mAllValues.add("Mauritius");
-            mAllValues.add("Mayotte");
-            mAllValues.add("Mexico");
-            mAllValues.add("Micronesia, Federated States of");
-            mAllValues.add("Moldova, Republic of");
-            mAllValues.add("Monaco");
-            mAllValues.add("Mongolia");
-            mAllValues.add("Montserrat");
-            mAllValues.add("Morocco");
-            mAllValues.add("Mozambique");
-            mAllValues.add("Myanmar");
-            mAllValues.add("Namibia");
-            mAllValues.add("Nauru");
-            mAllValues.add("Nepal");
-            mAllValues.add("Netherlands");
-            mAllValues.add("Netherlands Antilles");
-            mAllValues.add("New Caledonia");
-            mAllValues.add("New Zealand");
-            mAllValues.add("Nicaragua");
-            mAllValues.add("Niger");
-            mAllValues.add("Nigeria");
-            mAllValues.add("Niue");
-            mAllValues.add("Norfolk Island");
-            mAllValues.add("Northern Mariana Islands");
-            mAllValues.add("Norway");
-            mAllValues.add("Oman");
-            mAllValues.add("Pakistan");
-            mAllValues.add("Palau");
-            mAllValues.add("Palestinian Territory, Occupied");
-            mAllValues.add("Panama");
-            mAllValues.add("Papua New Guinea");
-            mAllValues.add("Paraguay");
-            mAllValues.add("Peru");
-            mAllValues.add("Philippines");
-            mAllValues.add("Pitcairn");
-            mAllValues.add("Poland");
-            mAllValues.add("Portugal");
-            mAllValues.add("Puerto Rico");
-            mAllValues.add("Qatar");
-            mAllValues.add("Reunion");
-            mAllValues.add("Romania");
-            mAllValues.add("Russian Federation");
-            mAllValues.add("RWANDA");
-            mAllValues.add("Saint Helena");
-            mAllValues.add("Saint Kitts and Nevis");
-            mAllValues.add("Saint Lucia");
-            mAllValues.add("Saint Pierre and Miquelon");
-            mAllValues.add("Saint Vincent and the Grenadines");
-            mAllValues.add("Samoa");
-            mAllValues.add("San Marino");
-            mAllValues.add("Sao Tome and Principe");
-            mAllValues.add("Saudi Arabia");
-            mAllValues.add("Senegal");
-            mAllValues.add("Serbia and Montenegro");
-            mAllValues.add("Seychelles");
-            mAllValues.add("Sierra Leone");
-            mAllValues.add("Singapore");
-            mAllValues.add("Slovakia");
-            mAllValues.add("Slovenia");
-            mAllValues.add("Solomon Islands");
-            mAllValues.add("Somalia");
-            mAllValues.add("South Africa");
-            mAllValues.add("South Georgia and the South Sandwich Islands");
-            mAllValues.add("Spain");
-            mAllValues.add("Sri Lanka");
-            mAllValues.add("Sudan");
-            mAllValues.add("Suriname");
-            mAllValues.add("Svalbard and Jan Mayen");
-            mAllValues.add("Swaziland");
-            mAllValues.add("Sweden");
-            mAllValues.add("Switzerland");
-            mAllValues.add("Syrian Arab Republic");
-            mAllValues.add("Taiwan, Province of China");
-            mAllValues.add("Tajikistan");
-            mAllValues.add("Tanzania, United Republic of");
-            mAllValues.add("Thailand");
-            mAllValues.add("Timor-Leste");
-            mAllValues.add("Togo");
-            mAllValues.add("Tokelau");
-            mAllValues.add("Tonga");
-            mAllValues.add("Trinidad and Tobago");
-            mAllValues.add("Tunisia");
-            mAllValues.add("Turkey");
-            mAllValues.add("Turkmenistan");
-            mAllValues.add("Turks and Caicos Islands");
-            mAllValues.add("Tuvalu");
-            mAllValues.add("Uganda");
-            mAllValues.add("Ukraine");
-            mAllValues.add("United Arab Emirates");
-            mAllValues.add("United Kingdom");
-            mAllValues.add("United States");
-            mAllValues.add("United States Minor Outlying Islands");
-            mAllValues.add("Uruguay");
-            mAllValues.add("Uzbekistan");
-            mAllValues.add("Vanuatu");
-            mAllValues.add("Venezuela");
-            mAllValues.add("Viet Nam");
-            mAllValues.add("Virgin Islands, British");
-            mAllValues.add("Virgin Islands, U.S.");
-            mAllValues.add("Wallis and Futuna");
-            mAllValues.add("Western Sahara");
-            mAllValues.add("Yemen");
-            mAllValues.add("Zambia");
-            mAllValues.add("Zimbabwe");
-
-
-            mAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, mAllValues);
-            lvArtikli.setAdapter(mAdapter);
-        }
 
         public void resetSearch() {
             mAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, mAllValues);

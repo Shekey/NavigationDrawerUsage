@@ -58,6 +58,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
         }
+        getActivity().setTitle("Snizeni proizvodi");
         super.onResume();
     }
 
@@ -86,6 +87,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         else {
             fab.setVisibility(View.INVISIBLE);
         }
+        getActivity().setTitle("Snizeni proizvodi");
         fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliSnizeno);
         lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementSn));
@@ -120,17 +122,6 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
 
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        getActivity().setTitle("SNIZENI PROIZVODI");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     @Override
@@ -260,7 +251,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
-                ft.add(R.id.content_main,fragment);
+                ft.replace(R.id.content_main,fragment);
                 ft.commit();
 
             }
@@ -314,7 +305,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);
-                        ft.add(R.id.content_main,fragment);
+                        ft.replace(R.id.content_main,fragment);
                         ft.addToBackStack("detail_fragment");
                         ft.commit();
 
@@ -324,6 +315,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 Toast.makeText(getContext().getApplicationContext(), "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
     public void resetSearch() {

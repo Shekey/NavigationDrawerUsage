@@ -1,12 +1,12 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.adapters.CustomSwipeAdapter;
+import com.example.ajdin.navigatiodraer.adapters.ViewPagerAdapter;
+import com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
 import com.example.ajdin.navigatiodraer.models.Product;
@@ -27,6 +30,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +48,7 @@ public class DetailFragment extends Fragment {
     private Product movieModel;
     private ListView list;
     private Parcelable state;
+    private WrapContentHeightViewPager viewPager;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -61,19 +66,7 @@ public class DetailFragment extends Fragment {
         if (state!=null){
             list.onRestoreInstanceState(state);
         }
-        getActivity().setTitle("Detalji");
         super.onResume();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        getActivity().setTitle("DETALJI PROIZVODA");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     @Override
@@ -95,16 +88,24 @@ public class DetailFragment extends Fragment {
         Kolicina.clearFocus();
         bOrder = (Button)view. findViewById(R.id.bOrder);
         progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        getActivity().setTitle("Detalji proizvoda");
+        String [] images;
+
+
 
         Bundle bundle = getArguments();
         if(bundle != null){
             movieModel = (Product) bundle.getSerializable("movieModel");
+            ArrayList<String> list21=bundle.getStringArrayList("listaSlike");
+            viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2);
+            WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
+            ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),list21);
+            viewPager.setAdapter(adapter1);
 
-            // Then later, when you want to display image
-            File file = new File(movieModel.getImageDevice());
-            ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
+//            // Then later, when you want to display image
+//            File file = new File(movieModel.getImageDevice());
+//            ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
             progressBar.setVisibility(View.GONE);
-
             tvMovie.setText(movieModel.getNaziv());
             tvTagline.setText(movieModel.getBarkod());
             tvYear.setText("Cijena: " + movieModel.getCijena());
@@ -119,7 +120,7 @@ public class DetailFragment extends Fragment {
                 if (Kolicina.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {//unesena kolicina
                     if (new_price.getText().toString().trim().matches("")) { //nema cijene
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()) , "");//cijena ""
-                       getActivity().getSupportFragmentManager().popBackStack();
+                        getActivity().getSupportFragmentManager().popBackStack();
 
 
                     } else {

@@ -91,11 +91,12 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
         }
+        getActivity().setTitle("Svi proizvodi");
         if (!getUserVisibleHint())
         {
             return;
         }
-        getActivity().setTitle("Svi proizvodi");
+
         fab.setImageResource(R.drawable.dodaj_osobu);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,20 +121,8 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        getActivity().setTitle("SVI PROIZVODI");
-        super.onAttach(context);
-    }
-
-    @Override
     public void onPause() {
         state = lvArtikli.onSaveInstanceState();
-        getActivity().setTitle("Svi proizvodi");
         super.onPause();
     }
 
@@ -147,6 +136,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
         fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
@@ -157,6 +147,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         else {
             fab.setVisibility(View.INVISIBLE);
         }
+        getActivity().setTitle("Svi proizvodi");
         fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
@@ -212,11 +203,11 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                             DetailFragment fragment = new DetailFragment();
                             android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                             Bundle bundle = new Bundle();
-                             ft.hide(MenuFragment.this);
+                            ft.hide(MenuFragment.this);
                             bundle.putSerializable("movieModel", movieModel);
                             fragment.setArguments(bundle);
 
-                            ft.add(R.id.content_main, fragment);
+                            ft.add(R.id.content_main, fragment,"detail_fragment");
 //                editsearch.setQuery("", false);
                             ft.addToBackStack("detail_fragment");
                             ft.commit();
@@ -313,18 +304,18 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
         textGeteR = newText;
         filteredValues = new ArrayList<Product>(productList);
-            for (Product value : productList) {
-                if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
-                    if (odabranaKategorija > 0) {
-                            if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
-                                filteredValues.remove(value);
-                            }
-                        }
+        for (Product value : productList) {
+            if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+                if (odabranaKategorija > 0) {
+                    if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
+                        filteredValues.remove(value);
                     }
-                    else {
-                    filteredValues.remove(value);
                 }
             }
+            else {
+                filteredValues.remove(value);
+            }
+        }
 
 //            if (odabranaKategorija > 0) {
 //                for (Product p : filteredValues) {
@@ -352,11 +343,15 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 ft.hide(MenuFragment.this);
                 Bundle bundle=new Bundle();
+                ArrayList<String> slike=new ArrayList<>();
+                slike.add(movieModel.getImageDevice());
+                slike.add(movieModel.getImageDevice());
+                bundle.putStringArrayList("listaSlike",slike);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
                 editsearch.setQuery("", true);
-                ft.add(R.id.content_main,fragment);
+                ft.add(R.id.content_main,fragment,"detail_fragment");
                 ft.commit();
 
             }
@@ -449,9 +444,13 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                     android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     Bundle bundle = new Bundle();
                     ft.hide(MenuFragment.this);
+                    ArrayList<String> slike=new ArrayList<>();
+                    slike.add(movieModel.getImageDevice());
+                    slike.add(movieModel.getImageDevice());
+                    bundle.putStringArrayList("listaSlike",slike);
                     bundle.putSerializable("movieModel", movieModel);
                     fragment.setArguments(bundle);
-                    ft.add(R.id.content_main, fragment);
+                    ft.add(R.id.content_main, fragment,"detail_fragment");
 //                editsearch.setQuery("", false);
                     ft.addToBackStack("detail_fragment");
                     ft.commit();
@@ -573,9 +572,10 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                         DetailFragment fragment=new DetailFragment();
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
+                        ft.hide(MenuFragment.this);
                         bundle.putSerializable("movieModel",movieModel);
                         fragment.setArguments(bundle);
-                        ft.add(R.id.content_main,fragment);
+                        ft.add(R.id.content_main,fragment,"detail_fragment");
                         ft.commit();
 
                     }
@@ -635,9 +635,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
                         ft.hide(MenuFragment.this);
+                        ArrayList<String> slike=new ArrayList<>();
+                        slike.add(movieModel.getImageDevice());
+                        slike.add(movieModel.getImageDevice());
+                        bundle.putStringArrayList("listaSlike",slike);
                         bundle.putSerializable("movieModel",movieModel);
+
                         fragment.setArguments(bundle);
-                        ft.add(R.id.content_main,fragment).addToBackStack("detail_fragment");
+                        ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("details");
                         ft.commit();
 
                     }
@@ -651,7 +656,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
     public void resetSearch() {
         if (filteredKategory!=null)
-        filteredAll = new ArrayList<Product>(filteredKategory);
+            filteredAll = new ArrayList<Product>(filteredKategory);
         else{
             filteredAll=new ArrayList<>(productList);
         }
