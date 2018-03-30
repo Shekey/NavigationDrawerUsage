@@ -20,8 +20,9 @@
             android:layout_height="match_parent"
             android:layout_weight="0.85"
             android:paddingTop="8dp"
+            android:textStyle="normal"
             android:paddingLeft="12dp"
-
+            android:textSize="16dp"
             android:textAllCaps="true"
             android:text="IME I PREZIME KUPCA" />
 
@@ -34,9 +35,9 @@
             android:layout_weight="0.1"
             android:textSize="14dp"
             android:layout_marginLeft="10dp"
-            android:background="@color/accent"
+            android:background="@color/colorAccent"
             android:text="Sync"
-            android:textColor="@color/primaryTtext"
+            android:textColor="@android:color/white"
             android:layout_marginRight="4dp"
             />
 
@@ -54,6 +55,7 @@
             android:paddingLeft="12dp"
             android:textSize="16sp"
             android:id="@+id/tvDtm"
+            android:textStyle="italic"
             android:textColor="@color/colorAccent"
             android:text="DATUM" />
 

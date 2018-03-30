@@ -107,8 +107,8 @@ public class DetailFragment extends Fragment {
 //            ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
             progressBar.setVisibility(View.GONE);
             tvMovie.setText(movieModel.getNaziv());
-            tvTagline.setText(movieModel.getBarkod());
-            tvYear.setText("Cijena: " + movieModel.getCijena());
+            tvTagline.setText(movieModel.getKategorija());
+            tvYear.setText("Cijena: " + movieModel.getCijena()+ " KM");
 
 
         }

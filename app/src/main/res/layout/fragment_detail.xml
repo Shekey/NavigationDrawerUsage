@@ -23,10 +23,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Naziv"
-                android:textColor="@color/primary"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textSize="25sp"
+                 />
 
 
             <FrameLayout
@@ -74,16 +76,20 @@
                 android:id="@+id/tvCijena"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary"
+                android:textColor="@color/colorAccent"
                 android:text="Cijena"
+                android:textSize="25sp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/tvJedinicaMjere"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tagline"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:text="KATEGORIJA"
+                android:layout_marginTop="8dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
 
 
         </LinearLayout>
@@ -107,10 +113,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-
+                android:textSize="20sp"
                 android:text="Kolicina"
-                android:textColor="@color/primary"
-
+                android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded"
                 android:layout_weight="0.4" />
@@ -152,9 +157,9 @@
                 android:paddingLeft="16dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-
+                android:textSize="20sp"
                 android:text="Nova cijena"
-                android:textColor="@color/primary"
+                android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -203,6 +208,8 @@
                 android:layout_height="43dp"
                 android:layout_gravity="center"
                 android:layout_weight="0.4"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
                 android:textAlignment="center"
                 android:text="@string/order"
                 android:textAllCaps="true"
