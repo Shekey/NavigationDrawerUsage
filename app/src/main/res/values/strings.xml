@@ -8,7 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="order">KUPI</string>
+    <string name="order">Dodaj u korpu</string>
     <string name="action_search">Search ...</string>
     <string name="zavrsetak_svega">Prekid kupovine</string>
     <string name="cisti_sve">Da li želite odustati od kupovine ?</string>

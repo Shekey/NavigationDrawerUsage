@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/tvNaziv"
+                android:id="@+id/tvNazivEdited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Naziv"
@@ -28,7 +28,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
                 android:textSize="25sp"
-                 />
+                />
 
 
             <FrameLayout
@@ -36,23 +36,23 @@
                 android:layout_height="300dp">
 
 
-              <com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager
-                  android:layout_width="match_parent"
-                  android:id="@+id/viewPager2"
-                  android:layout_height="match_parent">
+                <com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager
+                    android:layout_width="match_parent"
+                    android:id="@+id/viewPager2Edited"
+                    android:layout_height="match_parent">
 
-              </com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager>
+                </com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager>
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/ivIcon"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="400dp"-->
-                    <!--android:scaleType="centerCrop"-->
-                    <!--android:adjustViewBounds="true"-->
-                    <!--android:src="@drawable/avengers" />-->
+                <!--android:id="@+id/ivIcon"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="400dp"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:src="@drawable/avengers" />-->
 
                 <ProgressBar
-                    android:id="@+id/progressBar"
+                    android:id="@+id/progressBarEdited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
@@ -73,7 +73,7 @@
             <!--android:background="@drawable/rounded_bg"-->
 
             <TextView
-                android:id="@+id/tvCijena"
+                android:id="@+id/tvCijenaEdited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
@@ -82,7 +82,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/tvJedinicaMjere"
+                android:id="@+id/tvJedinicaMjereEdited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="KATEGORIJA"
@@ -109,7 +109,7 @@
             android:layout_alignParentStart="true">
 
             <TextView
-                android:id="@+id/tx"
+                android:id="@+id/txEdited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -121,7 +121,7 @@
                 android:layout_weight="0.4" />
 
             <EditText
-                android:id="@+id/quantity"
+                android:id="@+id/quantityEdited"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:ems="10"
@@ -150,7 +150,7 @@
             android:layout_alignParentStart="true">
 
             <TextView
-                android:id="@+id/txCij"
+                android:id="@+id/txCijEdited"
                 android:layout_width="0dp"
                 android:layout_weight="0.4"
                 android:paddingRight="16dp"
@@ -164,7 +164,7 @@
                 tools:ignore="HardcodedText,RtlHardcoded" />
 
             <EditText
-                android:id="@+id/new_price"
+                android:id="@+id/new_priceEdited"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.55"
@@ -177,7 +177,7 @@
                 tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/llAction"
+            android:id="@+id/llActionEdited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -203,7 +203,7 @@
             <!--android:layout_weight="0.25"/>-->
 
             <Button
-                android:id="@+id/bOrder"
+                android:id="@+id/bOrderEdited"
                 android:layout_width="0dp"
                 android:layout_height="43dp"
                 android:layout_gravity="center"

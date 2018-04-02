@@ -1,11 +1,17 @@
 package com.example.ajdin.navigatiodraer.helpers;
 
+import com.example.ajdin.navigatiodraer.models.Product;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.ArrayList;
+
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * A representation of shopping cart.
@@ -14,10 +20,9 @@ import java.util.Set;
  */
 public class Cart implements Serializable {
     private static final long serialVersionUID = 42L;
-    private Map<Saleable, Double> cartItemMap = new HashMap<Saleable, Double>();
+    private LinkedHashMap<Saleable, Double> cartItemMap = new LinkedHashMap<Saleable, Double>();
     private BigDecimal totalPrice = BigDecimal.ZERO;
     private Double totalQuantity = 0.0;
-
     /**
      * Add a quantity of a certain {@link Saleable} product to this shopping cart
      *
@@ -26,23 +31,60 @@ public class Cart implements Serializable {
      */
     public void add(final Saleable sellable, double quantity,String new_price) {
         if (cartItemMap.containsKey(sellable)) {
-            cartItemMap.put(sellable, cartItemMap.get(sellable) + quantity);
+                cartItemMap.put(sellable, cartItemMap.get(sellable) + quantity);
 
-        } else {
-            cartItemMap.put(sellable, quantity);
         }
+        else {
+            cartItemMap.put(sellable, quantity);
+
+        }
+
         if (new_price.trim().matches("")){
 
             totalPrice = totalPrice.add(sellable.getPrice().multiply(BigDecimal.valueOf(quantity)));
             totalQuantity += quantity;
         }
         else {
-            BigDecimal temp_price= BigDecimal.valueOf(Double.valueOf(new_price.toString()));
+            BigDecimal temp_price= BigDecimal.valueOf(Double.valueOf(new_price));
             totalPrice = totalPrice.add(temp_price.multiply(BigDecimal.valueOf(quantity)));
-
             totalQuantity += quantity;
         }
 
+    }
+    private List<CartItem> getCartItems(Cart cart) {
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+
+        Map<Saleable, Double> itemMap = cart.getItemWithQuantity();
+
+
+        for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct((Product) entry.getKey());
+            cartItem.setQuantity(entry.getValue());
+            cartItems.add(cartItem);
+        }
+
+
+        return cartItems;
+    }
+
+    public void updateEdit(final Saleable sellable, double quantity,String new_price) {
+        if (cartItemMap.containsKey(sellable)) {
+            cartItemMap.put(sellable, quantity);
+
+            if (new_price.trim().matches("")) {
+
+                totalPrice = totalPrice.add(sellable.getPrice().multiply(BigDecimal.valueOf(quantity)));
+                totalQuantity = quantity;
+            } else {
+                BigDecimal temp_price = BigDecimal.valueOf(Double.valueOf(new_price.toString()));
+                totalPrice = totalPrice.add(temp_price.multiply(BigDecimal.valueOf(quantity)));
+
+                totalQuantity = quantity;
+            }
+
+        }
     }
 
     /**
@@ -173,8 +215,8 @@ public class Cart implements Serializable {
      *
      * @return A map from product to its quantity in this shopping cart
      */
-    public Map<Saleable, Double> getItemWithQuantity() {
-        Map<Saleable, Double> cartItemMap = new HashMap<Saleable, Double>();
+    public LinkedHashMap<Saleable, Double> getItemWithQuantity() {
+        LinkedHashMap<Saleable, Double> cartItemMap = new LinkedHashMap<Saleable, Double>();
         cartItemMap.putAll(this.cartItemMap);
         return cartItemMap;
     }

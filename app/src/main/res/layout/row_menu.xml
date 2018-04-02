@@ -52,6 +52,7 @@
                 android:padding="8dp"
                 android:layout_marginLeft="8dp"
                 android:textAllCaps="true"
+                android:textSize="22sp"
                 android:textColor="@color/primaryTtext"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -63,6 +64,7 @@
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="italic"
+                android:textSize="22sp"
                 android:text="Tagline"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -74,6 +76,7 @@
                 android:padding="8dp"
                 android:layout_marginLeft="8dp"
                 android:textStyle="italic"
+                android:textSize="22sp"
                 android:textColor="@color/colorPrimaryDark"
 
                 android:textAppearance="?android:attr/textAppearanceSmall" />

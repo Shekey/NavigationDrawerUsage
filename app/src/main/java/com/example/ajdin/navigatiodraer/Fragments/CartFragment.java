@@ -9,12 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -27,6 +30,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.ajdin.navigatiodraer.MainActivity;
 import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
@@ -42,12 +49,15 @@ import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
 import com.example.ajdin.navigatiodraer.tasks.UploadTask;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +72,7 @@ public class CartFragment extends Fragment {
     private Button bZavrsi;
     private String ime;
     private Button clear;
+    private TextView textView2;
 
     public CartFragment() {
         // Required empty public constructor
@@ -73,7 +84,7 @@ public class CartFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
-        ListView lvProducts = (ListView)view.findViewById(R.id.listCart);
+        SwipeMenuListView lvProducts = (SwipeMenuListView)view.findViewById(R.id.listCart);
         //  lvProducts.addHeaderView(getActivity().getLayoutInflater().inflate(R.layout.cart_header, lvProducts, false));
         //
         if(getActivity().getActionBar() != null) {
@@ -86,39 +97,139 @@ public class CartFragment extends Fragment {
         tvTotalPrice=(TextView)view.findViewById(R.id.tvTotalPrice);
         cartItemAdapter.updateCartItems(getCartItems(cart));
        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+ Constant.CURRENCY));
+
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         lvProducts.setAdapter(cartItemAdapter);
         lvProducts.setEmptyView(view.findViewById(R.id.emptyElement));
-        sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
-        ime=sharedPreferences.getString("ime","");
-        clear = view.findViewById(R.id.clearAll);
-        lvProducts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (position<0) {
-                    return false;
-                }
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.delete_item))
-                        .setMessage(getResources().getString(R.string.delete_item_message))
-                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                List<CartItem> cartItems = getCartItems(cart);
 
-                                cart.remove(cartItems.get(position).getProduct());
-                                cartItems.remove(position);
-                                cartItemAdapter.updateCartItems(cartItems);
-                                cartItemAdapter.notifyDataSetChanged();
-                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-                            }
-                        })
-                        .setNegativeButton(getResources().getString(R.string.Ne), null)
-                        .show();
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "open" item
+                SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
+                // set item background
+                openItem.setBackground(R.color.primary);
+                // set item width
+                openItem.setWidth(170);
+                // set item title
+                openItem.setTitle("Uredi");
+                // set item title fontsize
+                openItem.setTitleSize(18);
+                // set item title font color
+                openItem.setTitleColor(Color.WHITE);
+                // add to menu
+                menu.addMenuItem(openItem);
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(170);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        lvProducts.setMenuCreator(creator);
+
+        lvProducts.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(final int position, SwipeMenu menu, final int index) {
+                switch (index) {
+                    case 0:
+                        List<CartItem> cartItems = getCartItems(cart);
+                        Product pr= cartItems.get(position).getProduct();
+                        pr.setCijena(String.valueOf(pr.getCijena()));
+                        Bundle bundle=new Bundle();
+                        bundle.putSerializable("productEdit",pr);
+                        bundle.putString("kolEdit",String.valueOf(cartItems.get(position).getQuantity()));
+                        EditProduct fragment=new EditProduct();
+                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.hide(CartFragment.this);
+                        fragment.setArguments(bundle);
+                        ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
+                        ft.commit();
+                        break;
+                    case 1:
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle(getResources().getString(R.string.delete_item))
+                                .setMessage(getResources().getString(R.string.delete_item_message))
+                                .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        List<CartItem> cartItems = getCartItems(cart);
+                                        cart.remove(cartItems.get(position).getProduct());
+                                        cartItems.remove(position);
+                                        cartItemAdapter.updateCartItems(cartItems);
+                                        cartItemAdapter.notifyDataSetChanged();
+                                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+                                    }
+                                })
+                                .setNegativeButton(getResources().getString(R.string.Ne), null)
+                                .show();
+                        break;
+                }
+                // false : close the menu; true : not close the menu
                 return false;
             }
         });
+
+        sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        ime=sharedPreferences.getString("ime","");
+        clear = view.findViewById(R.id.clearAll);
+//        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                if (position<0) {
+//                    return;
+//                }
+//                else {
+//                    List<CartItem> cartItems = getCartItems(cart);
+//                  Product pr= cartItems.get(position).getProduct();
+//                  pr.setCijena(String.valueOf(pr.getCijena()));
+//                  Bundle bundle=new Bundle();
+//                  bundle.putSerializable("productEdit",pr);
+//                  bundle.putString("kolEdit",String.valueOf(cartItems.get(position).getQuantity()));
+//                  EditProduct fragment=new EditProduct();
+//                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//                    ft.hide(CartFragment.this);
+//                    fragment.setArguments(bundle);
+//                    ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
+//                    ft.commit();
+//                }
+//            }
+//        });
+//        lvProducts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+//                if (position<0) {
+//                    return false;
+//                }
+//                new AlertDialog.Builder(getActivity())
+//                        .setTitle(getResources().getString(R.string.delete_item))
+//                        .setMessage(getResources().getString(R.string.delete_item_message))
+//                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                List<CartItem> cartItems = getCartItems(cart);
+//                                cart.remove(cartItems.get(position).getProduct());
+//                                cartItems.remove(position);
+//                                cartItemAdapter.updateCartItems(cartItems);
+//                                cartItemAdapter.notifyDataSetChanged();
+//                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+//                            }
+//                        })
+//                        .setNegativeButton(getResources().getString(R.string.Ne), null)
+//                        .show();
+//                return false;
+//            }
+//        });
 
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +247,11 @@ public class CartFragment extends Fragment {
                                 cartItemAdapter.updateCartItems(getCartItems(cart));
                                 cartItemAdapter.notifyDataSetChanged();
                                 tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+                                MenuFragment fragment=new MenuFragment();
+                                NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+                                navigationView.setCheckedItem(R.id.nav_proizvodi);
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+
 
                             }
                         })
@@ -146,6 +262,20 @@ public class CartFragment extends Fragment {
         });
 
         bZavrsi = view.findViewById(R.id.zavrsi);
+        textView2 = view.findViewById(R.id.textView2);
+        if (cartItemAdapter.getCount()==0){
+            clear.setVisibility(View.GONE);
+            bZavrsi.setVisibility(View.GONE);
+            tvTotalPrice.setVisibility(View.GONE);
+            textView2.setVisibility(View.GONE);
+        }
+        else {
+            clear.setVisibility(View.VISIBLE);
+            bZavrsi.setVisibility(View.VISIBLE);
+            tvTotalPrice.setVisibility(View.VISIBLE);
+            textView2.setVisibility(View.VISIBLE);
+
+        }
 
         bZavrsi.setOnClickListener(new View.OnClickListener() {
 
@@ -238,7 +368,7 @@ public class CartFragment extends Fragment {
         List<CartItem> cartItems = new ArrayList<CartItem>();
 
 
-        Map<Saleable, Double> itemMap = cart.getItemWithQuantity();
+        LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
 
 
         for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {

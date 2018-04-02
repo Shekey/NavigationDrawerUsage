@@ -1,12 +1,10 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
-import com.example.ajdin.navigatiodraer.adapters.CustomSwipeAdapter;
 import com.example.ajdin.navigatiodraer.adapters.ViewPagerAdapter;
 import com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
 import com.example.ajdin.navigatiodraer.models.Product;
-import com.google.gson.Gson;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailFragment extends Fragment {
+public class EditProduct extends Fragment {
 
     private ImageView ivMovieIcon;
     private TextView tvMovie;
@@ -49,8 +44,9 @@ public class DetailFragment extends Fragment {
     private ListView list;
     private Parcelable state;
     private WrapContentHeightViewPager viewPager;
+    private String kol;
 
-    public DetailFragment() {
+    public EditProduct() {
         // Required empty public constructor
     }
 
@@ -73,21 +69,21 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        View view = inflater.inflate(R.layout.edit_product, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
         list = (ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         ivMovieIcon = (ImageView)view.findViewById(R.id.ivIcon);
-        tvMovie = (TextView)view.findViewById(R.id.tvNaziv);
-        tvTagline = (TextView)view.findViewById(R.id.tvJedinicaMjere);
-        tvYear = (TextView)view.findViewById(R.id.tvCijena);
-        new_price=(EditText)view.findViewById(R.id.new_price);
-        Kolicina=(EditText)view.findViewById(R.id.quantity);
+        tvMovie = (TextView)view.findViewById(R.id.tvNazivEdited);
+        tvTagline = (TextView)view.findViewById(R.id.tvJedinicaMjereEdited);
+        tvYear = (TextView)view.findViewById(R.id.tvCijenaEdited);
+        new_price=(EditText)view.findViewById(R.id.new_priceEdited);
+        Kolicina=(EditText)view.findViewById(R.id.quantityEdited);
         Kolicina.clearFocus();
-        bOrder = (Button)view. findViewById(R.id.bOrder);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        bOrder = (Button)view. findViewById(R.id.bOrderEdited);
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBarEdited);
         getActivity().setTitle("Detalji proizvoda");
         String [] images;
 
@@ -95,9 +91,12 @@ public class DetailFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(bundle != null){
-            movieModel = (Product) bundle.getSerializable("movieModel");
-            ArrayList<String> list21=bundle.getStringArrayList("listaSlike");
-            viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2);
+            movieModel = (Product) bundle.getSerializable("productEdit");
+            kol = bundle.getString("kolEdit");
+            ArrayList<String> list21=new ArrayList<>();
+            list21.add(movieModel.getImageDevice());
+            list21.add(movieModel.getImageDevice());
+            viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2Edited);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
             ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),list21);
             viewPager.setAdapter(adapter1);
@@ -109,6 +108,7 @@ public class DetailFragment extends Fragment {
             tvMovie.setText(movieModel.getNaziv());
             tvTagline.setText(movieModel.getKategorija());
             tvYear.setText("Cijena: " + movieModel.getCijena()+ " KM");
+            Kolicina.setText(kol);
 
 
         }
@@ -119,37 +119,41 @@ public class DetailFragment extends Fragment {
                 // Log.d(TAG, "Adding product: " + product.getName());
                 if (Kolicina.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {//unesena kolicina
                     if (new_price.getText().toString().trim().matches("")) {
+                        cart.remove(movieModel);
+                        cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
+                        CartFragment fragment=new CartFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").commit();
 
-                            cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
-                            getActivity().getSupportFragmentManager().popBackStack();
-                            return;
+
 //cijena ""
-                        }
+                    }
 
-                     else {
+                    else {
                         if (!new_price.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {
                             new_price.setText("");
                             Toast.makeText(getActivity(), "Niste unijeli dobar format cijene,unosi se sa '.' ", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        movieModel.setCijena(new_price.getText().toString());
+                        cart.remove(movieModel);
+                        cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
+                        BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
+                        CartFragment fragment=new CartFragment();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").commit();
 
-                            cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
-                            BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
 
-                            getActivity().getSupportFragmentManager().popBackStack();
-
-                            // ovdje ne moze ici Main
+                        // ovdje ne moze ici Main
 //                        MenuFragment fragment = new MenuFragment();
 //                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 //                        getActivity().getSupportFragmentManager().popBackStack();
 //                        ft.replace(R.id.content_main, fragment);
 //                        ft.commit();
 
-                            return;
 
 
-                }
-            } else {
+
+                    }
+                } else {
                     Kolicina.setText("");
                     Toast.makeText(getActivity(), " Unesite kolicinu", Toast.LENGTH_SHORT).show();
                     Kolicina.requestFocus();
@@ -158,6 +162,7 @@ public class DetailFragment extends Fragment {
 
 
                 }
+
 
 
 
