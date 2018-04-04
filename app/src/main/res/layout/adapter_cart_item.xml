@@ -70,20 +70,21 @@
         <!--android:textColor="@android:color/black"-->
         <!--android:gravity="center"/>-->
 
-    <TextView
-        android:id="@+id/tvCartItemPrice"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:textSize="20sp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="8dp"
-        android:textStyle="italic"
-        android:paddingLeft="4dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:paddingRight="4dp"
-        android:gravity="left"
+            tvPrice
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="8dp"
+                android:textStyle="italic"
+                android:paddingLeft="4dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:paddingRight="4dp"
+                android:gravity="left"
 
-        android:text="Cijena"/>
+                android:text="Cijena"/>
             <TextView
                 android:id="@+id/tvKolicina"
                 android:layout_width="match_parent"
@@ -96,6 +97,19 @@
                 android:gravity="left"
                 android:textColor="@color/colorPrimaryDark"
                 android:text="Kolicina"/>
+            <TextView
+                android:id="@+id/tvCartItemTotalPrice"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="2dp"
+                android:textStyle="italic"
+                android:paddingLeft="1dp"
+                android:textColor="@color/colorAccent"
+                android:paddingRight="1dp"
+                android:gravity="left"
+                android:text="UKUPNO"/>
 
 
 

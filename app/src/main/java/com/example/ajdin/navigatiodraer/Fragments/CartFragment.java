@@ -169,6 +169,19 @@ public class CartFragment extends Fragment {
                                         cartItemAdapter.updateCartItems(cartItems);
                                         cartItemAdapter.notifyDataSetChanged();
                                         tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+                                        if (cartItemAdapter.getCount()==0){
+                                            clear.setVisibility(View.GONE);
+                                            bZavrsi.setVisibility(View.GONE);
+                                            tvTotalPrice.setVisibility(View.GONE);
+                                            textView2.setVisibility(View.GONE);
+                                        }
+                                        else {
+                                            clear.setVisibility(View.VISIBLE);
+                                            bZavrsi.setVisibility(View.VISIBLE);
+                                            tvTotalPrice.setVisibility(View.VISIBLE);
+                                            textView2.setVisibility(View.VISIBLE);
+
+                                        }
                                     }
                                 })
                                 .setNegativeButton(getResources().getString(R.string.Ne), null)

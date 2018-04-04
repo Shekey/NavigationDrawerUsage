@@ -1,5 +1,7 @@
 package com.example.ajdin.navigatiodraer.helpers;
 
+import android.util.Log;
+
 import com.example.ajdin.navigatiodraer.models.Product;
 
 import java.io.Serializable;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A representation of shopping cart.
@@ -30,24 +34,26 @@ public class Cart implements Serializable {
      * @param quantity the amount to be added
      */
     public void add(final Saleable sellable, double quantity,String new_price) {
+        Product pr = null;
         if (cartItemMap.containsKey(sellable)) {
-                cartItemMap.put(sellable, cartItemMap.get(sellable) + quantity);
 
-        }
-        else {
+                    cartItemMap.put(sellable, cartItemMap.get(sellable) + quantity);
+                } else {
             cartItemMap.put(sellable, quantity);
-
         }
 
         if (new_price.trim().matches("")){
 
-            totalPrice = totalPrice.add(sellable.getPrice().multiply(BigDecimal.valueOf(quantity)));
-            totalQuantity += quantity;
+                totalPrice = totalPrice.add(sellable.getPrice().multiply(BigDecimal.valueOf(quantity)));
+                totalQuantity += quantity;
+
         }
         else {
-            BigDecimal temp_price= BigDecimal.valueOf(Double.valueOf(new_price));
+
+            BigDecimal temp_price = BigDecimal.valueOf(Double.valueOf(new_price));
             totalPrice = totalPrice.add(temp_price.multiply(BigDecimal.valueOf(quantity)));
             totalQuantity += quantity;
+
         }
 
     }

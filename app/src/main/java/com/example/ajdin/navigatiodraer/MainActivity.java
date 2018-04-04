@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.Fragments.CRUDFragment;
 import com.example.ajdin.navigatiodraer.Fragments.DetailFragment;
+import com.example.ajdin.navigatiodraer.Fragments.EditProduct;
 import com.example.ajdin.navigatiodraer.Fragments.HistoryFragment;
 import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity
             DetailFragment fragment6 = (DetailFragment) getSupportFragmentManager().findFragmentByTag("detail_fragment");
             CartFragment fragment4 = (CartFragment) getSupportFragmentManager().findFragmentByTag("cart_frag");
             SnizenjeFragment fragment5 = (SnizenjeFragment) getSupportFragmentManager().findFragmentByTag("snizenje_frag");
+            EditProduct fragment7 = (EditProduct) getSupportFragmentManager().findFragmentByTag("editFragment");
 
 
 
@@ -245,6 +247,26 @@ public class MainActivity extends AppCompatActivity
 
                         }
                     }
+             else if (fragment7 != null && f.getTag() != fragment7.getTag()) {
+
+                if (!fragment7.isVisible()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment7);
+                    ft.commit();
+                    fab.setVisibility(View.GONE);
+                    setTitle("Detalji proizvoda");
+
+                }
+            }
+                else if (fragment4 != null && f.getTag() != fragment4.getTag()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment4);
+                    ft.commit();
+                    fab.setVisibility(View.INVISIBLE);
+                    setTitle("Korpa");
+                    navigationView.setCheckedItem(R.id.nav_korpa);
+
+                }
 
              else if (fragment2 != null && f.getTag() != fragment2.getTag()) {
 
@@ -369,7 +391,12 @@ public class MainActivity extends AppCompatActivity
                         }
 
 
-        } else {
+
+
+
+    }
+
+        else {
             new AlertDialog.Builder(this)
                     .setMessage("Da li ste sigurni da želite izici?")
                     .setPositiveButton("Da", new DialogInterface.OnClickListener() {

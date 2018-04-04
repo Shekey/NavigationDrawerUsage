@@ -57,6 +57,7 @@ public class CartItemAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         TextView tvName;
         ImageView ivMovieIcon;
+        TextView tvTotalPrice;
         TextView tvPrice;
         TextView tvKolicina;
 
@@ -67,16 +68,18 @@ public class CartItemAdapter extends BaseAdapter {
             tvName = (TextView) convertView.findViewById(R.id.tvCartItemName);
             tvKolicina = (TextView) convertView.findViewById(R.id.tvKolicina);
             ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIconcart);
+            tvPrice=(TextView) convertView.findViewById(R.id.tvPrice);
 
 //            tvUnitPrice = (TextView) convertView.findViewById(R.id.tvCartItemUnitPrice);
 //            tvQuantity = (TextView) convertView.findViewById(R.id.tvCartItemQuantity);
-            tvPrice = (TextView) convertView.findViewById(R.id.tvCartItemPrice);
-            convertView.setTag(new ViewHolder(tvName, tvPrice,tvKolicina,ivMovieIcon));
+                tvTotalPrice = (TextView) convertView.findViewById(R.id.tvCartItemTotalPrice);
+            convertView.setTag(new ViewHolder(tvName, tvTotalPrice,tvKolicina,tvPrice,ivMovieIcon));
         } else {
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();
             tvName = viewHolder.tvCartItemName;
             ivMovieIcon=viewHolder.ivMovieIcon;
-            tvPrice = viewHolder.tvCartItemPrice;
+            tvPrice=viewHolder.tvCartItemPrice;
+            tvTotalPrice = viewHolder.tvCartItemTotalPrice;
             tvKolicina = viewHolder.tvKolicina;
         }
         final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBarcart);
@@ -84,8 +87,9 @@ public class CartItemAdapter extends BaseAdapter {
 
         final CartItem cartItem = getItem(position);
         tvName.setText(cartItem.getProduct().getName());
-        tvKolicina.setText(cartItem.getQuantity().toString()+" "+cartItem.getProduct().getJM());
-        tvPrice.setText(String.valueOf(cart.getCost(cartItem.getProduct()).setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+        tvKolicina.setText("Količina: "+cartItem.getQuantity().toString()+" "+cartItem.getProduct().getJM());
+        tvPrice.setText("Cijena :"+String.valueOf(cartItem.getProduct().getCijena())+" KM");
+        tvTotalPrice.setText("Ukupno - " +String.valueOf(cart.getCost(cartItem.getProduct()).setScale(2, BigDecimal.ROUND_HALF_UP)+" KM"));
         File file = new File(cartItem.getProduct().getImageDevice());
         ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
         progressBar.setVisibility(View.GONE);
@@ -96,13 +100,15 @@ public class CartItemAdapter extends BaseAdapter {
         public final TextView tvCartItemName;
         public final TextView tvKolicina;
         private ImageView ivMovieIcon;
+        public final TextView tvCartItemTotalPrice;
         public final TextView tvCartItemPrice;
 
-        public ViewHolder(TextView tvCartItemName,  TextView tvCartItemPrice,TextView tvKolicina,ImageView ivMovieIcon) {
+        public ViewHolder(TextView tvCartItemName, TextView tvCartItemTotalPrice, TextView tvKolicina,TextView tvCartItemPrice, ImageView ivMovieIcon) {
             this.tvCartItemName = tvCartItemName;
             this.tvKolicina = tvKolicina;
             this.ivMovieIcon=ivMovieIcon;
-            this.tvCartItemPrice = tvCartItemPrice;
+            this.tvCartItemPrice=tvCartItemPrice;
+            this.tvCartItemTotalPrice = tvCartItemTotalPrice;
         }
     }
 }

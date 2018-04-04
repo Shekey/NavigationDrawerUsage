@@ -58,6 +58,7 @@ public class Product implements Saleable, Serializable {
         this.datum_kreiranja=datum_kreiranja;
     }
 
+
     public String getNaziv() {
         return Naziv;
     }
@@ -132,4 +133,6 @@ public class Product implements Saleable, Serializable {
     public String getName() {
         return Naziv;
     }
+
+
 }

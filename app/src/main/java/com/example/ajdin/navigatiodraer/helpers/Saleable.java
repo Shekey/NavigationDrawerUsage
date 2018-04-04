@@ -7,6 +7,14 @@ import java.math.BigDecimal;
  */
 public interface Saleable {
     BigDecimal getPrice();
+    String getSnizeno();
+    String getJM();
+    String getCijena();
+    String getBarkod();
+    String getKategorija();
+    String getImageDevice();
+    String getDatum_kreiranja();
+
 
     String getName();
 }

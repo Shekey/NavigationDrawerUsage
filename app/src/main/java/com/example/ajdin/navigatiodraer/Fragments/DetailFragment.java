@@ -119,7 +119,6 @@ public class DetailFragment extends Fragment {
                 // Log.d(TAG, "Adding product: " + product.getName());
                 if (Kolicina.getText().toString().matches("^[0-9]\\d*(\\.\\d+)?$")) {//unesena kolicina
                     if (new_price.getText().toString().trim().matches("")) {
-
                             cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
                             getActivity().getSupportFragmentManager().popBackStack();
                             return;
@@ -132,8 +131,8 @@ public class DetailFragment extends Fragment {
                             Toast.makeText(getActivity(), "Niste unijeli dobar format cijene,unosi se sa '.' ", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
-                            cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
+                        Product pr=new Product(movieModel.getName(),1,movieModel.getBarkod(),movieModel.getJM(),movieModel.getKategorija(),new_price.getText().toString(),movieModel.getImageDevice(),movieModel.getImageDevice(),movieModel.getSnizeno(),movieModel.getDatum_kreiranja());
+                        cart.add(pr, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                             BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
 
                             getActivity().getSupportFragmentManager().popBackStack();
