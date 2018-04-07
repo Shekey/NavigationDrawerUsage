@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.adapters.MenuAdapter;
 import com.example.ajdin.navigatiodraer.adapters.MovieAdapter;
 import com.example.ajdin.navigatiodraer.adapters.MovieAdapterDatabase;
 import com.example.ajdin.navigatiodraer.adapters.SnizenoAdapter;
@@ -51,6 +52,14 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
     private Parcelable state;
     String[] bankNames={"Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
     private List<Product> filteredValues;
+    private List<Product> filteredKategory;
+    private List<Product> filteredAll;
+    private List<String> lables;
+    private int odabraniSort;
+    private int odabranaKategorija;
+    private String textGeteR;
+    private Spinner spin;
+    private Spinner spin2;
 
     @Override
     public void onResume() {
@@ -91,13 +100,88 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         fab.setImageResource(R.drawable.dodaj_osobu);
         lvArtikli=view.findViewById(R.id.lvArtikliSnizeno);
         lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementSn));
-        Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerSnizeno);
+        spin = (Spinner)view.findViewById(R.id.simpleSpinnerSnizeno);
+        spin2 = (Spinner)view.findViewById(R.id.kategorySpinnerSnizeno);
         spin.setOnItemSelectedListener(this);
+        spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (productList == null) {
+
+                } else {
+
+
+                    odabranaKategorija = i;
+                    if (i == 0) {
+                        if (filteredAll==null) {
+                            filteredAll = new ArrayList<Product>(productList);
+                        }
+                        else {
+                            filteredAll = new ArrayList<Product>(productList);
+
+                        }
+
+
+                    } else {
+
+                        filteredKategory = new ArrayList<>(db.getProductsKategoryFiltered(lables.get(i), productList));
+
+                        if (textGeteR != null) {
+                            for (Product p : filteredKategory) {
+                                if (!p.getNaziv().toLowerCase().contains(textGeteR)) {
+                                    filteredKategory.remove(p);
+                                }
+                            }
+
+                        }
+
+                        filteredAll=new ArrayList<>(filteredKategory);
+                    }
+
+                    adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, filteredAll);
+                    lvArtikli.setAdapter(adapter);
+                    if (state != null) {
+                        Log.d(TAG, "trying to restore listview state..");
+                        lvArtikli.onRestoreInstanceState(state);
+                    }
+                    final List<Product> finalUsedList = filteredAll;
+                    lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Product movieModel = finalUsedList.get(position); // getting the model
+                            DetailFragment fragment = new DetailFragment();
+                            android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            Bundle bundle = new Bundle();
+                            ft.hide(SnizenjeFragment.this);
+                            bundle.putSerializable("movieModel", movieModel);
+                            fragment.setArguments(bundle);
+
+                            ft.add(R.id.content_main, fragment,"detail_fragment");
+//                editsearch.setQuery("", false);
+                            ft.addToBackStack("detail_fragment");
+                            ft.commit();
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        //do ovdje ubaceno
+
         db=new DatabaseHelper(getContext());
         ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,bankNames);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //Setting the ArrayAdapter data on the Spinner
         spin.setAdapter(aa);
+        loadSpinnerData();
         editsearch = (SearchView)view.findViewById(R.id.simpleSearchViewSnizeno);
         editsearch.setOnQueryTextListener(this);
         if(!db.isEmpty()){
@@ -126,90 +210,102 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        final List<Product> usedList;
-        if (filteredValues==null){
-            usedList=new ArrayList<Product>(productList);
-        }
-        else {
-            usedList=new ArrayList<Product>(filteredValues);
+        if (productList == null) {
 
-        }
-        if (i==0){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
-                }
+        } else {
 
 
-            });
-        }
-        else if(i==1) {
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
-                }
+            if (filteredAll==null)
+                filteredAll = new ArrayList<Product>(productList);
 
 
-            });
-        }
-        else if(i==2){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p2.getPrice().compareTo(p1.getPrice());
-                }
+            odabraniSort = i;
+            if (i == 0) {
+
+                Collections.sort(filteredAll, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+
+                    }
 
 
-
-            });
-
-        }
-        else {
-
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p1.getPrice().compareTo(p2.getPrice());
-                }
+                });
+            }
+            if (i == 1) {
+                Collections.sort(filteredAll, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+                    }
 
 
-            });
+                });
+            } else if (i == 2) {
+                Collections.sort(filteredAll, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product product, Product t1) {
+                        return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
+                    }
 
-        }
-        adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, usedList);
-        lvArtikli.setAdapter(adapter);
-        if(state != null) {
-            Log.d(TAG, "trying to restore listview state..");
-            lvArtikli.onRestoreInstanceState(state);
-        }
-        lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = usedList.get(position); // getting the model
-                DetailFragment fragment=new DetailFragment();
-                android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                Bundle bundle=new Bundle();
-                ArrayList<String> slike=new ArrayList<>();
-                slike.add(movieModel.getImageDevice());
-                slike.add(movieModel.getImageDevice());
-                bundle.putStringArrayList("listaSlike",slike);
-                bundle.putSerializable("movieModel",movieModel);
-                fragment.setArguments(bundle);
-                ft.hide(SnizenjeFragment.this);
-                ft.add(R.id.content_main,fragment,"detail_fragment");
-                ft.addToBackStack("detail_fragment");
-                ft.commit();
+
+                });
+            } else if (i == 3) {
+                Collections.sort(filteredAll, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product p1, Product p2) {
+                        return p2.getPrice().compareTo(p1.getPrice());
+                    }
+
+
+                });
+
+            } else {
+
+                Collections.sort(filteredAll, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product p1, Product p2) {
+                        return p1.getPrice().compareTo(p2.getPrice());
+                    }
+
+
+                });
 
             }
-        });
+
+
+
+
+
+            adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, filteredAll);
+            lvArtikli.setAdapter(adapter);
+            if (state != null) {
+                Log.d(TAG, "trying to restore listview state..");
+                lvArtikli.onRestoreInstanceState(state);
+            }
+            final List<Product> finalUsedList = filteredAll;
+            lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Product movieModel = finalUsedList.get(position); // getting the model
+                    DetailFragment fragment = new DetailFragment();
+                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    ft.hide(SnizenjeFragment.this);
+                    ArrayList<String> slike=new ArrayList<>();
+                    slike.add(movieModel.getImageDevice());
+                    slike.add(movieModel.getImageDevice());
+                    bundle.putStringArrayList("listaSlike",slike);
+                    bundle.putSerializable("movieModel", movieModel);
+                    fragment.setArguments(bundle);
+                    ft.add(R.id.content_main, fragment,"detail_fragment");
+//                editsearch.setQuery("", false);
+                    ft.addToBackStack("detail_fragment");
+                    ft.commit();
+
+                }
+            });
+        }
 
 
     }
@@ -231,14 +327,33 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
             return false;
         }
 
+        textGeteR = newText;
         filteredValues = new ArrayList<Product>(productList);
         for (Product value : productList) {
-            if (!value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+            if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+                if (odabranaKategorija > 0) {
+                    if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
+                        filteredValues.remove(value);
+                    }
+                }
+            }
+            else {
                 filteredValues.remove(value);
             }
         }
 
-        adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, filteredValues);
+//            if (odabranaKategorija > 0) {
+//                for (Product p : filteredValues) {
+//                    if (!p.getKategorija().equals(lables.get(odabranaKategorija))) {
+//                        filteredValues.remove(p);
+//                    }
+//                }
+//            }
+        filteredAll = new ArrayList<>(filteredValues);
+
+
+
+        adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, filteredAll);
 
         lvArtikli.setAdapter(adapter);
         if(state != null) {
@@ -248,9 +363,10 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = filteredValues.get(position); // getting the model
+                Product movieModel = filteredAll.get(position); // getting the model
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
+                ft.hide(SnizenjeFragment.this);
                 Bundle bundle=new Bundle();
                 ArrayList<String> slike=new ArrayList<>();
                 slike.add(movieModel.getImageDevice());
@@ -259,12 +375,13 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
-                ft.hide(SnizenjeFragment.this);
+                editsearch.setQuery("", true);
                 ft.add(R.id.content_main,fragment,"detail_fragment");
                 ft.commit();
 
             }
         });
+
         return false;
     }
     public class JSONTaskDatabase extends AsyncTask<Void,String, List<Product> > {
@@ -333,8 +450,31 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
     }
 
     public void resetSearch() {
-        adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, productList);
-        filteredValues=null;
+        if (filteredKategory!=null)
+            filteredAll = new ArrayList<Product>(filteredKategory);
+        else{
+            filteredAll=new ArrayList<>(productList);
+        }
+        textGeteR=null;
+        adapter = new SnizenoAdapter(getContext().getApplicationContext(), R.layout.row_snizeno, filteredAll);
         lvArtikli.setAdapter(adapter);
+        spin.setSelection(0);
+    }
+    private void loadSpinnerData() {
+        // database handler
+
+        // Spinner Drop down elements
+        lables = db.getAllLabels();
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, lables);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spin2.setAdapter(dataAdapter);
     }
 }

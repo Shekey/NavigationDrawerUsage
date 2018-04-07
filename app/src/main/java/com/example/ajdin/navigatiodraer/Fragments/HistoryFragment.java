@@ -41,6 +41,9 @@ import com.example.ajdin.navigatiodraer.models.PreviewModel;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.opencsv.CSVReader;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -214,9 +217,14 @@ public class HistoryFragment extends Fragment {
         }
 
 
-    private static long daysBetween(Date one, Date two) {
-        long difference = (one.getDay()-two.getDay());
-        return Math.abs(difference);
+    private static int daysBetween(Date one, Date two) {
+        DateTime d1=new DateTime(one);
+        DateTime d2=new DateTime(two);
+        int days= Days.daysBetween(d1.toLocalDate(), d2.toLocalDate()).getDays();
+
+        return Math.abs(days);
+
+
     }
 
 

@@ -1,9 +1,61 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
+    android:orientation="vertical"
     tools:context="com.example.ajdin.navigatiodraer.Fragments.MenuFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <SearchView
+            android:id="@+id/simpleSearchViewSnizeno"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryHint="Pretrazi ovdje " />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        >
+
+
+        <Spinner
+            android:id="@+id/kategorySpinnerSnizeno"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="0.5" />
+
+        <Spinner
+            android:id="@+id/simpleSpinnerSnizeno"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="0.5" />
+
+    </LinearLayout>
+
+
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:id="@+id/lvArtikliSnizeno"
+
+        />
     <TextView
         android:id="@+id/emptyElementSn"
         android:layout_width="match_parent"
@@ -12,41 +64,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_centerInParent="true"
         android:layout_marginTop="12dp"
-        android:text="NEMATE SNIZENIH ARTIKALA ! "
+        android:text="PROPUSTILI STE AKCIJE, NAŽALOST! "
         android:textColor="#525252"
         android:textSize="19.0sp"
         android:visibility="gone" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        >
-        <SearchView
-            android:id="@+id/simpleSearchViewSnizeno"
-            android:layout_width="0dp"
-            android:layout_weight="0.6"
-            android:layout_height="wrap_content"
-            android:iconifiedByDefault="false"
-            android:queryHint="Search Here" />
-
-        <Spinner
-            android:id="@+id/simpleSpinnerSnizeno"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="0.4" />
-
-    </LinearLayout>
-
-
-
-    <!-- TODO: Update blank fragment layout -->
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:id="@+id/lvArtikliSnizeno"
-
-        />
-</FrameLayout>
+</LinearLayout>
