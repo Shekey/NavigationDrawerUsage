@@ -22,6 +22,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -50,6 +51,7 @@ import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
 import com.example.ajdin.navigatiodraer.helpers.CartItem;
 import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.services.ConnectionService;
 import com.example.ajdin.navigatiodraer.services.MyServiceUploading;
@@ -59,6 +61,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,10 +70,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = "MAIN" ;
     public ListView lvArtikli;
-    private final String URL_TO_HIT = "http://192.168.1.103:80/artikli/getJson.php";
+    private final String URL_TO_HIT = "http://nurexport.com/demo/getJson.php";
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
     DatabaseHelper db;
@@ -89,7 +96,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog dialog;
     public NavigationView navigationView;
     private FloatingActionButton fab;
-
+    private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -557,7 +564,9 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
+    String decodeUTF8(byte[] bytes) {
+        return new String(bytes, UTF8_CHARSET);
+    }
 
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
 
@@ -577,10 +586,11 @@ public class MainActivity extends AppCompatActivity
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
+                 reader = new BufferedReader(new InputStreamReader(stream));
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
                 while ((line = reader.readLine()) != null) {
+
                     buffer.append(line);
                 }
 
@@ -590,6 +600,7 @@ public class MainActivity extends AppCompatActivity
                 JSONArray parentArray = parentObject.getJSONArray("artikli");
 
                 ArrayList<Product> movieModelList = new ArrayList<>();
+                ArrayList<Artikli> movieModelList1 = new ArrayList<>();
 
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
@@ -598,12 +609,16 @@ public class MainActivity extends AppCompatActivity
                      * below single line of code from Gson saves you from writing the json parsing yourself
                      * which is commented below
                      */
-                    Product movieModel = gson.fromJson(finalObject.toString(), Product.class); // a single line json parsing using Gson
+                    Artikli movieModel = gson.fromJson(finalObject.toString(), Artikli.class); // a single line json parsing using Gson
 
-                    movieModelList.add(movieModel);
+                    movieModelList1.add(movieModel);
+                    db.replaceSlike(movieModel.getSlike());
+
                 }
 
-                db.replace(movieModelList);
+                db.replace1(movieModelList1);
+
+
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();

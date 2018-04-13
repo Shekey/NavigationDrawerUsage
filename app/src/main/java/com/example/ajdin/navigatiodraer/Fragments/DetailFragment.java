@@ -25,10 +25,12 @@ import com.example.ajdin.navigatiodraer.adapters.ViewPagerAdapter;
 import com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -45,10 +47,12 @@ public class DetailFragment extends Fragment {
     EditText Kolicina;
     private ProgressBar progressBar;
     private Button bOrder;
-    private Product movieModel;
+    private Artikli movieModel;
     private ListView list;
     private Parcelable state;
     private WrapContentHeightViewPager viewPager;
+    private byte[] bytes;
+    private String s2;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -95,7 +99,7 @@ public class DetailFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(bundle != null){
-            movieModel = (Product) bundle.getSerializable("movieModel");
+            movieModel = (Artikli) bundle.getSerializable("movieModel");
             ArrayList<String> list21=bundle.getStringArrayList("listaSlike");
             viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
@@ -106,6 +110,8 @@ public class DetailFragment extends Fragment {
 //            File file = new File(movieModel.getImageDevice());
 //            ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
             progressBar.setVisibility(View.GONE);
+            //tvMovie.setText(movieModel.getNaziv());
+
             tvMovie.setText(movieModel.getNaziv());
             tvTagline.setText(movieModel.getKategorija());
             tvYear.setText("Cijena: " + movieModel.getCijena()+ " KM");
@@ -131,7 +137,8 @@ public class DetailFragment extends Fragment {
                             Toast.makeText(getActivity(), "Niste unijeli dobar format cijene,unosi se sa '.' ", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        Product pr=new Product(movieModel.getName(),1,movieModel.getBarkod(),movieModel.getJM(),movieModel.getKategorija(),new_price.getText().toString(),movieModel.getImageDevice(),movieModel.getImageDevice(),movieModel.getSnizeno(),movieModel.getDatum_kreiranja());
+                     //  Product pr=new Product(movieModel.getName(),1,movieModel.getBarkod(),movieModel.getJM(),movieModel.getKategorija(),new_price.getText().toString(),movieModel.getImageDevice(),movieModel.getImageDevice(),movieModel.getSnizeno(),movieModel.getDatum_kreiranja());
+                        Artikli pr=new Artikli(movieModel.getNaziv(),movieModel.getBarkod(),movieModel.getId(),movieModel.getSnizeno(),movieModel.getStanje(),movieModel.getDatum(),movieModel.getKategorija(),movieModel.getJedinica(),movieModel.getSlike(),new_price.getText().toString());
                         cart.add(pr, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                             BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
 

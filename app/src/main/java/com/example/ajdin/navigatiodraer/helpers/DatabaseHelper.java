@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-
+import java.nio.charset.Charset;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.models.Slike;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String Jedinica_mjere = "jedinica_mjere";
     public static final String Database_name = "NUR.db";
     public static final int Database_version = 1;
-
+    private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     // racun create
     public static String Table_Name_racun = "Racun";
     public static String RACUN_ID = "racun_id";
@@ -64,30 +67,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("PRAGMA synchronous = 'OFF'");
         db.execSQL("PRAGMA temp_store = 'MEMORY'");
         db.execSQL("PRAGMA cache_size = '500000'");
-        db.execSQL("PRAGMA encoding='UTF-16'");
+        db.execSQL("PRAGMA encoding='UTF-8'");
 
 
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("PRAGMA encoding='UTF-16'");
+        db.execSQL("PRAGMA encoding='UTF-8'");
         db.execSQL("CREATE TABLE `Artikli` (\n " +
                 "\t`Artikal_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`Naziv`\tTEXT NOT NULL DEFAULT '---',\n" +
+                "\t`Id`\tTEXT NOT NULL UNIQUE ,\n" +
                 "\t`JM`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t datumkreiranja DATE NOT NULL,\n" +
                 "\t isSnizeno INTEGER DEFAULT 0 ,\n"+
                 "\t`Cijena`\tTEXT NOT NULL DEFAULT 0,\n" +
+                "\t`Stanje`\tTEXT NOT NULL DEFAULT 0,\n" +
                 "\t`Kategorija`\tTEXT DEFAULT '----',\n" +
-                "\t`Bar_kod`\tTEXT NOT NULL UNIQUE, \n" +
-                "\t`ImageUrl`\tTEXT NOT NULL, \n" +
-                "\t`ImageDevice`\tTEXT  \n" + ");");
+                "\t`Bar_kod`\tTEXT NOT NULL \n" + ");");
+
+       // db.execSQL("CREATE TABLE `Artikli` (\n " +
+        //        "\t`Artikal_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+        //       "\t`Naziv`\tTEXT NOT NULL DEFAULT '---',\n" +
+           //     "\t`JM`\tTEXT NOT NULL DEFAULT '---',\n" +
+             //   "\t datumkreiranja DATE NOT NULL,\n" +
+            //    "\t isSnizeno INTEGER DEFAULT 0 ,\n"+
+             //   "\t`Cijena`\tTEXT NOT NULL DEFAULT 0,\n" +
+             //   "\t`Kategorija`\tTEXT DEFAULT '----',\n" +
+             //   "\t`Bar_kod`\tTEXT NOT NULL UNIQUE, \n" +
+             //   "\t`ImageUrl`\tTEXT NOT NULL, \n" +
+               // "\t`ImageDevice`\tTEXT  \n" + ");");
 
         db.execSQL("CREATE TABLE `FileStack` (\n " +
                 "\t`Stack_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`Path`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t Synced INTEGER DEFAULT 0 "+");");
+
+        db.execSQL("CREATE TABLE `Images` (\n " +
+                "\t`ImageId`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t`ImagePath`\tTEXT NOT NULL DEFAULT '---',\n" +
+                "\t`ImageDevice`\tTEXT NOT NULL DEFAULT '---',\n" +
+                "\t Artikal_ID INTEGER not null "+");");
 
     }
     public void addToStack(String path){
@@ -119,8 +140,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("UPDATE FileStack SET Synced = 1"+" WHERE Path='"+path+"'");
     }
 
+    public void replaceSlike(List<Slike> productList){
+        SQLiteDatabase db = this.getWritableDatabase();
 
 
+        for (Slike s:productList){
+            db.execSQL("REPLACE INTO Images(ImagePath,Artikal_ID) VALUES('"+s.getImage()+"','"+s.getArtikalId()+" ');");
+        }
+
+
+    }
+    public void replace1(ArrayList<Artikli> productList){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Artikli p:productList) {
+
+            db.execSQL("REPLACE INTO Artikli(Naziv,isSnizeno,Cijena,Bar_kod,datumkreiranja,Stanje,Kategorija,Id,JM) VALUES('"+p.getNaziv()+"','"
+                    +p.getSnizeno()+"','"
+                    +p.getCijena()+"','"
+                    +p.getBarkod()+"','"
+                    +p.getDatum()+"','"+p.getStanje()+"','"+p.getKategorija()+"','"+
+                    p.getId()+"','"+p.getJedinica()+" ');");
+
+
+
+        }
+
+
+
+        ArrayList<Artikli> allproducts=getAll1();
+        int sync_product=productList.size();
+        String barkod_delete="";
+        int database_size=allproducts.size();
+        if (sync_product<database_size) {
+            for (Artikli p : allproducts) {
+                boolean pronadjen=false;
+                for (Artikli r:productList){
+                    if (p.getBarkod().equals(r.getBarkod())){
+                        pronadjen=true;
+                    }else{
+                        barkod_delete=p.getBarkod();
+                    }
+                }
+                if (!pronadjen){
+                    db.execSQL("DELETE FROM Artikli WHERE Bar_kod ='"+barkod_delete+"';");
+                    pronadjen=false;
+                    barkod_delete="";
+
+                }
+            }
+
+        }
+    }
 
     public void replace(ArrayList<Product> productList){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -214,6 +285,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL("PRAGMA encoding='UTF-16'");
         database.execSQL("CREATE TABLE `Artikli` (\n " +
                 "\t`Artikal_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t`Id`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t`Naziv`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t`JM`\tTEXT NOT NULL DEFAULT '---',\n" +
                 "\t datumkreiranja REAL  DEFAULT 'julianday()',\n" +
@@ -289,7 +361,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "Inserted " + result);
     }
 
+    public void InsertArtikal1(ArrayList<Artikli> products) {
 
+
+
+    }
     public void InsertArtikal(ArrayList<Product> products) {
         SQLiteDatabase db = this.getWritableDatabase();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -358,6 +434,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public ArrayList<Artikli> getAll1() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ArrayList<Artikli> list = new ArrayList<Artikli>();
+        Cursor productList = db.rawQuery("select * from Artikli", null);
+
+        productList.moveToFirst();
+
+        while (!productList.isAfterLast()) {
+            Cursor slike = db.rawQuery("select * from Images WHERE Artikal_ID="+productList.getString(productList.getColumnIndex("Id")), null);
+            slike.moveToFirst();
+            List<Slike> images=new ArrayList<Slike>();
+            while (!slike.isAfterLast()) {
+                Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("ImageId")));
+                images.add(slike1);
+                slike.moveToNext();
+            }
+            Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
+                    productList.getString(productList.getColumnIndex("Bar_kod")),
+                    productList.getString(productList.getColumnIndex("Id")),
+                    productList.getString(productList.getColumnIndex("isSnizeno")),
+                    productList.getString(productList.getColumnIndex("Stanje")),
+                    productList.getString(productList.getColumnIndex("datumkreiranja")),
+                    productList.getString(productList.getColumnIndex("Kategorija")),
+                    productList.getString(productList.getColumnIndex("JM"))
+                    ,images,productList.getString(productList.getColumnIndex("Cijena")));
+            list.add(product);
+            productList.moveToNext();
+        }
+        productList.close();
+
+        return list;
+    }
+
 
     public ArrayList<Product> getAll() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -445,6 +555,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Select All Query
 
       for (Product p:filtered){
+          if (p.getKategorija().equals(kategory))
+              labels.add(p);
+      }
+
+        // returning lables
+        return labels;
+    }
+    public List<Artikli> getProductsKategoryFiltered1(String kategory,List<Artikli> filtered){
+        List<Artikli> labels = new ArrayList<Artikli>();
+
+
+        // Select All Query
+
+      for (Artikli p:filtered){
           if (p.getKategorija().equals(kategory))
               labels.add(p);
       }

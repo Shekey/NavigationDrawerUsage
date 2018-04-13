@@ -3,6 +3,7 @@ package com.example.ajdin.navigatiodraer.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -45,9 +46,9 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view =inflater.inflate(R.layout.custom_layout,null);
         ImageView view1=(ImageView) view.findViewById(R.id.imageView2);
 
-        File file=new File(images.get(position));
+        File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/YourFolderName/"+images.get(position)+".jpg");
         if (file.exists()) {
-            Bitmap bMap = BitmapFactory.decodeFile(images.get(position));
+            Bitmap bMap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getAbsolutePath()+"/YourFolderName/"+images.get(position)+".jpg");
             view1.setImageBitmap(bMap);
 
         }

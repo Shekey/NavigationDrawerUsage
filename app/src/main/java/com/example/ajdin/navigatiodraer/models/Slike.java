@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.SerializedName;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -32,17 +33,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Slike {
 
-    @JsonProperty("0")
+    @SerializedName("0")
     private String _0;
-    @JsonProperty("Id")
+    @SerializedName("Id")
     private String id;
-    @JsonProperty("1")
+    @SerializedName("1")
     private String _1;
-    @JsonProperty("image")
+    @SerializedName("image")
     private String image;
-    @JsonProperty("2")
+    @SerializedName("2")
     private String _2;
-    @JsonProperty("artikalId")
+    @SerializedName("artikalId")
     private String artikalId;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -56,20 +57,16 @@ public class Slike {
 
     /**
      *
-     * @param id
+
      * @param artikalId
      * @param image
-     * @param _0
-     * @param _1
-     * @param _2
+
      */
-    public Slike(String _0, String id, String _1, String image, String _2, String artikalId) {
-        super();
-        this._0 = _0;
-        this.id = id;
-        this._1 = _1;
+
+
+    public Slike(String image, String artikalId,String id) {
         this.image = image;
-        this._2 = _2;
+        this.id=id;
         this.artikalId = artikalId;
     }
 

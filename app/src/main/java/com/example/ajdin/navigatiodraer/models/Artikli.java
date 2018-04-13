@@ -5,66 +5,58 @@ package com.example.ajdin.navigatiodraer.models;
  */
 
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.gson.annotations.SerializedName;
+
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "0",
+        "Naziv",
+        "Barkod",
         "Id",
-        "1",
-        "naziv",
-        "2",
-        "barkod",
-        "3",
-        "cijena",
-        "4",
-        "snizeno",
-        "5",
-        "datum_kreiranja",
-        "6",
-        "NazivKategorije",
-        "slike"
+        "Snizeno",
+        "Stanje",
+        "Datum",
+        "Kategorija",
+        "Jedinica",
+        "slike",
+        "Cijena"
 })
-public class Artikli {
+public class Artikli implements Serializable,Saleable {
 
-    @JsonProperty("0")
-    private String _0;
-    @JsonProperty("Id")
-    private String id;
-    @JsonProperty("1")
-    private String _1;
-    @JsonProperty("naziv")
+    @SerializedName("Naziv")
     private String naziv;
-    @JsonProperty("2")
-    private String _2;
-    @JsonProperty("barkod")
+    @SerializedName("Barkod")
     private String barkod;
-    @JsonProperty("3")
-    private String _3;
-    @JsonProperty("cijena")
-    private String cijena;
-    @JsonProperty("4")
-    private String _4;
-    @JsonProperty("snizeno")
+    @SerializedName("Id")
+    private String id;
+    @SerializedName("Snizeno")
     private String snizeno;
-    @JsonProperty("5")
-    private String _5;
-    @JsonProperty("datum_kreiranja")
-    private String datumKreiranja;
-    @JsonProperty("6")
-    private String _6;
-    @JsonProperty("NazivKategorije")
-    private String nazivKategorije;
-    @JsonProperty("slike")
+    @SerializedName("Stanje")
+    private String stanje;
+    @SerializedName("Datum")
+    private String datum;
+    @SerializedName("Kategorija")
+    private String kategorija;
+    @SerializedName("Jedinica")
+    private String jedinica;
+    @SerializedName("slike")
     private List<Slike> slike = null;
+    @SerializedName("Cijena")
+    private String cijena;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -77,49 +69,49 @@ public class Artikli {
 
     /**
      *
-     * @param nazivKategorije
+     * @param jedinica
      * @param id
      * @param naziv
      * @param slike
      * @param barkod
-     * @param _3
-     * @param _4
-     * @param _5
-     * @param _6
-     * @param _0
+     * @param stanje
+     * @param kategorija
+     * @param datum
      * @param cijena
-     * @param _1
      * @param snizeno
-     * @param _2
-     * @param datumKreiranja
      */
-    public Artikli(String _0, String id, String _1, String naziv, String _2, String barkod, String _3, String cijena, String _4, String snizeno, String _5, String datumKreiranja, String _6, String nazivKategorije, List<Slike> slike) {
+    public Artikli(String naziv, String barkod, String id, String snizeno, String stanje, String datum, String kategorija, String jedinica, List<Slike> slike, String cijena) {
         super();
-        this._0 = _0;
-        this.id = id;
-        this._1 = _1;
         this.naziv = naziv;
-        this._2 = _2;
         this.barkod = barkod;
-        this._3 = _3;
-        this.cijena = cijena;
-        this._4 = _4;
+        this.id = id;
         this.snizeno = snizeno;
-        this._5 = _5;
-        this.datumKreiranja = datumKreiranja;
-        this._6 = _6;
-        this.nazivKategorije = nazivKategorije;
+        this.stanje = stanje;
+        this.datum = datum;
+        this.kategorija = kategorija;
+        this.jedinica = jedinica;
         this.slike = slike;
+        this.cijena = cijena;
     }
 
-    @JsonProperty("0")
-    public String get0() {
-        return _0;
+
+    public String getNaziv() {
+        return naziv;
     }
 
-    @JsonProperty("0")
-    public void set0(String _0) {
-        this._0 = _0;
+    @JsonProperty("Naziv")
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+
+    @JsonProperty("Barkod")
+    public String getBarkod() {
+        return barkod;
+    }
+
+    @JsonProperty("Barkod")
+    public void setBarkod(String barkod) {
+        this.barkod = barkod;
     }
 
     @JsonProperty("Id")
@@ -132,124 +124,79 @@ public class Artikli {
         this.id = id;
     }
 
-    @JsonProperty("1")
-    public String get1() {
-        return _1;
+    @Override
+    public BigDecimal getPrice() {
+        return BigDecimal.valueOf(Double.valueOf(cijena));
     }
 
-    @JsonProperty("1")
-    public void set1(String _1) {
-        this._1 = _1;
-    }
-
-    @JsonProperty("naziv")
-    public String getNaziv() {
-        return naziv;
-    }
-
-    @JsonProperty("naziv")
-    public void setNaziv(String naziv) {
-        this.naziv = naziv;
-    }
-
-    @JsonProperty("2")
-    public String get2() {
-        return _2;
-    }
-
-    @JsonProperty("2")
-    public void set2(String _2) {
-        this._2 = _2;
-    }
-
-    @JsonProperty("barkod")
-    public String getBarkod() {
-        return barkod;
-    }
-
-    @JsonProperty("barkod")
-    public void setBarkod(String barkod) {
-        this.barkod = barkod;
-    }
-
-    @JsonProperty("3")
-    public String get3() {
-        return _3;
-    }
-
-    @JsonProperty("3")
-    public void set3(String _3) {
-        this._3 = _3;
-    }
-
-    @JsonProperty("cijena")
-    public String getCijena() {
-        return cijena;
-    }
-
-    @JsonProperty("cijena")
-    public void setCijena(String cijena) {
-        this.cijena = cijena;
-    }
-
-    @JsonProperty("4")
-    public String get4() {
-        return _4;
-    }
-
-    @JsonProperty("4")
-    public void set4(String _4) {
-        this._4 = _4;
-    }
-
-    @JsonProperty("snizeno")
+    @JsonProperty("Snizeno")
     public String getSnizeno() {
         return snizeno;
     }
 
-    @JsonProperty("snizeno")
+    @Override
+    public String getJM() {
+        return jedinica;
+    }
+
+    @JsonProperty("Snizeno")
     public void setSnizeno(String snizeno) {
         this.snizeno = snizeno;
     }
 
-    @JsonProperty("5")
-    public String get5() {
-        return _5;
+    @JsonProperty("Stanje")
+    public String getStanje() {
+        return stanje;
     }
 
-    @JsonProperty("5")
-    public void set5(String _5) {
-        this._5 = _5;
+    @JsonProperty("Stanje")
+    public void setStanje(String stanje) {
+        this.stanje = stanje;
     }
 
-    @JsonProperty("datum_kreiranja")
-    public String getDatumKreiranja() {
-        return datumKreiranja;
+    @JsonProperty("Datum")
+    public String getDatum() {
+        return datum;
     }
 
-    @JsonProperty("datum_kreiranja")
-    public void setDatumKreiranja(String datumKreiranja) {
-        this.datumKreiranja = datumKreiranja;
+    @JsonProperty("Datum")
+    public void setDatum(String datum) {
+        this.datum = datum;
     }
 
-    @JsonProperty("6")
-    public String get6() {
-        return _6;
+    @JsonProperty("Kategorija")
+    public String getKategorija() {
+        return kategorija;
     }
 
-    @JsonProperty("6")
-    public void set6(String _6) {
-        this._6 = _6;
+    @Override
+    public String getImageDevice() {
+        return null;
     }
 
-    @JsonProperty("NazivKategorije")
-    public String getNazivKategorije() {
-        return nazivKategorije;
+    @Override
+    public String getDatum_kreiranja() {
+        return datum;
     }
 
-    @JsonProperty("NazivKategorije")
-    public void setNazivKategorije(String nazivKategorije) {
-        this.nazivKategorije = nazivKategorije;
+    @Override
+    public String getName() {
+        return naziv;
+    }
+
+    @JsonProperty("Kategorija")
+    public void setKategorija(String kategorija) {
+        this.kategorija = kategorija;
+    }
+
+    @JsonProperty("Jedinica")
+    public String getJedinica() {
+        return jedinica;
+    }
+
+    @JsonProperty("Jedinica")
+    public void setJedinica(String jedinica) {
+        this.jedinica = jedinica;
     }
 
     @JsonProperty("slike")
@@ -260,6 +207,16 @@ public class Artikli {
     @JsonProperty("slike")
     public void setSlike(List<Slike> slike) {
         this.slike = slike;
+    }
+
+    @JsonProperty("Cijena")
+    public String getCijena() {
+        return cijena;
+    }
+
+    @JsonProperty("Cijena")
+    public void setCijena(String cijena) {
+        this.cijena = cijena;
     }
 
     @JsonAnyGetter
