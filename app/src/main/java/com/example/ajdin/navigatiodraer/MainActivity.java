@@ -3,6 +3,7 @@ package com.example.ajdin.navigatiodraer;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
@@ -13,9 +14,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -53,6 +56,7 @@ import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.models.Slike;
 import com.example.ajdin.navigatiodraer.services.ConnectionService;
 import com.example.ajdin.navigatiodraer.services.MyServiceUploading;
 import com.example.ajdin.navigatiodraer.services.TimeService;
@@ -67,6 +71,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -613,6 +618,10 @@ public class MainActivity extends AppCompatActivity
 
                     movieModelList1.add(movieModel);
                     db.replaceSlike(movieModel.getSlike());
+                    for (Slike ss:movieModel.getSlike()) {
+                        downloadImage(ss.getId(),ss.getImage());
+                    }
+
 
                 }
 
@@ -658,5 +667,32 @@ public class MainActivity extends AppCompatActivity
             mAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, mAllValues);
             lvArtikli.setAdapter(mAdapter);
         }
+
+    }
+    public void downloadImage(String fileName,String imagePath){
+        String filename = fileName+".jpg";
+        String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
+        File direct =
+                new File(Environment.DIRECTORY_PICTURES,
+                        File.separator + "YourFolderName" + File.separator);
+
+
+        if (!direct.exists()) {
+            direct.mkdir();
+            Log.d("DOWNLOADING IMAGE", "dir created for first time");
+        }
+
+        DownloadManager dm = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri downloadUri = Uri.parse(downloadUrlOfImage);
+        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(filename)
+                .setMimeType("image/jpeg")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                        File.separator + "YourFolderName" + File.separator + filename);
+
+        dm.enqueue(request);
     }
 }

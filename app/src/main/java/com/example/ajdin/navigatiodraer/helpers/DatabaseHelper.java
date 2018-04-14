@@ -106,8 +106,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE `Images` (\n " +
                 "\t`ImageId`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "\t`ImagePath`\tTEXT NOT NULL DEFAULT '---',\n" +
-                "\t`ImageDevice`\tTEXT NOT NULL DEFAULT '---',\n" +
+                "\t`ImagePath`\tTEXT NOT NULL ,\n" +
+                "\t`IdSlika`\tTEXT NOT NULL ,\n" +
                 "\t Artikal_ID INTEGER not null "+");");
 
     }
@@ -142,11 +142,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void replaceSlike(List<Slike> productList){
         SQLiteDatabase db = this.getWritableDatabase();
-
+        ArrayList<Slike> sveSlike=getAllSlike();
 
         for (Slike s:productList){
-            db.execSQL("REPLACE INTO Images(ImagePath,Artikal_ID) VALUES('"+s.getImage()+"','"+s.getArtikalId()+" ');");
+            db.execSQL("INSERT INTO Images(ImagePath,IdSlika,Artikal_ID) VALUES('"+s.getImage()+"','"+s.getId() +"','"+s.getArtikalId()+" ');");
         }
+
+
+        int sync_product=productList.size();
+        String id_delete="";
+
+        int database_size=sveSlike.size();
+//        if (sync_product<database_size) {
+//            for (Slike p : sveSlike) {
+//                boolean pronadjen=false;
+//                for (Slike r:productList){
+//                    if (p.getImage().equals(r.getImage())){
+//                        pronadjen=true;
+//                    }else{
+//                        id_delete=p.getId();
+//                    }
+//                }
+//                if (!pronadjen){
+//
+//                        File file = new File(id_delete+".jpg");
+//                        if (file.exists()){
+//                            file.delete();
+//
+//                        }
+//                    db.execSQL("DELETE FROM Images WHERE Artikal_ID ='"+id_delete+"';");
+//
+//
+//
+//                    pronadjen=false;
+//                    id_delete="";
+//
+//                }
+//            }
+//
+//        }
 
 
     }
@@ -170,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ArrayList<Artikli> allproducts=getAll1();
         int sync_product=productList.size();
-        String barkod_delete="";
+        String id_delete="";
         int database_size=allproducts.size();
         if (sync_product<database_size) {
             for (Artikli p : allproducts) {
@@ -179,13 +213,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     if (p.getBarkod().equals(r.getBarkod())){
                         pronadjen=true;
                     }else{
-                        barkod_delete=p.getBarkod();
+                        id_delete=p.getId();
                     }
                 }
                 if (!pronadjen){
-                    db.execSQL("DELETE FROM Artikli WHERE Bar_kod ='"+barkod_delete+"';");
+                    for (Slike slika:p.getSlike()) {
+                        File file = new File(slika.getId()+".jpg");
+                        if (file.exists()){
+                            file.delete();
+
+                        }
+
+                    }
+                    db.execSQL("DELETE FROM Images WHERE Artikal_ID ='"+id_delete+"';");
+                    db.execSQL("DELETE FROM Artikli WHERE Id ='"+id_delete+"';");
                     pronadjen=false;
-                    barkod_delete="";
+                    id_delete="";
 
                 }
             }
@@ -434,6 +477,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public ArrayList<Slike> getAllSlike(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Slike> listaSlike = new ArrayList<Slike>();
+        Cursor productList = db.rawQuery("select * from Images", null);
+        productList.moveToFirst();
+        while (!productList.isAfterLast()) {
+            Slike slike1=new Slike(productList.getString(productList.getColumnIndex("ImagePath")),productList.getString(productList.getColumnIndex("Artikal_ID")),productList.getString(productList.getColumnIndex("IdSlika")));
+            listaSlike.add(slike1);
+            productList.moveToNext();
+
+        }
+        productList.close();
+       return listaSlike;
+
+
+
+    }
     public ArrayList<Artikli> getAll1() {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -447,10 +507,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             slike.moveToFirst();
             List<Slike> images=new ArrayList<Slike>();
             while (!slike.isAfterLast()) {
-                Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("ImageId")));
+                Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("IdSlika")));
                 images.add(slike1);
                 slike.moveToNext();
             }
+            slike.close();;
             Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
                     productList.getString(productList.getColumnIndex("Bar_kod")),
                     productList.getString(productList.getColumnIndex("Id")),
@@ -464,6 +525,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             productList.moveToNext();
         }
         productList.close();
+
 
         return list;
     }

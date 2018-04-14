@@ -78,10 +78,12 @@ public class MenuAdapter extends ArrayAdapter {
         final ArrayList<Slike> slikes=new ArrayList<>(movieModelList.get(position).getSlike());
         final int size=slikes.size();
 
-              File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/YourFolderName/"+slikes.get(size-1).getArtikalId());
+              File file = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                      File.separator + "YourFolderName" + File.separator+slikes.get(size-1).getId()+".jpg");
         if (file.exists()) {
-            Bitmap bMap = BitmapFactory.decodeFile(movieModelList.get(position).getImageDevice());
-            holder.ivMovieIcon.setImageBitmap(bMap);
+            ImageLoader.getInstance().displayImage("file:///"+file.getAbsolutePath(),holder.ivMovieIcon);
+//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
+//            holder.ivMovieIcon.setImageBitmap(bMap);
 
         }
         else {
@@ -103,7 +105,7 @@ public class MenuAdapter extends ArrayAdapter {
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     progressBar.setVisibility(View.GONE);
                     finalHolder.ivMovieIcon.setVisibility(View.VISIBLE);
-                    saveImage(slikes.get(size-1).getArtikalId(),finalHolder.ivMovieIcon);
+                    saveImage(slikes.get(size-1).getId(),finalHolder.ivMovieIcon);
                 }
 
                 @Override
@@ -167,17 +169,16 @@ public class MenuAdapter extends ArrayAdapter {
         Bitmap bitmap = draw.getBitmap();
 
         FileOutputStream outStream = null;
-        File sdCard = Environment.getExternalStorageDirectory();
-        File dir = new File(sdCard.getAbsolutePath() + "/YourFolderName");
-        dir.mkdirs();
-        String fileName = filenamejpg+".jpg";
-        File outFile = new File(dir, fileName);
+        File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName/"+filenamejpg+".jpg");
+        String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg+".jpg";
+        File outFile = new File(fileName);
         try {
             outStream = new FileOutputStream(outFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
         try {
             outStream.flush();
         } catch (IOException e) {

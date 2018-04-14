@@ -352,7 +352,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 ArrayList<String> slike=new ArrayList<>();
                 for (Slike s:movieModel.getSlike()) {
-                    slike.add(s.getArtikalId());
+                    slike.add(s.getId());
 
                 }
                 bundle.putStringArrayList("listaSlike",slike);
@@ -455,7 +455,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                     ft.hide(MenuFragment.this);
                     ArrayList<String> slike=new ArrayList<>();
                     for (Slike s:movieModel.getSlike()) {
-                        slike.add(s.getArtikalId());
+                        slike.add(s.getId());
 
                     }
 
@@ -650,7 +650,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                         ft.hide(MenuFragment.this);
                         ArrayList<String> slike=new ArrayList<>();
                         for (Slike s:movieModel.getSlike()) {
-                            slike.add(s.getArtikalId());
+                            slike.add(s.getId());
 
                         }
                         bundle.putStringArrayList("listaSlike",slike);

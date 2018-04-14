@@ -46,9 +46,10 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view =inflater.inflate(R.layout.custom_layout,null);
         ImageView view1=(ImageView) view.findViewById(R.id.imageView2);
 
-        File file=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/YourFolderName/"+images.get(position)+".jpg");
+        File file=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName" + File.separator+images.get(position)+".jpg");
         if (file.exists()) {
-            Bitmap bMap = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().getAbsolutePath()+"/YourFolderName/"+images.get(position)+".jpg");
+            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
             view1.setImageBitmap(bMap);
 
         }

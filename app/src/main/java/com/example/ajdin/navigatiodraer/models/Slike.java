@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import com.google.gson.annotations.SerializedName;
         "2",
         "artikalId"
 })
-public class Slike {
+public class Slike implements Serializable {
 
     @SerializedName("0")
     private String _0;
