@@ -22,10 +22,13 @@ import com.example.ajdin.navigatiodraer.adapters.ViewPagerAdapter;
 import com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
-import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.models.Artikli;
+
+import com.example.ajdin.navigatiodraer.models.Slike;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +43,7 @@ public class EditProduct extends Fragment {
     EditText Kolicina;
     private ProgressBar progressBar;
     private Button bOrder;
-    private Product movieModel;
+    private Artikli movieModel;
     private ListView list;
     private Parcelable state;
     private WrapContentHeightViewPager viewPager;
@@ -85,20 +88,22 @@ public class EditProduct extends Fragment {
         bOrder = (Button)view. findViewById(R.id.bOrderEdited);
         progressBar = (ProgressBar)view.findViewById(R.id.progressBarEdited);
         getActivity().setTitle("Detalji proizvoda");
-        String [] images;
+
 
 
 
         Bundle bundle = getArguments();
         if(bundle != null){
-            movieModel = (Product) bundle.getSerializable("productEdit");
+            movieModel = (Artikli) bundle.getSerializable("productEdit");
             kol = bundle.getString("kolEdit");
-            ArrayList<String> list21=new ArrayList<>();
-            list21.add(movieModel.getImageDevice());
-            list21.add(movieModel.getImageDevice());
+            ArrayList<String> slike=new ArrayList<>();
+            for (Slike s:movieModel.getSlike()) {
+                slike.add(s.getId());
+
+            }
             viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2Edited);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
-            ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),list21);
+            ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),slike);
             viewPager.setAdapter(adapter1);
 
 //            // Then later, when you want to display image
@@ -134,8 +139,9 @@ public class EditProduct extends Fragment {
                             Toast.makeText(getActivity(), "Niste unijeli dobar format cijene,unosi se sa '.' ", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        movieModel.setCijena(new_price.getText().toString());
+
                         cart.remove(movieModel);
+                        movieModel.setCijena(new_price.getText().toString());
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                         BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
                         CartFragment fragment=new CartFragment();

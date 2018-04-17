@@ -37,6 +37,7 @@ import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.PreviewModel;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.opencsv.CSVReader;
@@ -230,7 +231,7 @@ public class HistoryFragment extends Fragment {
 
 
     public ArrayList<PreviewModel> Read(String path) throws ParseException {
-        Product products;
+        Artikli products;
         ArrayList<PreviewModel> models=new ArrayList<>();
         Pattern MY_PATTERN = Pattern.compile("\\-(.*)");
         Matcher m = MY_PATTERN.matcher(path);
@@ -257,7 +258,7 @@ public class HistoryFragment extends Fragment {
                 String[] line;
                 long timeStart = System.nanoTime();
                 while ((line = csvReader.readNext()) != null) {
-                    Product temp = db.getData(line[0]);
+                    Artikli temp = db.getData(line[0]);
                     if (daysBetween(date, date2) > 1) {
                         models.add(new PreviewModel(temp.getNaziv(), line[2], line[1]));
                     }
@@ -267,7 +268,10 @@ public class HistoryFragment extends Fragment {
 
                         if (temp != null) {
 
-                            products = new Product(temp.getNaziv(), temp.getArtikal_id(), temp.getBarkod(), temp.getJM(), temp.getKategorija(), temp.getCijena(), temp.getImageUrl(), temp.getImageDevice(), temp.getSnizeno(), temp.getDatum_kreiranja());
+                            products = new Artikli(temp.getNaziv(), temp.getBarkod(), temp.getId(), temp.getSnizeno(),
+                                    temp.getStanje(), temp.getDatum(),
+                                    temp.getKategorija(), temp.getJedinica(),
+                                    temp.getSlike(), temp.getCijena());
                             Cart cart = CartHelper.getCart();
                             cart.add(products, Double.valueOf(line[1]), line[2]);
 
@@ -280,7 +284,10 @@ public class HistoryFragment extends Fragment {
                         count++;
                         if (temp != null) {
                             BigDecimal decimal = temp.getPrice();
-                            products = new Product(temp.getNaziv(), temp.getArtikal_id(), temp.getBarkod(), temp.getJM(), temp.getKategorija(), temp.getCijena(), temp.getImageUrl(), temp.getImageDevice(), temp.getSnizeno(), temp.getDatum_kreiranja());
+                            products = new Artikli(temp.getNaziv(), temp.getBarkod(), temp.getId(), temp.getSnizeno(),
+                                    temp.getStanje(), temp.getDatum(),
+                                    temp.getKategorija(), temp.getJedinica(),
+                                    temp.getSlike(), temp.getCijena());
                             Cart cart = CartHelper.getCart();
                             cart.add(products, Double.valueOf(line[1]), decimal.toString());
 

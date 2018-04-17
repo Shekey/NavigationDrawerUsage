@@ -21,11 +21,14 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.adapters.MenuAdapter;
 import com.example.ajdin.navigatiodraer.adapters.MovieAdapterDatabase;
 import com.example.ajdin.navigatiodraer.adapters.NEWProductsAdapter;
 import com.example.ajdin.navigatiodraer.adapters.SnizenoAdapter;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.models.Slike;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -42,17 +45,33 @@ import static android.content.ContentValues.TAG;
  */
 public class NewproductsFragment extends Fragment implements SearchView.OnQueryTextListener,AdapterView.OnItemSelectedListener {
     public ListView lvArtikli;
-    private DatabaseHelper db;
+    DatabaseHelper db;
+    private final String URL_TO_HIT = "http://192.168.1.103:80/artikli/getJson.php";
     private ProgressDialog dialog;
     private SearchView editsearch;
-    private ArrayList<Product> movieModelList;
+    List<String> mAllValues;
+    private ArrayAdapter<String> mAdapter;
+    private Context mContext=getActivity();
+    private ArrayList<Artikli> movieModelList;
     private NEWProductsAdapter adapter;
-    private List<Product> productList;
+    private List<Artikli> productList;
+    private List<Artikli> productList1;
+    String[] bankNames={"Odaberi redoslijed","Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
+    String[] kategoies;
+    private List<Artikli> filteredValues;
+    private List<Artikli> filteredValues1;
+    private List<Artikli> filteredKategory;
+    private List<Artikli> filteredKategory1;
+    private List<Artikli> filteredAll;
+    private List<Artikli> filteredAll1;
     private Parcelable state;
-    String[] bankNames={"Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
-    private List<Product> filteredValues;
-    private List<Product> filteredKategory;
-    private List<Product> filteredAll;
+    private Spinner spin2;
+    private List<String> lables;
+    private int odabraniSort;
+    private int odabranaKategorija;
+    private Spinner spin;
+    private String textGeteR;
+    private FloatingActionButton fab;
 
     @Override
     public void onResume() {
@@ -60,9 +79,33 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
         }
-        getActivity().setTitle("Novi proizvodi");
+        getActivity().setTitle("Svi proizvodi");
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
 
+        fab.setImageResource(R.drawable.dodaj_osobu);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                KupacFragment fragment1=new KupacFragment();
+                fragment1.show(getActivity().getSupportFragmentManager(),"dodavanje_kupca");
+
+//
+            }
+        });
         super.onResume();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+            onResume();
+        }
     }
 
     @Override
@@ -70,17 +113,21 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         state = lvArtikli.onSaveInstanceState();
         super.onPause();
     }
+
     public NewproductsFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_newproducts, container, false);
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+
+        View view = inflater.inflate(R.layout.fragment_menu, container, false);
+        db=new DatabaseHelper(getContext());
+        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         if (sharedPreferences.getString("ime","").isEmpty()) {
             fab.setVisibility(View.VISIBLE);
@@ -88,23 +135,129 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         else {
             fab.setVisibility(View.INVISIBLE);
         }
+        getActivity().setTitle("Novi proizvodi");
         fab.setImageResource(R.drawable.dodaj_osobu);
-        lvArtikli=view.findViewById(R.id.lvArtikliNEW);
-        lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementNEW));
-        Spinner spin = (Spinner)view.findViewById(R.id.simpleSpinnerNEW);
+        ListView list=(ListView)getActivity().findViewById(R.id.lista);
+        list.setVisibility(View.INVISIBLE);
+        spin = (Spinner)view.findViewById(R.id.simpleSpinner);
+        spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
-        db=new DatabaseHelper(getContext());
+        spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (productList == null) {
+
+                } else {
+
+
+                    odabranaKategorija = i;
+                    if (i == 0) {
+                        if (filteredAll==null) {
+                            filteredAll = new ArrayList<Artikli>(productList);
+                        }
+                        else {
+                            filteredAll = new ArrayList<Artikli>(productList);
+
+                        }
+
+
+                    } else {
+
+                        filteredKategory = new ArrayList<>(db.getProductsKategoryFiltered1(lables.get(i), productList));
+
+                        if (textGeteR != null) {
+                            for (Artikli p : filteredKategory) {
+                                if (!p.getNaziv().toLowerCase().contains(textGeteR)) {
+                                    filteredKategory.remove(p);
+                                }
+                            }
+
+                        }
+
+                        filteredAll=new ArrayList<>(filteredKategory);
+                    }
+
+                    adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, filteredAll);
+                    lvArtikli.setAdapter(adapter);
+                    if (state != null) {
+                        Log.d(TAG, "trying to restore listview state..");
+                        lvArtikli.onRestoreInstanceState(state);
+                    }
+                    final List<Artikli> finalUsedList = filteredAll;
+                    lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Artikli movieModel = finalUsedList.get(position); // getting the model
+                            DetailFragment fragment = new DetailFragment();
+                            android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                            Bundle bundle = new Bundle();
+                            ft.hide(NewproductsFragment.this);
+                            bundle.putSerializable("movieModel", movieModel);
+
+                            ArrayList<String> slike=new ArrayList<>();
+                            for (Slike s:movieModel.getSlike()) {
+                                slike.add(s.getId());
+
+                            }
+                            bundle.putStringArrayList("listaSlike",slike);
+                            fragment.setArguments(bundle);
+                            ft.add(R.id.content_main, fragment,"detail_fragment");
+//                editsearch.setQuery("", false);
+                            ft.addToBackStack("detail_fragment");
+                            ft.commit();
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+//Creating the ArrayAdapter instance having the bank name list
         ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,bankNames);
+//        ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,li);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //Setting the ArrayAdapter data on the Spinner
         spin.setAdapter(aa);
-        editsearch = (SearchView)view.findViewById(R.id.simpleSearchViewNEW);
-        editsearch.setOnQueryTextListener(this);
-        if(!db.isEmpty()){
+        loadSpinnerData();
+//        spin2.setAdapter(aa2);
+
+        if(db.isEmpty()){
+            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+            lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
+//            dialog = new ProgressDialog(getActivity());
+//            dialog.setIndeterminate(true);
+//            dialog.setCancelable(false);
+//            dialog.setMessage("Loading. Please wait...");
+//            // Create default options which will be used for every
+//            //  displayImage(...) call if no options will be passed to this method
+//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                    .cacheInMemory(true)
+//                    .cacheOnDisk(true)
+//                    .build();
+//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
+//                    .defaultDisplayImageOptions(defaultOptions)
+//                    .build();
+//            ImageLoader.getInstance().init(config); // Do it on Application start
+//
+//            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+//            new JSONTask().execute(URL_TO_HIT);
+
+        }else
+        {
             dialog = new ProgressDialog(getActivity());
             dialog.setIndeterminate(true);
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
+
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
@@ -114,106 +267,21 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                     .build();
             ImageLoader.getInstance().init(config); // Do it on Application start
 
+            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
 
             new JSONTaskDatabase().execute();
+            editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
+            editsearch.setOnQueryTextListener(NewproductsFragment.this);
         }
-
 
 
         return view;
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        final List<Product> usedList;
-        if (filteredValues==null){
-            usedList=new ArrayList<Product>(productList);
-        }
-        else {
-            usedList=new ArrayList<Product>(filteredValues);
-
-        }
-        if (i==0){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
-                }
-
-
-            });
-        }
-        else if(i==1) {
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product product, Product t1) {
-                    return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
-                }
-
-
-            });
-        }
-        else if(i==2){
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p2.getPrice().compareTo(p1.getPrice());
-                }
-
-
-
-            });
-
-        }
-        else {
-
-            Collections.sort(usedList, new Comparator<Product>()
-            {
-                @Override
-                public int compare(Product p1, Product p2)
-                {
-                    return p1.getPrice().compareTo(p2.getPrice());
-                }
-
-
-            });
-
-        }
-        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, usedList);
-        lvArtikli.setAdapter(adapter);
-        if(state != null) {
-            Log.d(TAG, "trying to restore listview state..");
-            lvArtikli.onRestoreInstanceState(state);
-        }
-        lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = usedList.get(position); // getting the model
-                DetailFragment fragment=new DetailFragment();
-                android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                Bundle bundle=new Bundle();
-                ArrayList<String> slike=new ArrayList<>();
-                slike.add(movieModel.getImageDevice());
-                slike.add(movieModel.getImageDevice());
-                bundle.putStringArrayList("listaSlike",slike);
-                ft.hide(NewproductsFragment.this);
-                bundle.putSerializable("movieModel",movieModel);
-                fragment.setArguments(bundle);
-                ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("detail_fragment");
-                ft.commit();
-
-            }
-        });
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+    public void onSaveInstanceState(Bundle outState) {
+        state = lvArtikli.onSaveInstanceState();
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -228,14 +296,33 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             return false;
         }
 
-        filteredValues = new ArrayList<Product>(productList);
-        for (Product value : productList) {
-            if (!value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+        textGeteR = newText;
+        filteredValues = new ArrayList<Artikli>(productList);
+        for (Artikli value : productList) {
+            if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
+                if (odabranaKategorija > 0) {
+                    if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
+                        filteredValues.remove(value);
+                    }
+                }
+            }
+            else {
                 filteredValues.remove(value);
             }
         }
 
-        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, filteredValues);
+//            if (odabranaKategorija > 0) {
+//                for (Product p : filteredValues) {
+//                    if (!p.getKategorija().equals(lables.get(odabranaKategorija))) {
+//                        filteredValues.remove(p);
+//                    }
+//                }
+//            }
+        filteredAll = new ArrayList<>(filteredValues);
+
+
+
+        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
 
         lvArtikli.setAdapter(adapter);
         if(state != null) {
@@ -245,18 +332,23 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Product movieModel = filteredValues.get(position); // getting the model
+                Artikli movieModel = filteredAll.get(position); // getting the model
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
-                Bundle bundle=new Bundle();
                 ft.hide(NewproductsFragment.this);
+                Bundle bundle=new Bundle();
+
                 ArrayList<String> slike=new ArrayList<>();
-                slike.add(movieModel.getImageDevice());
-                slike.add(movieModel.getImageDevice());
+                for (Slike s:movieModel.getSlike()) {
+                    slike.add(s.getId());
+
+                }
                 bundle.putStringArrayList("listaSlike",slike);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
-                ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("detail_fragment");
+                ft.addToBackStack("detail_fragment");
+                editsearch.setQuery("", true);
+                ft.add(R.id.content_main,fragment,"detail_fragment");
                 ft.commit();
 
             }
@@ -264,9 +356,137 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
         return false;
     }
-    public class JSONTaskDatabase extends AsyncTask<Void,String, List<Product> > {
 
-        private List<Product> usedList;
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (productList == null) {
+
+        } else {
+
+
+            if (filteredAll==null)
+                filteredAll = new ArrayList<Artikli>(productList);
+
+
+            odabraniSort = i;
+            if (i == 0) {
+
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
+                    @Override
+                    public int compare(Artikli product, Artikli t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+
+                    }
+
+
+                });
+            }
+            if (i == 1) {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
+                    @Override
+                    public int compare(Artikli product, Artikli t1) {
+                        return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
+                    }
+
+
+                });
+            } else if (i == 2) {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
+                    @Override
+                    public int compare(Artikli product, Artikli t1) {
+                        return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
+                    }
+
+
+                });
+            } else if (i == 3) {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
+                    @Override
+                    public int compare(Artikli p1, Artikli p2) {
+                        return p2.getPrice().compareTo(p1.getPrice());
+                    }
+
+
+                });
+
+            } else {
+
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
+                    @Override
+                    public int compare(Artikli p1, Artikli p2) {
+                        return p1.getPrice().compareTo(p2.getPrice());
+                    }
+
+
+                });
+
+            }
+
+
+
+
+
+            adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
+            lvArtikli.setAdapter(adapter);
+            if (state != null) {
+                Log.d(TAG, "trying to restore listview state..");
+                lvArtikli.onRestoreInstanceState(state);
+            }
+            final List<Artikli> finalUsedList = filteredAll;
+            lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Artikli movieModel = finalUsedList.get(position); // getting the model
+                    DetailFragment fragment = new DetailFragment();
+                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
+                    ft.hide(NewproductsFragment.this);
+                    ArrayList<String> slike=new ArrayList<>();
+                    for (Slike s:movieModel.getSlike()) {
+                        slike.add(s.getId());
+
+                    }
+
+
+                    bundle.putStringArrayList("listaSlike",slike);
+                    bundle.putSerializable("movieModel", movieModel);
+                    fragment.setArguments(bundle);
+                    ft.add(R.id.content_main, fragment,"detail_fragment");
+//                editsearch.setQuery("", false);
+                    ft.addToBackStack("detail_fragment");
+                    ft.commit();
+
+                }
+            });
+        }
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+    private void loadSpinnerData() {
+        // database handler
+
+        // Spinner Drop down elements
+        lables = db.getAllLabels();
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, lables);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spin2.setAdapter(dataAdapter);
+    }
+    public class JSONTaskDatabase extends AsyncTask<Void,String, List<Artikli> > {
+
+        private List<Artikli> usedList;
 
         @Override
         protected void onPreExecute() {
@@ -275,28 +495,28 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         }
 
         @Override
-        protected List<Product> doInBackground(Void... params) {
+        protected List<Artikli> doInBackground(Void... params) {
 
-            productList = db.getAllNEW();
+            productList = db.getAllNEWArtikli();
             return productList;
 
         }
 
         @Override
-        protected void onPostExecute(final List<Product> result) {
+        protected void onPostExecute(final List<Artikli> result) {
             super.onPostExecute(result);
             dialog.dismiss();
             if(result != null) {
-                Collections.sort(result, new Comparator<Product>()
+                Collections.sort(result, new Comparator<Artikli>()
                 {
                     @Override
-                    public int compare(Product product, Product t1) {
+                    public int compare(Artikli product, Artikli t1) {
                         return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
                     }
 
 
                 });
-                NEWProductsAdapter adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, result);
+                 adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, result);
                 lvArtikli.setAdapter(adapter);
                 if(state != null) {
                     Log.d(TAG, "trying to restore listview state..");
@@ -305,19 +525,23 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Product movieModel = result.get(position); // getting the model
+                        Artikli movieModel = result.get(position); // getting the model
                         DetailFragment fragment=new DetailFragment();
                         android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                         Bundle bundle=new Bundle();
-                        ArrayList<String> slike=new ArrayList<>();
-                        slike.add(movieModel.getImageDevice());
-                        slike.add(movieModel.getImageDevice());
-                        bundle.putStringArrayList("listaSlike",slike);
                         ft.hide(NewproductsFragment.this);
+                        ArrayList<String> slike=new ArrayList<>();
+                        for (Slike s:movieModel.getSlike()) {
+                            slike.add(s.getId());
+
+                        }
+                        bundle.putStringArrayList("listaSlike",slike);
                         bundle.putSerializable("movieModel",movieModel);
+
                         fragment.setArguments(bundle);
-                        ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("detail_fragment");
+                        ft.add(R.id.content_main,fragment,"detail_fragment").addToBackStack("details");
                         ft.commit();
+
 
                     }
                 });
@@ -328,8 +552,14 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
     }
 
     public void resetSearch() {
-        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, productList);
-        filteredValues=null;
+        if (filteredKategory!=null)
+            filteredAll = new ArrayList<Artikli>(filteredKategory);
+        else{
+            filteredAll=new ArrayList<>(productList);
+        }
+        textGeteR=null;
+        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
+        spin.setSelection(0);
     }
 }

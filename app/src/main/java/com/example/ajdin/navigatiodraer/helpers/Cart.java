@@ -2,6 +2,7 @@ package com.example.ajdin.navigatiodraer.helpers;
 
 import android.util.Log;
 
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 
 import java.io.Serializable;
@@ -51,8 +52,11 @@ public class Cart implements Serializable {
         else {
 
             BigDecimal temp_price = BigDecimal.valueOf(Double.valueOf(new_price));
-            totalPrice = totalPrice.add(temp_price.multiply(BigDecimal.valueOf(quantity)));
             totalQuantity += quantity;
+
+            temp_price=sellable.getPrice().multiply(BigDecimal.valueOf(totalQuantity));
+            totalPrice = totalPrice.add(temp_price);
+
 
         }
 
@@ -66,7 +70,7 @@ public class Cart implements Serializable {
 
         for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
             CartItem cartItem = new CartItem();
-            cartItem.setProduct((Product) entry.getKey());
+            cartItem.setProduct((Artikli) entry.getKey());
             cartItem.setQuantity(entry.getValue());
             cartItems.add(cartItem);
         }

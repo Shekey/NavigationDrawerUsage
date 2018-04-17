@@ -2,6 +2,7 @@ package com.example.ajdin.navigatiodraer.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
+import com.example.ajdin.navigatiodraer.models.Slike;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -24,10 +29,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class NEWProductsAdapter extends ArrayAdapter {
 
-    private List<Product> movieModelList;
+    private List<Artikli> movieModelList;
     private int resource;
     private LayoutInflater inflater;
-    public NEWProductsAdapter(Context context, int resource, List<Product> objects) {
+    public NEWProductsAdapter(Context context, int resource, List<Artikli> objects) {
         super(context, resource, objects);
         movieModelList = objects;
         this.resource = resource;
@@ -55,9 +60,23 @@ public class NEWProductsAdapter extends ArrayAdapter {
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;
-        File file = new File(movieModelList.get(position).getImageDevice());
-        holder.ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
-        progressBar.setVisibility(View.GONE);
+        final ArrayList<Slike> slikes=new ArrayList<>(movieModelList.get(position).getSlike());
+        final int size=slikes.size();
+        if(size>=1) {
+            File file = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
+                    File.separator + "YourFolderName" + File.separator + slikes.get(size - 1).getId() + ".jpg");
+            if (file.exists()) {
+                Picasso
+                        .with(getContext())
+                        .load(file)
+                        .fit()
+                        .centerInside()
+                        .into(holder.ivMovieIcon);
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+
+
         holder.tvMovie.setText(movieModelList.get(position).getNaziv());
         holder.tvTagline.setText(movieModelList.get(position).getKategorija());
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+" KM");

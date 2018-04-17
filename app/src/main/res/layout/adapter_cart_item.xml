@@ -39,12 +39,12 @@
         android:id="@+id/tvCartItemName"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingRight="4dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="0dp"
         android:textColor="@android:color/black"
         android:gravity="left"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="4dp"
         android:textSize="20sp"
                 android:textAllCaps="true"
         android:textStyle="normal"
@@ -70,7 +70,7 @@
         <!--android:textColor="@android:color/black"-->
         <!--android:gravity="center"/>-->
 
-            tvPrice
+
             <TextView
                 android:id="@+id/tvPrice"
                 android:layout_width="match_parent"
@@ -79,11 +79,10 @@
                 android:layout_marginBottom="3dp"
                 android:layout_marginTop="8dp"
                 android:textStyle="italic"
-                android:paddingLeft="4dp"
+                android:paddingLeft="8dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:paddingRight="4dp"
                 android:gravity="left"
-
                 android:text="Cijena"/>
             <TextView
                 android:id="@+id/tvKolicina"
@@ -92,7 +91,7 @@
                 android:textSize="20sp"
                 android:layout_marginBottom="6dp"
                 android:textStyle="italic"
-                android:paddingLeft="4dp"
+                android:paddingLeft="8dp"
                 android:paddingRight="4dp"
                 android:gravity="left"
                 android:textColor="@color/colorPrimaryDark"
@@ -102,10 +101,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:textSize="18sp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="0dp"
                 android:textStyle="italic"
-                android:paddingLeft="1dp"
+                android:paddingLeft="8dp"
                 android:textColor="@color/colorAccent"
                 android:paddingRight="1dp"
                 android:gravity="left"

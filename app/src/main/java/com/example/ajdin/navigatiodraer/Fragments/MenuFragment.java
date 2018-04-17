@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -72,15 +75,15 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     private Context mContext=getActivity();
     private ArrayList<Artikli> movieModelList;
     private MenuAdapter adapter;
-    private List<Product> productList;
+    private List<Artikli> productList;
     private List<Artikli> productList1;
     String[] bankNames={"Odaberi redoslijed","Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
     String[] kategoies;
-    private List<Product> filteredValues;
+    private List<Artikli> filteredValues;
     private List<Artikli> filteredValues1;
-    private List<Product> filteredKategory;
+    private List<Artikli> filteredKategory;
     private List<Artikli> filteredKategory1;
-    private List<Product> filteredAll;
+    private List<Artikli> filteredAll;
     private List<Artikli> filteredAll1;
     private Parcelable state;
     private Spinner spin2;
@@ -163,28 +166,28 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (productList1 == null) {
+                if (productList == null) {
 
                 } else {
 
 
                     odabranaKategorija = i;
                     if (i == 0) {
-                        if (filteredAll1==null) {
-                            filteredAll1 = new ArrayList<Artikli>(productList1);
+                        if (filteredAll==null) {
+                            filteredAll = new ArrayList<Artikli>(productList);
                         }
                         else {
-                            filteredAll1 = new ArrayList<Artikli>(productList1);
+                            filteredAll = new ArrayList<Artikli>(productList);
 
                         }
 
 
                     } else {
 
-                        filteredKategory1 = new ArrayList<>(db.getProductsKategoryFiltered1(lables.get(i), productList1));
+                        filteredKategory = new ArrayList<>(db.getProductsKategoryFiltered1(lables.get(i), productList));
 
                         if (textGeteR != null) {
-                            for (Product p : filteredKategory) {
+                            for (Artikli p : filteredKategory) {
                                 if (!p.getNaziv().toLowerCase().contains(textGeteR)) {
                                     filteredKategory.remove(p);
                                 }
@@ -192,16 +195,16 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                         }
 
-                        filteredAll1=new ArrayList<>(filteredKategory1);
+                        filteredAll=new ArrayList<>(filteredKategory);
                     }
 
-                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll1);
+                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (state != null) {
                         Log.d(TAG, "trying to restore listview state..");
                         lvArtikli.onRestoreInstanceState(state);
                     }
-                    final List<Artikli> finalUsedList = filteredAll1;
+                    final List<Artikli> finalUsedList = filteredAll;
                     lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -211,8 +214,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                             Bundle bundle = new Bundle();
                             ft.hide(MenuFragment.this);
                             bundle.putSerializable("movieModel", movieModel);
-                            fragment.setArguments(bundle);
 
+                            ArrayList<String> slike=new ArrayList<>();
+                            for (Slike s:movieModel.getSlike()) {
+                                slike.add(s.getId());
+
+                            }
+                            bundle.putStringArrayList("listaSlike",slike);
+                            fragment.setArguments(bundle);
                             ft.add(R.id.content_main, fragment,"detail_fragment");
 //                editsearch.setQuery("", false);
                             ft.addToBackStack("detail_fragment");
@@ -309,8 +318,8 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         }
 
         textGeteR = newText;
-        filteredValues1 = new ArrayList<Artikli>(productList1);
-        for (Artikli value : productList1) {
+        filteredValues = new ArrayList<Artikli>(productList);
+        for (Artikli value : productList) {
             if (value.getNaziv().toLowerCase().contains(newText.toLowerCase())) {
                 if (odabranaKategorija > 0) {
                     if (!value.getKategorija().equals(lables.get(odabranaKategorija))) {
@@ -334,7 +343,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
 
 
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll1);
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
 
         lvArtikli.setAdapter(adapter);
         if(state != null) {
@@ -344,7 +353,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Artikli movieModel = filteredAll1.get(position); // getting the model
+                Artikli movieModel = filteredAll.get(position); // getting the model
                 DetailFragment fragment=new DetailFragment();
                 android.support.v4.app.FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 ft.hide(MenuFragment.this);
@@ -371,19 +380,19 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (productList1 == null) {
+        if (productList == null) {
 
         } else {
 
 
-            if (filteredAll1==null)
-                filteredAll1 = new ArrayList<Artikli>(productList1);
+            if (filteredAll==null)
+                filteredAll = new ArrayList<Artikli>(productList);
 
 
             odabraniSort = i;
             if (i == 0) {
 
-                Collections.sort(filteredAll1, new Comparator<Artikli>() {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
                     @Override
                     public int compare(Artikli product, Artikli t1) {
                         return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
@@ -394,7 +403,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 });
             }
             if (i == 1) {
-                Collections.sort(filteredAll1, new Comparator<Artikli>() {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
                     @Override
                     public int compare(Artikli product, Artikli t1) {
                         return product.getNaziv().compareToIgnoreCase(t1.getNaziv());
@@ -403,7 +412,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 });
             } else if (i == 2) {
-                Collections.sort(filteredAll1, new Comparator<Artikli>() {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
                     @Override
                     public int compare(Artikli product, Artikli t1) {
                         return t1.getNaziv().compareToIgnoreCase(product.getNaziv());
@@ -412,7 +421,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 });
             } else if (i == 3) {
-                Collections.sort(filteredAll1, new Comparator<Artikli>() {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
                     @Override
                     public int compare(Artikli p1, Artikli p2) {
                         return p2.getPrice().compareTo(p1.getPrice());
@@ -423,7 +432,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
             } else {
 
-                Collections.sort(filteredAll1, new Comparator<Artikli>() {
+                Collections.sort(filteredAll, new Comparator<Artikli>() {
                     @Override
                     public int compare(Artikli p1, Artikli p2) {
                         return p1.getPrice().compareTo(p2.getPrice());
@@ -438,13 +447,13 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
 
 
-            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll1);
+            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
             if (state != null) {
                 Log.d(TAG, "trying to restore listview state..");
                 lvArtikli.onRestoreInstanceState(state);
             }
-            final List<Artikli> finalUsedList = filteredAll1;
+            final List<Artikli> finalUsedList = filteredAll;
             lvArtikli.setOnItemClickListener(new AdapterView.OnItemClickListener() {  // list item click opens a new detailed activity
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -611,9 +620,9 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         @Override
         protected List<Artikli> doInBackground(Void... params) {
 
-            productList1 = db.getAll1();
-            filteredValues1 = new ArrayList<Artikli>(productList1);
-            return productList1;
+            productList = db.getAll1();
+            filteredValues = new ArrayList<Artikli>(productList);
+            return productList;
 
         }
 
@@ -634,6 +643,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                 MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.row_menu, result);
 
+                lvArtikli.setAdapter(adapter);
                 lvArtikli.setAdapter(adapter);
                 if(state != null) {
                     Log.d(TAG, "trying to restore listview state..");
@@ -669,14 +679,15 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
 
+
     public void resetSearch() {
         if (filteredKategory!=null)
-            filteredAll1 = new ArrayList<Artikli>(filteredKategory1);
+            filteredAll = new ArrayList<Artikli>(filteredKategory);
         else{
-            filteredAll1=new ArrayList<>(productList1);
+            filteredAll=new ArrayList<>(productList);
         }
         textGeteR=null;
-        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll1);
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
 

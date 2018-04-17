@@ -2,16 +2,25 @@ package com.example.ajdin.navigatiodraer;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -37,9 +46,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
 
 import com.example.ajdin.navigatiodraer.Fragments.CRUDFragment;
 import com.example.ajdin.navigatiodraer.Fragments.DetailFragment;
@@ -51,9 +62,9 @@ import com.example.ajdin.navigatiodraer.Fragments.NewproductsFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NoteFragment;
 import com.example.ajdin.navigatiodraer.Fragments.CartFragment;
 import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
-import com.example.ajdin.navigatiodraer.helpers.CartItem;
-import com.example.ajdin.navigatiodraer.helpers.Constant;
+
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.models.Slike;
@@ -64,44 +75,68 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import us.monoid.web.Resty;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = "MAIN" ;
     public ListView lvArtikli;
     private final String URL_TO_HIT = "http://nurexport.com/demo/getJson.php";
+    private final String BASE_URL = "http://nurexport.com/demo/";
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
     DatabaseHelper db;
+    int brojac=0;
+    int brojacZavrsenih=0;
     List<String> mAllValues;
+    ArrayList<Slike> sveSlike=new ArrayList<>();
+    ArrayList<String> URLLIST=new ArrayList<>();
     private ArrayAdapter<String> mAdapter;
     private Context mContext = MainActivity.this;
     SearchView searchView;
     private ProgressDialog dialog;
     public NavigationView navigationView;
     private FloatingActionButton fab;
+    ArrayList<Slike> slikeURL=new ArrayList<>();
     private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    private int sizeSlike;
+    private ArrayList<Slike> downloadList;
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -140,8 +175,8 @@ public class MainActivity extends AppCompatActivity
         dialog.setMessage("Loading. Please wait...");
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
+                .cacheInMemory(false)
+                .cacheOnDisk(false)
                 .build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MainActivity.this)
                 .defaultDisplayImageOptions(defaultOptions)
@@ -193,6 +228,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         Intent intent = new Intent(this, TimeService.class);
         startService(intent);
+
 
 
     }
@@ -575,10 +611,13 @@ public class MainActivity extends AppCompatActivity
 
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
 
+
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             dialog.show();
+
         }
 
         @Override
@@ -599,6 +638,9 @@ public class MainActivity extends AppCompatActivity
                     buffer.append(line);
                 }
 
+
+                connection.disconnect();
+
                 String finalJson = buffer.toString();
 
                 JSONObject parentObject = new JSONObject(finalJson);
@@ -617,15 +659,80 @@ public class MainActivity extends AppCompatActivity
                     Artikli movieModel = gson.fromJson(finalObject.toString(), Artikli.class); // a single line json parsing using Gson
 
                     movieModelList1.add(movieModel);
-                    db.replaceSlike(movieModel.getSlike());
-                    for (Slike ss:movieModel.getSlike()) {
-                        downloadImage(ss.getId(),ss.getImage());
-                    }
+                    List<Slike> listaSlike=movieModel.getSlike();
+                    if (listaSlike!=null) {
+                        for (Slike s:movieModel.getSlike()) {
+                            slikeURL.add(s);
 
+//                            slikeURL.add(BASE_URL+uri.toString());
+//                            DownloadImageFromPath(BASE_URL+uri.toString(),s.getId()+".jpg");
+
+//                            downloadThroughManager(s.getImage(),s.getId(),MainActivity.this);
+//                            brojac++;
+                            Log.d(TAG, "doInBackground: "+String.valueOf(brojac));
+
+                        }
+
+
+
+                    }
+//                    for (Slike s:movieModel.getSlike()) {
+//                        String kopija=s.getImage();
+//                        URI uri = new URI(kopija.replace(" ", "%20"));
+//                        if (brojac>=100){
+//                            sveSlike.add(s);
+//                        }
+//                        else {
+//                            downloadImage(s.getId(), uri.toString());
+//                            brojac++;
+//                            Log.d(TAG, "doInBackground: " + uri.toString() +" -" +String.valueOf(brojac));
+//                        }
+//
+//                    }
+
+                }
+                downloadList = db.replaceSlike(slikeURL);
+                for (Slike ss: downloadList) {
+                    String kopija=ss.getImage();
+                    URI uri = new URI(kopija.replace(" ", "%20"));
+                    downloadImageURL(ss.getId(),uri.toString());
 
                 }
 
+//                String kopija="upload/04-16-2018_0435pmdetergenti.jpg";
+//                URI uri = new URI(kopija.replace(" ", "%20"));
+//                Log.d(TAG, "doInBackground: "+uri.toString());
+//                downloadImageURL("146",uri.toString());
+////
+//
+//                kopija="upload/Bitmap in DETERĐENT-MARAMICE-2.jpg";
+//                uri = new URI(kopija.replace(" ", "%20"));
+//                Log.d(TAG, "doInBackground: "+uri.toString());
+//                downloadImageURL("147",uri.toString());
+////
+//                kopija="upload/04-12-2018_0638amBitmap in DETERĐENT-MARAMICE-3ghgfh.jpg";
+//                uri = new URI(kopija.replace(" ", "%20"));
+//                Log.d(TAG, "doInBackground: "+uri.toString());
+//
+//                downloadImageURL("148",uri.toString());
+
+
+
+//                Log.d(TAG, "doInBackground: "uri.toString());
+
+//                int index = 0;
+//                for (String ruta : slikeURL) {
+//                    Picasso.with(MainActivity.this)
+//                            .load(ruta)
+//                            .into(new IndexTarget(index));
+//                    index++;
+//                }
+
+
+
+//                List<Bitmap> yourimages = new DownloadImageTask().execute(URLLIST).get();
                 db.replace1(movieModelList1);
+
 
 
 
@@ -634,6 +741,8 @@ public class MainActivity extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
                 e.printStackTrace();
             } finally {
                 if (connection != null) {
@@ -653,11 +762,26 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void params) {
+//            for (Slike s:sveSlike) {
+//                String kopija=s.getImage();
+//                try {
+//                    URI uri = new URI(kopija.replace(" ", "%20"));
+//                    downloadImage(s.getId(),s.getImage());
+//                    brojac++;
+//                    Log.d(TAG, "doInBackground: " + uri.toString() + " - "+String.valueOf(brojac));
+//                } catch (URISyntaxException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+
             dialog.dismiss();
             MenuFragment fragment = new MenuFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_main, fragment,"first_frag");
             ft.commit();
+
+
 
         }
 
@@ -669,7 +793,239 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
-    public void downloadImage(String fileName,String imagePath){
+    public void DownloadImageFromPath(String path,String filenamejpg){
+        InputStream in =null;
+        Bitmap bmp=null;
+        int responseCode = -1;
+        int br=0;
+        try{
+
+            URL url = new URL(path);//"http://192.xx.xx.xx/mypath/img1.jpg
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setDoInput(true);
+            con.connect();
+            responseCode = con.getResponseCode();
+            if(responseCode == HttpURLConnection.HTTP_OK)
+            {
+                //download
+                in = con.getInputStream();
+                bmp = BitmapFactory.decodeStream(in);
+                in.close();
+                FileOutputStream outStream = null;
+
+                File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                        File.separator + "YourFolderName/"+filenamejpg);
+                String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg;
+                File outFile = new File(fileName);
+                try {
+                    outStream = new FileOutputStream(outFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                bmp.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+                br++;
+                Log.d(TAG, "DownloadImageFromPath: "+String.valueOf(br));
+                try {
+                    outStream.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    outStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        catch(Exception ex){
+            Log.e("Exception",ex.toString());
+        }
+    }
+
+    class IndexTarget implements Target {
+
+        private final int mIndex;
+
+        public IndexTarget(int index){
+            this.mIndex = index;
+        }
+
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    File file = new File(Environment.getExternalStorageDirectory().getPath() +"/img"+mIndex+".jpg");
+                    try {
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, ostream);
+                        ostream.close();
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    }
+    private class DownloadImageTask extends AsyncTask<List<String>, Integer, List<Bitmap>> {
+        ImageLoader imageLoader = ImageLoader.getInstance(); // Instance android-universal-image-loader
+        List<Bitmap> downloadedImage = new LinkedList<>();
+
+        protected List<Bitmap> doInBackground(List<String>... urls) {
+            List<String> yoururls = urls[0];
+            for(final String url : yoururls){
+                imageLoader.loadImage(url, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                       saveImage(url,loadedImage);
+                        publishProgress(1);
+                    }
+                });
+            }
+            return downloadedImage;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            //Update here your progress bar
+        }
+
+        protected void onPostExecute(List<Bitmap> result) {
+//            dialog.dismiss();
+        }
+
+        protected void onPreExecute(){
+            //Create your progress bar
+        }
+    }
+    private class loadImg extends AsyncTask<Void,Integer,Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                for (int i = 0; i < sveSlike.size(); i++) {
+                    Slike object = sveSlike.get(i);
+                    final String link = BASE_URL + object.getImage();//"YOUR IMAGE LINK OR STRING";
+                    if (link != null && !link.isEmpty()) {
+                        Bitmap bitmap = Picasso.with(MainActivity.this).load(link).get();
+                        publishProgress(i);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+    }
+
+    public class httpDownloadImages extends AsyncTask<Void,Void,String> {
+
+        Bitmap myBitmap[]=new Bitmap[sveSlike.size()];
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                int i=0;
+                for (Slike s:sveSlike) {
+
+
+                    String src="http://nurexport.com/demo/"+s.getImage();
+                    java.net.URL url = new java.net.URL(src);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    myBitmap[i] = BitmapFactory.decodeStream(input);
+                    if(myBitmap[i]!=null)
+                        saveimagetoFile(myBitmap[i],i,s.getId());
+                }
+
+            } catch (IOException e) {
+
+                return null;
+            }
+            return "successful";
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            dialog.dismiss();
+
+        }
+        void saveimagetoFile(Bitmap bmp,int num,String imageName){
+            try {
+
+                OutputStream fOut = null;
+                String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+imageName+".jpg";
+
+                File file = new File(fileName); // the File to save to
+                fOut = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, fOut); //save image to jpeg file
+                fOut.flush();
+                fOut.close();
+            }catch (Exception e){
+
+            }
+        }
+        public void saveImage(String filenamejpg,ImageView iv){
+
+            BitmapDrawable draw = (BitmapDrawable) iv.getDrawable();
+            Bitmap bitmap = draw.getBitmap();
+
+            FileOutputStream outStream = null;
+            File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                    File.separator + "YourFolderName/"+filenamejpg+".jpg");
+            String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg+".jpg";
+            File outFile = new File(fileName);
+            try {
+                outStream = new FileOutputStream(outFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+            try {
+                outStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                outStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void downloadImage(String fileName ,String imagePath){
         String filename = fileName+".jpg";
         String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
         File direct =
@@ -694,5 +1050,174 @@ public class MainActivity extends AppCompatActivity
                         File.separator + "YourFolderName" + File.separator + filename);
 
         dm.enqueue(request);
+
+    }
+    public void downloadImageURL(String fileName ,String imagePath){
+        String filename = fileName+".jpg";
+        String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
+        File direct =
+                new File(Environment.DIRECTORY_PICTURES,
+                        File.separator + "YourFolderName" + File.separator);
+
+
+        if (!direct.exists()) {
+            direct.mkdir();
+            Log.d("DOWNLOADING IMAGE", "dir created for first time");
+        }
+
+        DownloadManager dm = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri downloadUri = Uri.parse(downloadUrlOfImage);
+        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(filename)
+                .setMimeType("image/jpeg")
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                        File.separator + "YourFolderName" + File.separator + filename);
+
+
+
+        long id = dm.enqueue(request);
+
+
+
+    }
+    public static void downloadThroughManager(String imageUrl,String name, Context context) {
+
+        String downloadUrlOfImage = "http://nurexport.com/demo/"+imageUrl;
+        File path = new File(Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName" + File.separator);
+        String filename = name+".jpg";
+        if (!path.exists()) {
+            path.mkdir();
+            Log.d("DOWNLOADING IMAGE", "dir created for first time");
+        }
+        final DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(downloadUrlOfImage);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle(name);
+        request.setDescription(name);
+        request.setVisibleInDownloadsUi(true);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName" + File.separator + filename);
+        long ref = downloadManager.enqueue(request);
+
+        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+
+
+
+
+        final BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long downloadReference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                Log.i("GenerateTurePDfAsync", "Download completed");
+
+
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(downloadReference);
+
+                Cursor cur = downloadManager.query(query);
+
+                if (cur.moveToFirst()) {
+                    int columnIndex = cur.getColumnIndex(DownloadManager.COLUMN_STATUS);
+
+
+
+                    if (DownloadManager.STATUS_SUCCESSFUL == cur.getInt(columnIndex)) {
+                        String uriString = cur.getString(cur.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+
+
+//                        Toast.makeText(context, "File has been downloaded successfully.", Toast.LENGTH_SHORT).show();
+
+
+                    } else if (DownloadManager.STATUS_FAILED == cur.getInt(columnIndex)) {
+                        int columnReason = cur.getColumnIndex(DownloadManager.COLUMN_REASON);
+                        int reason = cur.getInt(columnReason);
+                        switch(reason){
+
+                            case DownloadManager.ERROR_FILE_ERROR:
+                                Toast.makeText(context, "Download Failed.File is corrupt.", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_HTTP_DATA_ERROR:
+                                Toast.makeText(context, "Download Failed.Http Error Found.", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+                                Toast.makeText(context, "Download Failed due to insufficient space in internal storage", Toast.LENGTH_LONG).show();
+                                break;
+
+                            case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+                                Toast.makeText(context, "Download Failed. Http Code Error Found.", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_UNKNOWN:
+                                Toast.makeText(context, "Download Failed.", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_CANNOT_RESUME:
+                                Toast.makeText(context, "ERROR_CANNOT_RESUME", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+                                Toast.makeText(context, "ERROR_TOO_MANY_REDIRECTS", Toast.LENGTH_LONG).show();
+                                break;
+                            case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+                                Toast.makeText(context, "ERROR_DEVICE_NOT_FOUND", Toast.LENGTH_LONG).show();
+                                break;
+
+                        }
+                    }
+                }
+            }
+
+        };
+
+
+        context.registerReceiver(receiver, filter);
+    }
+    private int getList() {
+
+
+
+
+
+
+
+        File directory =new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName");
+
+        String[] files = directory.list();
+        Log.d("Files", "Size: "+ files.length);
+        int count=files.length;
+
+        return count;
+    }
+
+    public void saveImage(String filenamejpg,Bitmap iv){
+
+
+        Bitmap bitmap = iv;
+
+        FileOutputStream outStream = null;
+        File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
+                File.separator + "YourFolderName/"+filenamejpg);
+        String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg;
+        File outFile = new File(fileName);
+        try {
+            outStream = new FileOutputStream(outFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+        try {
+            outStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

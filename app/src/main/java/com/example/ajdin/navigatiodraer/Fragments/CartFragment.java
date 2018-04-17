@@ -44,6 +44,7 @@ import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
 import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.helpers.Saleable;
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
@@ -73,6 +74,8 @@ public class CartFragment extends Fragment {
     private String ime;
     private Button clear;
     private TextView textView2;
+    private Cart cart;
+    private CartItemAdapter cartItemAdapter;
 
     public CartFragment() {
         // Required empty public constructor
@@ -91,8 +94,8 @@ public class CartFragment extends Fragment {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             getActivity().getActionBar().setDisplayShowHomeEnabled(true);
         }
-        final Cart cart = CartHelper.getCart();
-        final CartItemAdapter cartItemAdapter = new CartItemAdapter(getActivity());
+        cart = CartHelper.getCart();
+        cartItemAdapter = new CartItemAdapter(getActivity());
 
         tvTotalPrice=(TextView)view.findViewById(R.id.tvTotalPrice);
         cartItemAdapter.updateCartItems(getCartItems(cart));
@@ -144,7 +147,7 @@ public class CartFragment extends Fragment {
                 switch (index) {
                     case 0:
                         List<CartItem> cartItems = getCartItems(cart);
-                        Product pr= cartItems.get(position).getProduct();
+                        Artikli pr= cartItems.get(position).getProduct();
                         pr.setCijena(String.valueOf(pr.getCijena()));
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("productEdit",pr);
@@ -153,7 +156,7 @@ public class CartFragment extends Fragment {
                         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         ft.hide(CartFragment.this);
                         fragment.setArguments(bundle);
-                        ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
+                        ft.replace(R.id.content_main,fragment,"editFragment");
                         ft.commit();
                         break;
                     case 1:
@@ -256,14 +259,15 @@ public class CartFragment extends Fragment {
                                 SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                                 spreferencesEditor.clear();
                                 spreferencesEditor.commit();
-                                cart.clear();
-                                cartItemAdapter.updateCartItems(getCartItems(cart));
-                                cartItemAdapter.notifyDataSetChanged();
-                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-                                MenuFragment fragment=new MenuFragment();
-                                NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
-                                navigationView.setCheckedItem(R.id.nav_proizvodi);
-                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+                                clearCart();
+//                                cart.clear();
+//                                cartItemAdapter.updateCartItems(getCartItems(cart));
+//                                cartItemAdapter.notifyDataSetChanged();
+//                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+//                                MenuFragment fragment=new MenuFragment();
+//                                NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+//                                navigationView.setCheckedItem(R.id.nav_proizvodi);
+//                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
 
 
                             }
@@ -349,15 +353,21 @@ public class CartFragment extends Fragment {
                         db.addToStack(zadropBox);
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
+                        clearCart();
+
+                    }
+                    else if(sharedPreferences.getString("ime", "").equals("") && sharedPreferences.getString("path", "").equals("")){
+                        KupacFragment fragment1=new KupacFragment();
+                        fragment1.show(getActivity().getSupportFragmentManager(),"Mydialog");
+                        Toast.makeText(getActivity(), "Niste unijeli ime kupca !", Toast.LENGTH_LONG).show();
+
                     }
                     else {
                         db.addToStack(sharedPreferences.getString("path", ""));
+                        Toast.makeText(getActivity(), "Added to stack", Toast.LENGTH_SHORT).show();
+                        clearCart();
                     }
-                    Toast.makeText(getActivity(), "Added to stack", Toast.LENGTH_SHORT).show();
-                    cart.clear();
-                    cartItemAdapter.updateCartItems(getCartItems(cart));
-                    cartItemAdapter.notifyDataSetChanged();
-                    tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+
 
                 }
                 //  helper.InsertIntoRacun(cartItemAdapter, cartItemAdapter.getCount());
@@ -377,6 +387,22 @@ public class CartFragment extends Fragment {
 
         return view;
     }
+    private void clearCart(){
+        cart.clear();
+        cartItemAdapter.updateCartItems(getCartItems(cart));
+        cartItemAdapter.notifyDataSetChanged();
+        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+        clear.setVisibility(View.GONE);
+        bZavrsi.setVisibility(View.GONE);
+        tvTotalPrice.setVisibility(View.GONE);
+        textView2.setVisibility(View.GONE);
+
+        MenuFragment fragment=new MenuFragment();
+        NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_proizvodi);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+
+    }
     private List<CartItem> getCartItems(Cart cart) {
         List<CartItem> cartItems = new ArrayList<CartItem>();
 
@@ -386,7 +412,7 @@ public class CartFragment extends Fragment {
 
         for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
             CartItem cartItem = new CartItem();
-            cartItem.setProduct((Product) entry.getKey());
+            cartItem.setProduct((Artikli) entry.getKey());
             cartItem.setQuantity(entry.getValue());
             cartItems.add(cartItem);
         }
@@ -446,6 +472,7 @@ public class CartFragment extends Fragment {
                 imep+"---"+timeStamp+".txt";
 
     }
+
 
     private void exportDBold(List<CartItem> cartItems, int count, String pathfile) {
 

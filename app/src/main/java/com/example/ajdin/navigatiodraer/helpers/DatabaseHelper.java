@@ -1,14 +1,19 @@
 package com.example.ajdin.navigatiodraer.helpers;
 
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
@@ -107,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE `Images` (\n " +
                 "\t`ImageId`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t`ImagePath`\tTEXT NOT NULL ,\n" +
-                "\t`IdSlika`\tTEXT NOT NULL ,\n" +
+                "\t`IdSlika`\tTEXT NOT NULL UNIQUE,\n" +
                 "\t Artikal_ID INTEGER not null "+");");
 
     }
@@ -140,50 +145,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("UPDATE FileStack SET Synced = 1"+" WHERE Path='"+path+"'");
     }
 
-    public void replaceSlike(List<Slike> productList){
+    public ArrayList<Slike> replaceSlike(List<Slike> productList)  {
         SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Slike> downloadSlike=new ArrayList<>();
+        int pocetniSize=getAllSlike().size();
         ArrayList<Slike> sveSlike=getAllSlike();
+        if (productList.size()>pocetniSize) {
 
-        for (Slike s:productList){
-            db.execSQL("INSERT INTO Images(ImagePath,IdSlika,Artikal_ID) VALUES('"+s.getImage()+"','"+s.getId() +"','"+s.getArtikalId()+" ');");
+//
+            for (Slike s : productList) {
+
+
+                db.execSQL("REPLACE INTO Images(ImagePath,IdSlika,Artikal_ID) VALUES('" + s.getImage() + "','" + s.getId() + "','" + s.getArtikalId() + " ');");
+                int trenutniSize = getAllSlike().size();
+                if (trenutniSize == pocetniSize+1) {
+                    downloadSlike.add(s);
+                    pocetniSize++;
+                }
+
+            }
         }
 
 
         int sync_product=productList.size();
         String id_delete="";
+        String id_image="";
 
         int database_size=sveSlike.size();
-//        if (sync_product<database_size) {
-//            for (Slike p : sveSlike) {
-//                boolean pronadjen=false;
-//                for (Slike r:productList){
-//                    if (p.getImage().equals(r.getImage())){
-//                        pronadjen=true;
-//                    }else{
-//                        id_delete=p.getId();
-//                    }
-//                }
-//                if (!pronadjen){
-//
-//                        File file = new File(id_delete+".jpg");
-//                        if (file.exists()){
-//                            file.delete();
-//
-//                        }
-//                    db.execSQL("DELETE FROM Images WHERE Artikal_ID ='"+id_delete+"';");
-//
-//
-//
-//                    pronadjen=false;
-//                    id_delete="";
-//
-//                }
-//            }
-//
-//        }
+        if (sync_product<database_size) {
+            for (Slike p : sveSlike) {
+                boolean pronadjen=false;
+                for (Slike r:productList){
+                    if (p.getImage().equals(r.getImage())){
+                        pronadjen=true;
+                        break;
+                    }else{
+                        id_delete=p.getId();
 
+                    }
+                }
+                if (!pronadjen){
+
+                    File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
+                            File.separator + "YourFolderName" + File.separator +id_delete+".jpg");
+                    if(f.exists()){
+                        f.delete();
+                    }
+                    db.execSQL("DELETE FROM Images WHERE IdSlika ='"+id_delete+"';");
+
+
+
+                    pronadjen=false;
+                    id_delete="";
+
+                }
+            }
+
+        }
+        return downloadSlike;
 
     }
+
     public void replace1(ArrayList<Artikli> productList){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -217,15 +239,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 if (!pronadjen){
-                    for (Slike slika:p.getSlike()) {
-                        File file = new File(slika.getId()+".jpg");
-                        if (file.exists()){
-                            file.delete();
 
+                        File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
+                                File.separator + "YourFolderName" + File.separator +id_delete+".jpg");
+                        if(f.exists()){
+                            f.delete();
                         }
 
-                    }
-                    db.execSQL("DELETE FROM Images WHERE Artikal_ID ='"+id_delete+"';");
+
+                    db.execSQL("UPDATE  Images SET ImagePath=1 WHERE Artikal_ID ='"+id_delete+"';");
                     db.execSQL("DELETE FROM Artikli WHERE Id ='"+id_delete+"';");
                     pronadjen=false;
                     id_delete="";
@@ -290,16 +312,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return naziv;
 
     }
-    public Product getData(String id) {
+    public Artikli getData(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
         if (productList.getCount()==0){
-            Product product=null;
+            Artikli product=null;
             return product;
         }
         productList.moveToFirst();
-        Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
-                productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
+        Cursor slike = db.rawQuery("select * from Images WHERE Artikal_ID="+productList.getString(productList.getColumnIndex("Id")), null);
+        slike.moveToFirst();
+        List<Slike> images=new ArrayList<Slike>();
+        while (!slike.isAfterLast()) {
+            Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("IdSlika")));
+            images.add(slike1);
+            slike.moveToNext();
+        }
+        slike.close();
+        Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
+                productList.getString(productList.getColumnIndex("Bar_kod")),
+                productList.getString(productList.getColumnIndex("Id")),
+                productList.getString(productList.getColumnIndex("isSnizeno")),
+                productList.getString(productList.getColumnIndex("Stanje")),
+                productList.getString(productList.getColumnIndex("datumkreiranja")),
+                productList.getString(productList.getColumnIndex("Kategorija")),
+                productList.getString(productList.getColumnIndex("JM"))
+                ,images,productList.getString(productList.getColumnIndex("Cijena")));
+
         db.close();
         return product;
 
@@ -494,6 +533,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+    public ArrayList<Slike> getAllSlikeForDelete(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Slike> listaSlike = new ArrayList<Slike>();
+        Cursor productList = db.rawQuery("select * from Images WHERE ImagePath=1", null);
+        productList.moveToFirst();
+        while (!productList.isAfterLast()) {
+            Slike slike1=new Slike(productList.getString(productList.getColumnIndex("ImagePath")),productList.getString(productList.getColumnIndex("Artikal_ID")),productList.getString(productList.getColumnIndex("IdSlika")));
+            listaSlike.add(slike1);
+            productList.moveToNext();
+
+        }
+        productList.close();
+        return listaSlike;
+
+
+
+    }
     public ArrayList<Artikli> getAll1() {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -511,7 +567,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 images.add(slike1);
                 slike.moveToNext();
             }
-            slike.close();;
+            slike.close();
             Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
                     productList.getString(productList.getColumnIndex("Bar_kod")),
                     productList.getString(productList.getColumnIndex("Id")),
@@ -571,6 +627,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             list.add(product);
             productList.moveToNext();
         }
+        }
+        productList.close();
+
+        return list;
+    }
+    public ArrayList<Artikli> getAllSnizenoArtikli() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Artikli> list = new ArrayList<Artikli>();
+        Cursor productList = db.rawQuery("select * from Artikli WHERE isSnizeno = 1", null);
+        if (productList!=null){
+            productList.moveToFirst();
+            while (!productList.isAfterLast()) {
+                Cursor slike = db.rawQuery("select * from Images WHERE Artikal_ID="+productList.getString(productList.getColumnIndex("Id")), null);
+                slike.moveToFirst();
+                List<Slike> images=new ArrayList<Slike>();
+                while (!slike.isAfterLast()) {
+                    Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("IdSlika")));
+                    images.add(slike1);
+                    slike.moveToNext();
+                }
+                slike.close();;
+                Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
+                        productList.getString(productList.getColumnIndex("Bar_kod")),
+                        productList.getString(productList.getColumnIndex("Id")),
+                        productList.getString(productList.getColumnIndex("isSnizeno")),
+                        productList.getString(productList.getColumnIndex("Stanje")),
+                        productList.getString(productList.getColumnIndex("datumkreiranja")),
+                        productList.getString(productList.getColumnIndex("Kategorija")),
+                        productList.getString(productList.getColumnIndex("JM")),
+                        images,
+                        productList.getString(productList.getColumnIndex("Cijena")));
+                list.add(product);
+                productList.moveToNext();
+            }
         }
         productList.close();
 
@@ -671,6 +761,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
                     productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
+            list.add(product);
+            productList.moveToNext();
+        }
+        productList.close();
+
+        return list;
+    }
+
+    public ArrayList<Artikli> getAllNEWArtikli() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Artikli> list = new ArrayList<Artikli>();
+        Cursor productList = db.rawQuery("select * from Artikli WHERE julianday()-julianday(datumkreiranja)<=4", null);
+        productList.moveToFirst();
+        while (!productList.isAfterLast()) {
+            Cursor slike = db.rawQuery("select * from Images WHERE Artikal_ID="+productList.getString(productList.getColumnIndex("Id")), null);
+            slike.moveToFirst();
+            List<Slike> images=new ArrayList<Slike>();
+            while (!slike.isAfterLast()) {
+                Slike slike1=new Slike(slike.getString(slike.getColumnIndex("ImagePath")),slike.getString(slike.getColumnIndex("Artikal_ID")),slike.getString(slike.getColumnIndex("IdSlika")));
+                images.add(slike1);
+                slike.moveToNext();
+            }
+            slike.close();;
+            Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
+                    productList.getString(productList.getColumnIndex("Bar_kod")),
+                    productList.getString(productList.getColumnIndex("Id")),
+                    productList.getString(productList.getColumnIndex("isSnizeno")),
+                    productList.getString(productList.getColumnIndex("Stanje")),
+                    productList.getString(productList.getColumnIndex("datumkreiranja")),
+                    productList.getString(productList.getColumnIndex("Kategorija")),
+                    productList.getString(productList.getColumnIndex("JM")),
+                    images,
+                    productList.getString(productList.getColumnIndex("Cijena")));
             list.add(product);
             productList.moveToNext();
         }

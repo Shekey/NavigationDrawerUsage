@@ -1,11 +1,12 @@
 package com.example.ajdin.navigatiodraer.helpers;
 
 
+import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 
 public class CartItem {
     private String Kupac_ime;
-    private Product product;
+    private Artikli product;
     private Double quantity;
     private double cijena;
     private int Korpa_id;
@@ -34,11 +35,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public Product getProduct() {
+    public Artikli getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(Artikli product) {
         this.product = product;
     }
 

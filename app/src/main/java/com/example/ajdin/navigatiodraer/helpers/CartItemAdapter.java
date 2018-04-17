@@ -1,7 +1,10 @@
 package com.example.ajdin.navigatiodraer.helpers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 
 
 import com.example.ajdin.navigatiodraer.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -90,8 +94,36 @@ public class CartItemAdapter extends BaseAdapter {
         tvKolicina.setText("Količina: "+cartItem.getQuantity().toString()+" "+cartItem.getProduct().getJM());
         tvPrice.setText("Cijena :"+String.valueOf(cartItem.getProduct().getCijena())+" KM");
         tvTotalPrice.setText("Ukupno - " +String.valueOf(cart.getCost(cartItem.getProduct()).setScale(2, BigDecimal.ROUND_HALF_UP)+" KM"));
-        File file = new File(cartItem.getProduct().getImageDevice());
-        ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
+
+        final int size=cartItem.getProduct().getSlike().size();
+        if(size>=1) {
+
+            File file = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
+                    File.separator + "YourFolderName" + File.separator + cartItem.getProduct().getSlike().get(size - 1).getId() + ".jpg");
+            if (file.exists()) {
+
+//            Uri imageURI = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Integer.toString(columnIndex));
+                Picasso
+                        .with(context)
+                        .load(file)
+                        .fit()
+                        .centerInside()
+                        .into(ivMovieIcon);
+            }
+        }
+//        File file = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
+//                File.separator + "YourFolderName" + File.separator + cartItem.getProduct().getSlike().get(0).getId() + ".jpg");
+//
+//        if (file.exists()) {
+//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
+//            ivMovieIcon.setImageBitmap(bMap);
+//
+//        }
+//        else {
+//            ivMovieIcon.setImageResource(R.drawable.nemaslike);
+//
+//        }
+
         progressBar.setVisibility(View.GONE);
         return convertView;
     }
@@ -103,7 +135,7 @@ public class CartItemAdapter extends BaseAdapter {
         public final TextView tvCartItemTotalPrice;
         public final TextView tvCartItemPrice;
 
-        public ViewHolder(TextView tvCartItemName, TextView tvCartItemTotalPrice, TextView tvKolicina,TextView tvCartItemPrice, ImageView ivMovieIcon) {
+        public ViewHolder(TextView tvCartItemName, TextView tvCartItemTotalPrice, TextView tvKolicina,TextView tvCartItemPrice,ImageView ivMovieIcon) {
             this.tvCartItemName = tvCartItemName;
             this.tvKolicina = tvKolicina;
             this.ivMovieIcon=ivMovieIcon;
