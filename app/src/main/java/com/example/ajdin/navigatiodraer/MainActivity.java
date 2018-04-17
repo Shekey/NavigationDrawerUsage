@@ -28,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -774,12 +775,18 @@ public class MainActivity extends AppCompatActivity
 //                }
 //
 //            }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    dialog.dismiss();
+                    MenuFragment fragment = new MenuFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_main, fragment,"first_frag");
+                    ft.commit();
+                }
+            }, 30000);
 
-            dialog.dismiss();
-            MenuFragment fragment = new MenuFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment,"first_frag");
-            ft.commit();
+
 
 
 
