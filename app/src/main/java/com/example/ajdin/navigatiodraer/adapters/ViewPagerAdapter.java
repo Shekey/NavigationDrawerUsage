@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,8 +50,14 @@ public class ViewPagerAdapter extends PagerAdapter {
         File file=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
                 File.separator + "YourFolderName" + File.separator+images.get(position)+".jpg");
         if (file.exists()) {
-            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            view1.setImageBitmap(bMap);
+            Picasso
+                    .with(context)
+                    .load(file)
+                    .fit()
+                    .centerInside()
+                    .into(view1);
+//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
+//            view1.setImageBitmap(bMap);
 
         }
         else {
