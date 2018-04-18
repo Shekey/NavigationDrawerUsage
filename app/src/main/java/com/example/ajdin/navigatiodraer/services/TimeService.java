@@ -88,7 +88,7 @@ public class TimeService extends Service {
                                     else {
                                         new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, TimeService.this).execute();
                                     }
-                                    Toast.makeText(TimeService.this, "Upload has been started", Toast.LENGTH_SHORT).show();
+
                                 }
                             }
 

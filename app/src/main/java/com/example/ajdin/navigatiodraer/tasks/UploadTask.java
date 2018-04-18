@@ -56,7 +56,7 @@ public class UploadTask extends AsyncTask {
         super.onPostExecute(o);
         DatabaseHelper db=new DatabaseHelper(context);
         db.setStacked(file.getPath());
-        Toast.makeText(context, "File uploaded successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Račun je uspješno poslat !", Toast.LENGTH_SHORT).show();
 
     }
 

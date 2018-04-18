@@ -145,7 +145,8 @@ public class EditProduct extends Fragment {
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                         BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
                         CartFragment fragment=new CartFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag("editFragment"))
+                               .add(R.id.content_main,fragment,"cart_frag").addToBackStack("cart_frag").commit();
 
 
                         // ovdje ne moze ici Main

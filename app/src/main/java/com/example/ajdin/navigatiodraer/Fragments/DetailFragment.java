@@ -43,6 +43,7 @@ public class DetailFragment extends Fragment {
     private TextView tvMovie;
     private TextView tvTagline;
     private TextView tvYear;
+    private TextView tvStanje;
     EditText new_price;
     EditText Kolicina;
     private ProgressBar progressBar;
@@ -87,6 +88,7 @@ public class DetailFragment extends Fragment {
         tvMovie = (TextView)view.findViewById(R.id.tvNaziv);
         tvTagline = (TextView)view.findViewById(R.id.tvJedinicaMjere);
         tvYear = (TextView)view.findViewById(R.id.tvCijena);
+        tvStanje = (TextView)view.findViewById(R.id.tvStanjeDetalji);
         new_price=(EditText)view.findViewById(R.id.new_price);
         Kolicina=(EditText)view.findViewById(R.id.quantity);
         Kolicina.clearFocus();
@@ -115,6 +117,7 @@ public class DetailFragment extends Fragment {
             tvMovie.setText(movieModel.getNaziv());
             tvTagline.setText(movieModel.getKategorija());
             tvYear.setText("Cijena: " + movieModel.getCijena()+ " KM");
+            tvStanje.setText("Na stanju: " +movieModel.getStanje());
 
 
         }

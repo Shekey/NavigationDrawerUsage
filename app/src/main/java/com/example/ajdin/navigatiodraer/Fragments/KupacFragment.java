@@ -56,7 +56,6 @@ public class KupacFragment extends DialogFragment {
                     editor.commit();
                     FloatingActionButton fab=(FloatingActionButton) getActivity().findViewById(R.id.fab);
                     fab.setVisibility(View.GONE);
-                    Toast.makeText(getActivity(), "KUPAC JE USPJESNO POHRANJEN", Toast.LENGTH_LONG).show();
                     dismiss();
 
                 }

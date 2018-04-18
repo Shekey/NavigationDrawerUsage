@@ -75,6 +75,7 @@ public class MenuAdapter extends ArrayAdapter {
             holder.tvMovie = (TextView) convertView.findViewById(R.id.tvMovieM);
             holder.tvTagline = (TextView) convertView.findViewById(R.id.tvTaglineM);
             holder.tvYear = (TextView) convertView.findViewById(R.id.tvYearM);
+            holder.tvStanje = (TextView) convertView.findViewById(R.id.tvStanje);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -184,6 +185,7 @@ public class MenuAdapter extends ArrayAdapter {
 
         progressBar.setVisibility(View.GONE);
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+ " KM");
+        holder.tvStanje.setText("Na stanju : " + movieModelList.get(position).getStanje());
 
         // rating bar
 
@@ -199,33 +201,8 @@ public class MenuAdapter extends ArrayAdapter {
         private TextView tvMovie;
         private TextView tvTagline;
         private TextView tvYear;
+        private TextView tvStanje;
 
     }
-    public void saveImage(String filenamejpg,ImageView iv){
 
-        BitmapDrawable draw = (BitmapDrawable) iv.getDrawable();
-        Bitmap bitmap = draw.getBitmap();
-
-        FileOutputStream outStream = null;
-        File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
-                File.separator + "YourFolderName/"+filenamejpg+".jpg");
-        String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg+".jpg";
-        File outFile = new File(fileName);
-        try {
-            outStream = new FileOutputStream(outFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-        try {
-            outStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            outStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

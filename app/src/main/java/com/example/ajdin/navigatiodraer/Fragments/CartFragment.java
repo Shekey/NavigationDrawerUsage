@@ -114,7 +114,7 @@ public class CartFragment extends Fragment {
                 // create "open" item
                 SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
                 // set item background
-                openItem.setBackground(R.color.primary);
+                openItem.setBackground(R.color.colorPrimaryDark);
                 // set item width
                 openItem.setWidth(170);
                 // set item title
@@ -156,7 +156,7 @@ public class CartFragment extends Fragment {
                         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                         ft.hide(CartFragment.this);
                         fragment.setArguments(bundle);
-                        ft.replace(R.id.content_main,fragment,"editFragment");
+                        ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
                         ft.commit();
                         break;
                     case 1:
@@ -301,7 +301,7 @@ public class CartFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (cartItemAdapter.getCount()==0){
-                    Toast.makeText(getActivity(), "Nazalost, niste nista unijeli", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Nazalost, niste ni?ta unijeli", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -313,7 +313,6 @@ public class CartFragment extends Fragment {
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
                         spreferencesEditor.commit();
-                        Toast.makeText(getActivity(), "Uspjesno kreiran racun", Toast.LENGTH_SHORT).show();
                         cart.clear();
                         cartItemAdapter.updateCartItems(getCartItems(cart));
                         cartItemAdapter.notifyDataSetChanged();
@@ -329,7 +328,6 @@ public class CartFragment extends Fragment {
                         exportDBold(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("path", ""));
 
 
-                        Toast.makeText(getActivity(), "Uspjesno kreiran racun", Toast.LENGTH_SHORT).show();
                         cart.clear();
                         cartItemAdapter.updateCartItems(getCartItems(cart));
                         cartItemAdapter.notifyDataSetChanged();
@@ -364,7 +362,6 @@ public class CartFragment extends Fragment {
                     }
                     else {
                         db.addToStack(sharedPreferences.getString("path", ""));
-                        Toast.makeText(getActivity(), "Added to stack", Toast.LENGTH_SHORT).show();
                         clearCart();
                     }
 

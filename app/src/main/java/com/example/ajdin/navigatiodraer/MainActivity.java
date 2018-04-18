@@ -606,9 +606,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    String decodeUTF8(byte[] bytes) {
-        return new String(bytes, UTF8_CHARSET);
-    }
+
 
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
 
@@ -784,7 +782,7 @@ public class MainActivity extends AppCompatActivity
                     ft.replace(R.id.content_main, fragment,"first_frag");
                     ft.commit();
                 }
-            }, 30000);
+            }, 25000);
 
 
 
@@ -849,7 +847,6 @@ public class MainActivity extends AppCompatActivity
             Log.e("Exception",ex.toString());
         }
     }
-
     class IndexTarget implements Target {
 
         private final int mIndex;
@@ -887,179 +884,7 @@ public class MainActivity extends AppCompatActivity
 
         }
     }
-    private class DownloadImageTask extends AsyncTask<List<String>, Integer, List<Bitmap>> {
-        ImageLoader imageLoader = ImageLoader.getInstance(); // Instance android-universal-image-loader
-        List<Bitmap> downloadedImage = new LinkedList<>();
-
-        protected List<Bitmap> doInBackground(List<String>... urls) {
-            List<String> yoururls = urls[0];
-            for(final String url : yoururls){
-                imageLoader.loadImage(url, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                       saveImage(url,loadedImage);
-                        publishProgress(1);
-                    }
-                });
-            }
-            return downloadedImage;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            //Update here your progress bar
-        }
-
-        protected void onPostExecute(List<Bitmap> result) {
-//            dialog.dismiss();
-        }
-
-        protected void onPreExecute(){
-            //Create your progress bar
-        }
-    }
-    private class loadImg extends AsyncTask<Void,Integer,Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                for (int i = 0; i < sveSlike.size(); i++) {
-                    Slike object = sveSlike.get(i);
-                    final String link = BASE_URL + object.getImage();//"YOUR IMAGE LINK OR STRING";
-                    if (link != null && !link.isEmpty()) {
-                        Bitmap bitmap = Picasso.with(MainActivity.this).load(link).get();
-                        publishProgress(i);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
-    }
-
-    public class httpDownloadImages extends AsyncTask<Void,Void,String> {
-
-        Bitmap myBitmap[]=new Bitmap[sveSlike.size()];
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.show();
-
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                int i=0;
-                for (Slike s:sveSlike) {
-
-
-                    String src="http://nurexport.com/demo/"+s.getImage();
-                    java.net.URL url = new java.net.URL(src);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-                    myBitmap[i] = BitmapFactory.decodeStream(input);
-                    if(myBitmap[i]!=null)
-                        saveimagetoFile(myBitmap[i],i,s.getId());
-                }
-
-            } catch (IOException e) {
-
-                return null;
-            }
-            return "successful";
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            dialog.dismiss();
-
-        }
-        void saveimagetoFile(Bitmap bmp,int num,String imageName){
-            try {
-
-                OutputStream fOut = null;
-                String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+imageName+".jpg";
-
-                File file = new File(fileName); // the File to save to
-                fOut = new FileOutputStream(file);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, fOut); //save image to jpeg file
-                fOut.flush();
-                fOut.close();
-            }catch (Exception e){
-
-            }
-        }
-        public void saveImage(String filenamejpg,ImageView iv){
-
-            BitmapDrawable draw = (BitmapDrawable) iv.getDrawable();
-            Bitmap bitmap = draw.getBitmap();
-
-            FileOutputStream outStream = null;
-            File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
-                    File.separator + "YourFolderName/"+filenamejpg+".jpg");
-            String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg+".jpg";
-            File outFile = new File(fileName);
-            try {
-                outStream = new FileOutputStream(outFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-            try {
-                outStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                outStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public void downloadImage(String fileName ,String imagePath){
-        String filename = fileName+".jpg";
-        String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
-        File direct =
-                new File(Environment.DIRECTORY_PICTURES,
-                        File.separator + "YourFolderName" + File.separator);
-
-
-        if (!direct.exists()) {
-            direct.mkdir();
-            Log.d("DOWNLOADING IMAGE", "dir created for first time");
-        }
-
-        DownloadManager dm = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri downloadUri = Uri.parse(downloadUrlOfImage);
-        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle(filename)
-                .setMimeType("image/jpeg")
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
-                        File.separator + "YourFolderName" + File.separator + filename);
-
-        dm.enqueue(request);
-
-    }
-    public void downloadImageURL(String fileName ,String imagePath){
+     public void downloadImageURL(String fileName ,String imagePath){
         String filename = fileName+".jpg";
         String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
         File direct =
@@ -1090,141 +915,7 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    public static void downloadThroughManager(String imageUrl,String name, Context context) {
-
-        String downloadUrlOfImage = "http://nurexport.com/demo/"+imageUrl;
-        File path = new File(Environment.DIRECTORY_PICTURES,
-                File.separator + "YourFolderName" + File.separator);
-        String filename = name+".jpg";
-        if (!path.exists()) {
-            path.mkdir();
-            Log.d("DOWNLOADING IMAGE", "dir created for first time");
-        }
-        final DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(downloadUrlOfImage);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle(name);
-        request.setDescription(name);
-        request.setVisibleInDownloadsUi(true);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
-                File.separator + "YourFolderName" + File.separator + filename);
-        long ref = downloadManager.enqueue(request);
-
-        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
 
 
 
-
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                long downloadReference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                Log.i("GenerateTurePDfAsync", "Download completed");
-
-
-                DownloadManager.Query query = new DownloadManager.Query();
-                query.setFilterById(downloadReference);
-
-                Cursor cur = downloadManager.query(query);
-
-                if (cur.moveToFirst()) {
-                    int columnIndex = cur.getColumnIndex(DownloadManager.COLUMN_STATUS);
-
-
-
-                    if (DownloadManager.STATUS_SUCCESSFUL == cur.getInt(columnIndex)) {
-                        String uriString = cur.getString(cur.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
-
-
-//                        Toast.makeText(context, "File has been downloaded successfully.", Toast.LENGTH_SHORT).show();
-
-
-                    } else if (DownloadManager.STATUS_FAILED == cur.getInt(columnIndex)) {
-                        int columnReason = cur.getColumnIndex(DownloadManager.COLUMN_REASON);
-                        int reason = cur.getInt(columnReason);
-                        switch(reason){
-
-                            case DownloadManager.ERROR_FILE_ERROR:
-                                Toast.makeText(context, "Download Failed.File is corrupt.", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                                Toast.makeText(context, "Download Failed.Http Error Found.", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                                Toast.makeText(context, "Download Failed due to insufficient space in internal storage", Toast.LENGTH_LONG).show();
-                                break;
-
-                            case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                                Toast.makeText(context, "Download Failed. Http Code Error Found.", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_UNKNOWN:
-                                Toast.makeText(context, "Download Failed.", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_CANNOT_RESUME:
-                                Toast.makeText(context, "ERROR_CANNOT_RESUME", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                                Toast.makeText(context, "ERROR_TOO_MANY_REDIRECTS", Toast.LENGTH_LONG).show();
-                                break;
-                            case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                                Toast.makeText(context, "ERROR_DEVICE_NOT_FOUND", Toast.LENGTH_LONG).show();
-                                break;
-
-                        }
-                    }
-                }
-            }
-
-        };
-
-
-        context.registerReceiver(receiver, filter);
-    }
-    private int getList() {
-
-
-
-
-
-
-
-        File directory =new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
-                File.separator + "YourFolderName");
-
-        String[] files = directory.list();
-        Log.d("Files", "Size: "+ files.length);
-        int count=files.length;
-
-        return count;
-    }
-
-    public void saveImage(String filenamejpg,Bitmap iv){
-
-
-        Bitmap bitmap = iv;
-
-        FileOutputStream outStream = null;
-        File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
-                File.separator + "YourFolderName/"+filenamejpg);
-        String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg;
-        File outFile = new File(fileName);
-        try {
-            outStream = new FileOutputStream(outFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-        try {
-            outStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            outStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -3,6 +3,7 @@ package com.example.ajdin.navigatiodraer.helpers;
 import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -186,10 +187,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 if (!pronadjen){
 
+                    String photoUri=Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES+
+                    "/"+ "YourFolderName" + "/" +id_delete+".jpg";
                     File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
                             File.separator + "YourFolderName" + File.separator +id_delete+".jpg");
                     if(f.exists()){
                         f.delete();
+//                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(photoUri))));
+//
                     }
                     db.execSQL("DELETE FROM Images WHERE IdSlika ='"+id_delete+"';");
 

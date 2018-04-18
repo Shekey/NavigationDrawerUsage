@@ -90,6 +90,15 @@
                 android:textStyle="italic"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp" />
+            <TextView
+                android:id="@+id/tvStanjeDetalji"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STANJE"
+                android:layout_marginTop="8dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
 
 
         </LinearLayout>
