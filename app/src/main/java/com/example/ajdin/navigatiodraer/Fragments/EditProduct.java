@@ -127,9 +127,8 @@ public class EditProduct extends Fragment {
                         cart.remove(movieModel);
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
                         CartFragment fragment=new CartFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").commit();
-
-
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(getActivity().getSupportFragmentManager().findFragmentByTag("editFragment"))
+                                .add(R.id.content_main,fragment,"cart_frag").addToBackStack("cart_frag").commit();
 //cijena ""
                     }
 

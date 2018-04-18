@@ -53,7 +53,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
     private ArrayAdapter<String> mAdapter;
     private Context mContext=getActivity();
     private ArrayList<Artikli> movieModelList;
-    private NEWProductsAdapter adapter;
+    private MenuAdapter adapter;
     private List<Artikli> productList;
     private List<Artikli> productList1;
     String[] bankNames={"Odaberi redoslijed","Abecedno","Obrnuto abecedno","Cijeni opadajuci","Cijeni rastuci"};
@@ -177,7 +177,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                         filteredAll=new ArrayList<>(filteredKategory);
                     }
 
-                    adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, filteredAll);
+                    adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (state != null) {
                         Log.d(TAG, "trying to restore listview state..");
@@ -322,7 +322,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
 
 
-        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
 
         lvArtikli.setAdapter(adapter);
         if(state != null) {
@@ -426,7 +426,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
 
 
-            adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
+            adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
             if (state != null) {
                 Log.d(TAG, "trying to restore listview state..");
@@ -516,7 +516,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
 
                 });
-                 adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_new, result);
+                 adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, result);
                 lvArtikli.setAdapter(adapter);
                 if(state != null) {
                     Log.d(TAG, "trying to restore listview state..");
@@ -558,7 +558,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             filteredAll=new ArrayList<>(productList);
         }
         textGeteR=null;
-        adapter = new NEWProductsAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
+        adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
     }

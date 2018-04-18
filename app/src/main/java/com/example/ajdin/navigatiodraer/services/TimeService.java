@@ -97,7 +97,7 @@ public class TimeService extends Service {
                     else {
                         mTimer.cancel();
                         stopSelf();
-                        Toast.makeText(TimeService.this, "Zaustavljen servis", Toast.LENGTH_SHORT).show();
+
                     }
 
 
