@@ -64,6 +64,11 @@ import com.example.ajdin.navigatiodraer.Fragments.NoteFragment;
 import com.example.ajdin.navigatiodraer.Fragments.CartFragment;
 import com.example.ajdin.navigatiodraer.Fragments.SnizenjeFragment;
 
+import com.example.ajdin.navigatiodraer.helpers.Cart;
+import com.example.ajdin.navigatiodraer.helpers.CartHelper;
+import com.example.ajdin.navigatiodraer.helpers.CartItem;
+import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
+import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 
 import com.example.ajdin.navigatiodraer.models.Artikli;
@@ -73,12 +78,7 @@ import com.example.ajdin.navigatiodraer.services.ConnectionService;
 import com.example.ajdin.navigatiodraer.services.MyServiceUploading;
 import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -175,14 +175,14 @@ public class MainActivity extends AppCompatActivity
         dialog.setCancelable(false);
         dialog.setMessage("Loading. Please wait...");
 
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
-                .cacheOnDisk(false)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MainActivity.this)
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config); // Do it on Application start
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                .cacheInMemory(false)
+//                .cacheOnDisk(false)
+//                .build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MainActivity.this)
+//                .defaultDisplayImageOptions(defaultOptions)
+//                .build();
+//        ImageLoader.getInstance().init(config); // Do it on Application start
 
 
         db = new DatabaseHelper(MainActivity.this);
@@ -196,21 +196,23 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().commit();
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (sharedPreferences.getString("ime","").isEmpty()) {
-            fab.setVisibility(View.VISIBLE);
-        }
-        else {
-            fab.setVisibility(View.INVISIBLE);
-        }
-        fab.setImageResource(R.drawable.dodaj_osobu);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                KupacFragment fragment1=new KupacFragment();
-                fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-
-            }
-        });
+//        if (sharedPreferences.getString("ime","").isEmpty()) {
+//            fab.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            fab.setVisibility(View.INVISIBLE);
+//        }
+        fab.setImageResource(R.drawable.ic_note_add_white_24px);
+        fab.setVisibility(View.INVISIBLE);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+////                KupacFragment fragment1=new KupacFragment();
+////                fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
+//
+//            }
+//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -226,6 +228,7 @@ public class MainActivity extends AppCompatActivity
         ft.add(R.id.content_main, fragment,"first_frag");
         ft.commit();
         setTitle("Svi proizvodi");
+
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         Intent intent = new Intent(this, TimeService.class);
         startService(intent);
@@ -272,26 +275,28 @@ public class MainActivity extends AppCompatActivity
 
             getSupportFragmentManager().popBackStack();
             android.support.v4.app.Fragment f= getCurrentFragment();
+            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+            ftt.remove(f).commit();
 
 
-//              if (fragment4 != null) {
-//                if (fragment4.isDetached()) {
-//                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                    ft.show(fragment4);
-//                    ft.commit();
-//                    fab.setVisibility(View.GONE);
-//                    navigationView.setCheckedItem(R.id.nav_korpa);
-//                    setTitle("Korpa");
-//
-//                }
-//            }
+            if (fragment6 != null && f.getTag() != fragment6.getTag()) {
+                if (!fragment6.isVisible()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment4);
+                    ft.commit();
+                    fab.setVisibility(View.GONE);
+                    navigationView.setCheckedItem(R.id.nav_korpa);
+                    setTitle("Korpa");
+
+                }
+            }
                 if (fragment6 != null && f.getTag() != fragment6.getTag()) {
 
                         if (!fragment6.isVisible()) {
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.show(fragment6);
                             ft.commit();
-                            fab.setVisibility(View.GONE);
+//                            fab.setVisibility(View.GONE);
                             setTitle("Detalji proizvoda");
 
                         }
@@ -302,7 +307,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.show(fragment7);
                     ft.commit();
-                    fab.setVisibility(View.GONE);
+//                    fab.setVisibility(View.GONE);
                     setTitle("Detalji proizvoda");
 
                 }
@@ -311,7 +316,7 @@ public class MainActivity extends AppCompatActivity
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.show(fragment4);
                     ft.commit();
-                    fab.setVisibility(View.INVISIBLE);
+//                    fab.setVisibility(View.INVISIBLE);
                     setTitle("Korpa");
                     navigationView.setCheckedItem(R.id.nav_korpa);
 
@@ -323,8 +328,9 @@ public class MainActivity extends AppCompatActivity
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.show(fragment2);
                             ft.commit();
-                            fab.setImageResource(R.drawable.ic_note_add_white_24px);
-                            fab.setOnClickListener(new View.OnClickListener() {
+                           fab.setImageResource(R.drawable.ic_note_add_white_24px);
+                           fab.setVisibility(View.VISIBLE);
+                           fab.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     CRUDFragment fragment = new CRUDFragment();
@@ -348,33 +354,33 @@ public class MainActivity extends AppCompatActivity
                             ft.show(fragment3);
                             ft.commit();
                             setTitle("Historija računa");
-                            fab.setVisibility(View.GONE);
+//                            fab.setVisibility(View.GONE);
                             navigationView.setCheckedItem(R.id.nav_history);
 
                         }
 
             } else if (fragment != null && f.getTag() != fragment.getTag()) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.show(fragment);
-                            ft.commit();
-                            fab.setImageResource(R.drawable.dodaj_osobu);
+//                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                            ft.show(fragment);
+//                            ft.commit();
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
                             SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-                                fab.setVisibility(View.VISIBLE);
-                            } else {
-                                fab.setVisibility(View.INVISIBLE);
-                            }
-
-
-                            fab.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    KupacFragment fragment1 = new KupacFragment();
-                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
 //
-                                }
-                            });
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
                             setTitle("Svi proizvodi");
                             navigationView.setCheckedItem(R.id.nav_proizvodi);
 
@@ -386,24 +392,24 @@ public class MainActivity extends AppCompatActivity
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.show(fragment1);
                             ft.commit();
-                            fab.setImageResource(R.drawable.dodaj_osobu);
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
                             SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-                                fab.setVisibility(View.VISIBLE);
-                            } else {
-                                fab.setVisibility(View.INVISIBLE);
-                            }
-
-
-                            fab.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    KupacFragment fragment1 = new KupacFragment();
-                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
 //
-                                }
-                            });
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
                             setTitle("Novi proizvodi");
                             navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
 
@@ -416,24 +422,24 @@ public class MainActivity extends AppCompatActivity
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                             ft.show(fragment5);
                             ft.commit();
-                            fab.setImageResource(R.drawable.dodaj_osobu);
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
                             SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-                                fab.setVisibility(View.VISIBLE);
-                            } else {
-                                fab.setVisibility(View.INVISIBLE);
-                            }
-
-
-                            fab.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    KupacFragment fragment1 = new KupacFragment();
-                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
 //
-                                }
-                            });
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
                             setTitle("Snizeni proizvodi");
                             navigationView.setCheckedItem(R.id.nav_snizeno);
 
@@ -451,6 +457,7 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton("Da", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            clearCart();
                             MainActivity.super.onBackPressed();
                         }
                     })
@@ -460,6 +467,16 @@ public class MainActivity extends AppCompatActivity
 
 
         }
+
+    }
+    private void clearCart(){
+        SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+        spreferencesEditor.clear();
+        spreferencesEditor.commit();
+        Cart cart = CartHelper.getCart();
+        cart.clear();
+
 
     }
 
@@ -507,6 +524,32 @@ public class MainActivity extends AppCompatActivity
 
 
         }
+        if (id == R.id.nav_All) {
+            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
+            String  tag="first_frag";
+            MenuFragment fragment=new MenuFragment();
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.remove(CurrentFragment).add(R.id.content_main, fragment, tag).addToBackStack(tag).commit();
+            navigationView.setCheckedItem(R.id.nav_proizvodi);
+            setTitle("Svi proizvodi");
+
+
+
+        }
+        if (id == R.id.nav_remove) {
+
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.detele_cart))
+                    .setMessage(getResources().getString(R.string.detele_korpe))
+                    .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                           clearCart();
+                        }
+                    })
+                    .setNegativeButton(getResources().getString(R.string.Ne), null)
+                    .show();
+        }
 
 
         return super.onOptionsItemSelected(item);
@@ -532,8 +575,9 @@ public class MainActivity extends AppCompatActivity
             tag="first_frag";
 
         } else if (id == R.id.nav_history) {
+            clearCart();
             fragment=new HistoryFragment();
-            setTitle("Historija računa");
+            setTitle("Historija kupovina");
 
             tag="history_frag";
         }
@@ -549,7 +593,7 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sharedPreferences.edit().clear().commit();
-                                fab.setVisibility(View.VISIBLE);
+//                                fab.setVisibility(View.VISIBLE);
 
                             }
                         })

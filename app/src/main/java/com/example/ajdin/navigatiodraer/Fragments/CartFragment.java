@@ -154,10 +154,11 @@ public class CartFragment extends Fragment {
                         bundle.putString("kolEdit",String.valueOf(cartItems.get(position).getQuantity()));
                         EditProduct fragment=new EditProduct();
                         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.hide(CartFragment.this);
+                        ft.remove(CartFragment.this);
                         fragment.setArguments(bundle);
                         ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
                         ft.commit();
+
                         break;
                     case 1:
                         new AlertDialog.Builder(getActivity())
@@ -313,25 +314,26 @@ public class CartFragment extends Fragment {
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
                         spreferencesEditor.commit();
-                        cart.clear();
-                        cartItemAdapter.updateCartItems(getCartItems(cart));
-                        cartItemAdapter.notifyDataSetChanged();
-                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+//                        cart.clear();
+//                        cartItemAdapter.updateCartItems(getCartItems(cart));
+//                        cartItemAdapter.notifyDataSetChanged();
+//                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
                         File file = new File(zadropBox);
                         new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
+                        clearCart();
 
-                    } else {
+                    } else if(!sharedPreferences.getString("path", "").equals("")) {
 
 
                         exportDBold(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("path", ""));
 
-
-                        cart.clear();
-                        cartItemAdapter.updateCartItems(getCartItems(cart));
-                        cartItemAdapter.notifyDataSetChanged();
-                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
+//
+//                        cart.clear();
+//                        cartItemAdapter.updateCartItems(getCartItems(cart));
+//                        cartItemAdapter.notifyDataSetChanged();
+//                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
 //                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
 //                    intent.putExtra("pathFile",Environment.getExternalStorageDirectory().toString()+"/racunidevice/"+sharedPreferences.getString("path",""));
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -339,8 +341,14 @@ public class CartFragment extends Fragment {
                         String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
                         File file = new File(putanja);
                         new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file,getActivity(). getApplicationContext()).execute();
+                        clearCart();
                         return;
 
+
+                    }
+                    else {
+                        KupacFragment fragment1=new KupacFragment();
+                        fragment1.show(getActivity().getSupportFragmentManager(),"Mydialog");
 
                     }
                 }
@@ -397,7 +405,7 @@ public class CartFragment extends Fragment {
         MenuFragment fragment=new MenuFragment();
         NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(CartFragment.this).replace(R.id.content_main,fragment,"first_frag").commit();
 
     }
     private List<CartItem> getCartItems(Cart cart) {

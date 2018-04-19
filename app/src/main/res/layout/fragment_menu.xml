@@ -24,11 +24,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1">
+
         <SearchView
             android:id="@+id/simpleSearchView"
             android:layout_width="0dp"
+            android:layout_height="80dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Pretrazi ovdje " />
 
@@ -46,14 +47,15 @@
         <Spinner
             android:id="@+id/kategorySpinner"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:layout_centerHorizontal="true"
-            android:layout_weight="0.5" />
+            android:layout_weight="0.5"
+            android:paddingLeft="16dp" />
 
         <Spinner
             android:id="@+id/simpleSpinner"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:layout_centerHorizontal="true"
             android:layout_weight="0.5" />
 

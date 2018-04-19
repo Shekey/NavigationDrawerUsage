@@ -26,9 +26,9 @@
 
             <ImageView
                 android:id="@+id/ivIconM"
-                android:padding="4dp"
-                android:layout_width="160dp"
-                android:layout_height="160dp" />
+                android:padding="1dp"
+                android:layout_width="280dp"
+                android:layout_height="200dp" />
 
             <ProgressBar
                 android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                 android:padding="8dp"
                 android:layout_marginLeft="8dp"
                 android:textAllCaps="true"
-                android:textSize="22sp"
+                android:textSize="28sp"
                 android:textColor="@color/primaryTtext"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -64,7 +64,7 @@
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="italic"
-                android:textSize="22sp"
+                android:textSize="28sp"
                 android:text="Tagline"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -77,7 +77,7 @@
                 android:padding="8dp"
                 android:layout_marginLeft="8dp"
                 android:textStyle="italic"
-                android:textSize="22sp"
+                android:textSize="28sp"
                 android:textColor="@color/colorPrimaryDark"
 
                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -90,7 +90,7 @@
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="italic"
-                android:textSize="22sp"
+                android:textSize="28sp"
                 android:text="Stanje"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>

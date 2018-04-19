@@ -11,6 +11,15 @@
         android:id="@+id/nav_cart"
         android:icon="@drawable/ic_stat_cart"
         android:title="Korpa"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/nav_All"
+        android:title="@string/svi_proizvodi"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/nav_remove"
+        android:title="@string/o_isti_korpu"
         app:showAsAction="always"/>
 
 </menu>

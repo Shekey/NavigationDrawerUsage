@@ -23,4 +23,18 @@
     <string name="NazivArtikla">Naziv_arikla</string>
     <string name="Cijena">Cijena</string>
     <string name="kolicina">Kolicina</string>
+    <string name="ime_i_prezime_kupca">IME I PREZIME KUPCA</string>
+    <string name="datum">DATUM</string>
+    <string name="kolicinaDetalji">Količina</string>
+    <string name="unos_kolicine">Unesite količinu</string>
+    <string name="stanje">STANJE</string>
+    <string name="kategorija">KATEGORIJA</string>
+    <string name="cijena">Cijena</string>
+    <string name="naziv">Naziv</string>
+    <string name="o_isti_korpu">Očisti korpu</string>
+    <string name="svi_proizvodi">Svi proizvodi</string>
+    <string name="detele_cart">Brisanje cijele kupovine </string>
+    <string name="detele_korpe">Da li želite očistiti korpu ?</string>
+    <string name="hint_cijena">Unesite novu cijenu</string>
+    <string name="text_nova_cijena">Nova cijena</string>
 </resources>

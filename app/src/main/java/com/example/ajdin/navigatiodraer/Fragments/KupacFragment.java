@@ -2,9 +2,14 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -17,6 +22,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
+import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
+import com.example.ajdin.navigatiodraer.helpers.Cart;
+import com.example.ajdin.navigatiodraer.helpers.CartHelper;
+import com.example.ajdin.navigatiodraer.helpers.CartItem;
+import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
+import com.example.ajdin.navigatiodraer.helpers.Constant;
+import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.helpers.Saleable;
+import com.example.ajdin.navigatiodraer.models.Artikli;
+import com.example.ajdin.navigatiodraer.services.TimeService;
+import com.example.ajdin.navigatiodraer.tasks.DropboxClient;
+import com.example.ajdin.navigatiodraer.tasks.UploadTask;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +53,8 @@ public class KupacFragment extends DialogFragment {
 
     private TextView txt;
     private TextView unos;
+    private Cart cart;
+    private CartItemAdapter cartItemAdapter;
 
     public KupacFragment() {
         // Required empty public constructor
@@ -54,8 +83,23 @@ public class KupacFragment extends DialogFragment {
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.putString("ime", unos.getText().toString());
                     editor.commit();
-                    FloatingActionButton fab=(FloatingActionButton) getActivity().findViewById(R.id.fab);
-                    fab.setVisibility(View.GONE);
+                    android.support.v4.app.Fragment CurrentFragment=getActivity().getSupportFragmentManager().findFragmentById(R.id.content_main);
+                    if (CurrentFragment.getTag().equals("cart_frag")){
+                        cart = CartHelper.getCart();
+                        cartItemAdapter = new CartItemAdapter(getActivity());
+                        String zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+                        spreferencesEditor.clear();
+                        spreferencesEditor.commit();
+                        File file = new File(zadropBox);
+                        new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+                        Intent intent = new Intent(getContext(), TimeService.class);
+                        getActivity().startService(intent);
+                        clearCart();
+
+                    }
+//                    FloatingActionButton fab=(FloatingActionButton) getActivity().findViewById(R.id.fab);
+//                    fab.setVisibility(View.GONE);
                     dismiss();
 
                 }
@@ -63,6 +107,143 @@ public class KupacFragment extends DialogFragment {
         });
 
         return view;
+    }
+    private List<CartItem> getCartItems(Cart cart) {
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+
+        LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
+
+
+        for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct((Artikli) entry.getKey());
+            cartItem.setQuantity(entry.getValue());
+            cartItems.add(cartItem);
+        }
+
+
+        return cartItems;
+    }
+
+    private String exportDB(List<CartItem> items, int size, String imep) {
+
+        File dbFile=getActivity().getDatabasePath("NUR.db");
+        DatabaseHelper dbhelper = new DatabaseHelper(getActivity().getApplicationContext());
+        File exportDir = new File(Environment.getExternalStorageDirectory(), "racuni");
+        File exportDir2 = new File(Environment.getExternalStorageDirectory(), "racunidevice");
+        if (!exportDir.exists())
+        {
+            exportDir.mkdirs();
+        }
+        if (!exportDir2.exists())
+        {
+            exportDir2.mkdirs();
+        }
+
+        String timeStamp = new SimpleDateFormat("dd MM yyyy HH:mm").format(Calendar.getInstance().getTime());
+
+        File file = new File(exportDir,imep+"---"+timeStamp+".txt");
+        File file2 = new File(exportDir2,imep+"---"+timeStamp+".txt");
+
+        try
+        {
+            file.createNewFile();
+            file2.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            CSVWriter csvWrite2 = new CSVWriter(new FileWriter(file2));
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            Cursor curCSV = db.rawQuery("SELECT * FROM Artikli",null);
+
+            for (int i=0;i<size;i++){
+
+                String arrStr[] ={items.get(i).getProduct().getBarkod(), String.valueOf(items.get(i).getQuantity()), String.valueOf(items.get(i).getProduct().getPrice())};
+                csvWrite.writeNext(arrStr);
+                csvWrite2.writeNext(arrStr);
+
+
+            }
+
+            csvWrite.close();
+            csvWrite2.close();
+            curCSV.close();
+        }
+        catch(Exception sqlEx)
+        {
+            sqlEx.printStackTrace();
+            // Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+        }
+        return Environment.getExternalStorageDirectory().toString()+ "/racunidevice/"+
+                imep+"---"+timeStamp+".txt";
+
+    }
+
+
+    private void exportDBold(List<CartItem> cartItems, int count, String pathfile) {
+
+        File dbFile=getActivity().getDatabasePath("NUR.db");
+        DatabaseHelper dbhelper = new DatabaseHelper(getActivity().getApplicationContext());
+        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "racuni");
+        File exportDir2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "racunidevice");
+        if (!exportDir.exists())
+        {
+            exportDir.mkdirs();
+        }
+
+        if (!exportDir2.exists())
+        {
+            exportDir2.mkdirs();
+        }
+
+
+        File file = new File(exportDir,pathfile);
+
+        if (file.delete()){
+            Toast.makeText(getActivity(),"izbrisan fajl", Toast.LENGTH_SHORT);
+        }
+        File file2 = new File(exportDir,pathfile);
+        File file3 = new File(exportDir2,pathfile);
+
+        try
+        {
+            file2.createNewFile();
+            file3.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file2));
+            CSVWriter csvWrite2 = new CSVWriter(new FileWriter(file3));
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            // Cursor curCSV = db.rawQuery("SELECT * FROM Artikli",null);
+
+            for (int i=0;i<count;i++){
+
+                String arrStr[] ={cartItems.get(i).getProduct().getBarkod(), String.valueOf(cartItems.get(i).getQuantity()), String.valueOf(cartItems.get(i).getProduct().getPrice())};
+
+                csvWrite.writeNext(arrStr);
+                csvWrite2.writeNext(arrStr);
+
+            }
+
+            csvWrite.close();
+            csvWrite2.close();
+
+        }
+        catch(Exception sqlEx)
+        {
+            sqlEx.getStackTrace();
+        }
+
+
+    }
+    private void clearCart(){
+        cart.clear();
+        cartItemAdapter.updateCartItems(getCartItems(cart));
+        cartItemAdapter.notifyDataSetChanged();
+
+
+        MenuFragment fragment=new MenuFragment();
+        NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_proizvodi);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+
     }
 
 }

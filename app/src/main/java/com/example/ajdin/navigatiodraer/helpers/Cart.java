@@ -54,7 +54,7 @@ public class Cart implements Serializable {
             BigDecimal temp_price = BigDecimal.valueOf(Double.valueOf(new_price));
             totalQuantity += quantity;
 
-            temp_price=sellable.getPrice().multiply(BigDecimal.valueOf(totalQuantity));
+            temp_price=sellable.getPrice().multiply(BigDecimal.valueOf(quantity));
             totalPrice = totalPrice.add(temp_price);
 
 

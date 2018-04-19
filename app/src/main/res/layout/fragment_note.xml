@@ -17,20 +17,16 @@
 
     <TextView
         android:id="@+id/emptyElementNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerInParent="true"
-        android:text="NEMATE DODANIH NAPOMENA ! "
-        android:textColor="#525252"
-        android:textSize="19.0sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="NEMATE DODATIH NAPOMENA  ! "
+        android:layout_marginTop="40dp"
+
+        android:textSize="25.0sp"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_stat_name" />
+
 </LinearLayout>

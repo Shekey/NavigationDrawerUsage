@@ -22,11 +22,7 @@ import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.models.Slike;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -58,14 +54,14 @@ public class MenuAdapter extends ArrayAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config); // Do it on Application start
+//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                .cacheInMemory(false)
+//                .cacheOnDisk(true)
+//                .build();
+//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
+//                .defaultDisplayImageOptions(defaultOptions)
+//                .build();
+//        ImageLoader.getInstance().init(config); // Do it on Application start
         ViewHolder holder = null;
 
         if (convertView == null) {

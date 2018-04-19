@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ajdin.navigatiodraer.R;
@@ -29,9 +30,6 @@ import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.models.Slike;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,7 +70,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
     private Spinner spin;
     private String textGeteR;
     private FloatingActionButton fab;
-
+//
     @Override
     public void onResume() {
         if(state != null) {
@@ -85,16 +83,16 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             return;
         }
 
-        fab.setImageResource(R.drawable.dodaj_osobu);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                KupacFragment fragment1=new KupacFragment();
-                fragment1.show(getActivity().getSupportFragmentManager(),"dodavanje_kupca");
-
+//        fab.setImageResource(R.drawable.dodaj_osobu);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                KupacFragment fragment1=new KupacFragment();
+//                fragment1.show(getActivity().getSupportFragmentManager(),"dodavanje_kupca");
 //
-            }
-        });
+////
+//            }
+//        });
         super.onResume();
     }
 
@@ -128,15 +126,16 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
         fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
-        if (sharedPreferences.getString("ime","").isEmpty()) {
-            fab.setVisibility(View.VISIBLE);
-        }
-        else {
-            fab.setVisibility(View.INVISIBLE);
-        }
+//        if (sharedPreferences.getString("ime","").isEmpty()) {
+//            fab.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            fab.setVisibility(View.INVISIBLE);
+//        }
         getActivity().setTitle("Novi proizvodi");
-        fab.setImageResource(R.drawable.dodaj_osobu);
+//        fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         spin = (Spinner)view.findViewById(R.id.simpleSpinner);
@@ -199,7 +198,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                                 slike.add(s.getId());
 
                             }
+                            ArrayList<Artikli> lista=new ArrayList<>(filteredAll);
                             bundle.putStringArrayList("listaSlike",slike);
+                            bundle.putSerializable("lista",lista);
+                            bundle.putInt("pozicija",position);
                             fragment.setArguments(bundle);
                             ft.add(R.id.content_main, fragment,"detail_fragment");
 //                editsearch.setQuery("", false);
@@ -221,7 +223,23 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
 
 //Creating the ArrayAdapter instance having the bank name list
-        ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,bankNames);
+        ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,bankNames){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                // do whatever you want with this text view
+                textView.setTextSize(22);
+                return view;
+            }
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View v = super.getDropDownView(position, convertView, parent);
+
+                ((TextView) v).setTextSize(22);
+                return v;
+            }
+        };
 //        ArrayAdapter aa2 = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item,li);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        aa2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -258,14 +276,14 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
 
-            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                    .cacheInMemory(true)
-                    .cacheOnDisk(true)
-                    .build();
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-                    .defaultDisplayImageOptions(defaultOptions)
-                    .build();
-            ImageLoader.getInstance().init(config); // Do it on Application start
+//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+//                    .cacheInMemory(true)
+//                    .cacheOnDisk(true)
+//                    .build();
+//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
+//                    .defaultDisplayImageOptions(defaultOptions)
+//                    .build();
+//            ImageLoader.getInstance().init(config); // Do it on Application start
 
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
 
@@ -343,7 +361,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                     slike.add(s.getId());
 
                 }
+                ArrayList<Artikli> lista=new ArrayList<>(filteredAll);
                 bundle.putStringArrayList("listaSlike",slike);
+                bundle.putSerializable("lista",lista);
+                bundle.putInt("pozicija",position);
                 bundle.putSerializable("movieModel",movieModel);
                 fragment.setArguments(bundle);
                 ft.addToBackStack("detail_fragment");
@@ -448,7 +469,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                     }
 
 
+                    ArrayList<Artikli> lista=new ArrayList<>(finalUsedList);
                     bundle.putStringArrayList("listaSlike",slike);
+                    bundle.putSerializable("lista",lista);
+                    bundle.putInt("pozicija",position);
                     bundle.putSerializable("movieModel", movieModel);
                     fragment.setArguments(bundle);
                     ft.add(R.id.content_main, fragment,"detail_fragment");
@@ -475,7 +499,23 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, lables);
+                android.R.layout.simple_spinner_item, lables){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                // do whatever you want with this text view
+                textView.setTextSize(22);
+                return view;
+            }
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View v = super.getDropDownView(position, convertView, parent);
+
+                ((TextView) v).setTextSize(22);
+                return v;
+            }
+        };
 
         // Drop down layout style - list view with radio button
         dataAdapter
@@ -535,7 +575,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                             slike.add(s.getId());
 
                         }
+                        ArrayList<Artikli> lista=new ArrayList<>(result);
                         bundle.putStringArrayList("listaSlike",slike);
+                        bundle.putSerializable("lista",lista);
+                        bundle.putInt("pozicija",position);
                         bundle.putSerializable("movieModel",movieModel);
 
                         fragment.setArguments(bundle);

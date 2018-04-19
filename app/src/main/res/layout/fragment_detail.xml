@@ -2,15 +2,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
-    android:scrollbars="none"
+    android:isScrollContainer="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="2dp">
 
@@ -18,38 +18,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tvNaziv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Naziv"
-                android:textStyle="bold"
-                android:textAllCaps="true"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
-                android:textSize="25sp"
-                 />
+                android:text="@string/naziv"
+                android:textAllCaps="true"
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="550dp">
 
 
-              <com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager
-                  android:layout_width="match_parent"
-                  android:id="@+id/viewPager2"
-                  android:layout_height="match_parent">
+                <com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager
+                    android:id="@+id/viewPager2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-              </com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager>
+                </com.example.ajdin.navigatiodraer.adapters.WrapContentHeightViewPager>
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/ivIcon"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="400dp"-->
-                    <!--android:scaleType="centerCrop"-->
-                    <!--android:adjustViewBounds="true"-->
-                    <!--android:src="@drawable/avengers" />-->
+                <!--android:id="@+id/ivIcon"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="400dp"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:adjustViewBounds="true"-->
+                <!--android:src="@drawable/avengers" />-->
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -64,10 +64,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="16dp"
             android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
 
             >
             <!--android:background="@drawable/rounded_bg"-->
@@ -76,125 +76,131 @@
                 android:id="@+id/tvCijena"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/cijena"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/colorAccent"
-                android:text="Cijena"
-                android:textSize="25sp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/tvJedinicaMjere"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KATEGORIJA"
                 android:layout_marginTop="8dp"
-                android:textStyle="italic"
+                android:text="@string/kategorija"
+                android:layout_gravity="center"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="20sp" />
+                android:textSize="30sp"
+                android:textStyle="italic" />
+
             <TextView
                 android:id="@+id/tvStanjeDetalji"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="STANJE"
                 android:layout_marginTop="8dp"
-                android:textStyle="italic"
+                android:text="@string/stanje"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="20sp" />
+                android:textSize="30sp"
+                android:textStyle="italic" />
 
 
         </LinearLayout>
+
         <LinearLayout
-            android:paddingTop="4dp"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            android:weightSum="1"
-            android:id="@+id/linearLayout"
-            android:paddingRight="16dp"
             android:paddingLeft="16dp"
 
-            android:layout_marginTop="10dp"
+            android:paddingRight="16dp"
 
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:paddingTop="4dp"
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/tx"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="20sp"
-                android:text="Kolicina"
+                android:layout_weight="0.35"
+                android:gravity="center"
+                android:text="@string/kolicinaDetalji"
                 android:textColor="@color/colorPrimaryDark"
+                android:textSize="30sp"
                 android:textStyle="italic"
-                tools:ignore="HardcodedText,RtlHardcoded"
-                android:layout_weight="0.4" />
+                android:imeOptions="actionDone"
+                tools:ignore="HardcodedText,RtlHardcoded" />
 
             <EditText
                 android:id="@+id/quantity"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:ems="10"
-                android:hint="Unesite kolicinu"
-                android:inputType="numberDecimal"
+                android:layout_height="50dp"
+                android:layout_weight="0.5"
+                android:ems="5"
+                android:hint="@string/unos_kolicine"
+                android:inputType="number|numberDecimal"
                 android:paddingLeft="10sp"
                 android:text=""
-                tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry"
-                android:layout_weight="0.6" />
+                android:imeOptions="actionDone"
+                tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry" />
 
 
         </LinearLayout>
+
         <LinearLayout
-            android:paddingTop="0dp"
-            android:layout_marginTop="0dp"
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/linearLayout"
-            android:orientation="horizontal"
-            android:weightSum="1"
-            android:id="@+id/linearLayout2"
-
-
-
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/linearLayout"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal"
+
+
+            android:paddingTop="0dp"
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/txCij"
                 android:layout_width="0dp"
-                android:layout_weight="0.4"
-                android:paddingRight="16dp"
-                android:paddingLeft="16dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="20sp"
-                android:text="Nova cijena"
+                android:layout_weight="0.36"
+                android:gravity="center"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/text_nova_cijena"
                 android:textColor="@color/colorPrimaryDark"
+                android:textSize="30sp"
+
                 android:textStyle="italic"
                 tools:ignore="HardcodedText,RtlHardcoded" />
 
             <EditText
                 android:id="@+id/new_price"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0.55"
-                android:ems="10"
-                android:paddingLeft="8dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.47"
+                android:ems="5"
                 android:focusable="true"
-                android:hint="Unesite novu cijenu"
-                android:inputType="numberDecimal"
+                android:hint="@string/hint_cijena"
+                android:inputType="number|numberDecimal"
+                android:paddingLeft="8dp"
                 android:text=""
                 tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/llAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="0.40"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal"
 
-            android:layout_marginTop="10dp"
-            >
+            android:weightSum="0.40">
 
             <!--<TextView-->
             <!--android:id="@+id/textView2"-->
@@ -214,17 +220,18 @@
             <Button
                 android:id="@+id/bOrder"
                 android:layout_width="0dp"
-                android:layout_height="43dp"
+                android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:layout_weight="0.4"
                 android:layout_marginLeft="60dp"
                 android:layout_marginRight="60dp"
-                android:textAlignment="center"
-                android:text="@string/order"
-                android:textAllCaps="true"
+                android:layout_weight="0.4"
                 android:background="@android:color/holo_orange_light"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
+                android:text="@string/order"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textAllCaps="true"
+                android:textStyle="normal"
+                android:textColor="@color/primaryTtext"
                 tools:ignore="RtlHardcoded" />
         </LinearLayout>
     </LinearLayout>

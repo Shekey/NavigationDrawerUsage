@@ -125,6 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             contentValues.put("Synced", "0");
 
             long result = db.insert("FileStack", null, contentValues);
+        //here
+        db.close();
 
             Log.d(TAG, "Inserted " + result);
         }
@@ -138,12 +140,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             productList.moveToNext();
         }
         productList.close();
-
+        //here
+        db.close();
         return list;
     }
     public void setStacked(String path){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE FileStack SET Synced = 1"+" WHERE Path='"+path+"'");
+        //here
+        db.close();
     }
 
     public ArrayList<Slike> replaceSlike(List<Slike> productList)  {
@@ -207,6 +212,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
         }
+        //here
+        db.close();
         return downloadSlike;
 
     }
@@ -261,6 +268,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
         }
+        //here
+        db.close();
     }
 
     public void replace(ArrayList<Product> productList){
@@ -390,6 +399,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("delete database " + Database_name);
+        //here
+        db.close();
         onCreate(db);
     }
 
@@ -481,6 +492,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             Log.d(TAG, "Inserted " + result);
         }
+        //here
+        db.close();
 
 
     }
@@ -604,7 +617,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             productList.moveToNext();
         }
         productList.close();
-
+        //here
+        db.close();
         return list;
     }
     public boolean razlikaDana(String real){
@@ -668,7 +682,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         productList.close();
-
+        //here
+        db.close();
         return list;
     }
     public void getdatum(){
@@ -803,7 +818,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             productList.moveToNext();
         }
         productList.close();
-
+        //here
+        db.close();
         return list;
     }
 
