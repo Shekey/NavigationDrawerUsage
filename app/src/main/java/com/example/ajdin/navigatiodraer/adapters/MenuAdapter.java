@@ -72,6 +72,7 @@ public class MenuAdapter extends ArrayAdapter {
             holder.tvTagline = (TextView) convertView.findViewById(R.id.tvTaglineM);
             holder.tvYear = (TextView) convertView.findViewById(R.id.tvYearM);
             holder.tvStanje = (TextView) convertView.findViewById(R.id.tvStanje);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -198,6 +199,7 @@ public class MenuAdapter extends ArrayAdapter {
         private TextView tvTagline;
         private TextView tvYear;
         private TextView tvStanje;
+
 
     }
 

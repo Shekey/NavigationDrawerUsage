@@ -30,9 +30,19 @@
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:focusable="false"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:iconifiedByDefault="false"
             android:queryHint="Pretrazi ovdje " />
+        <TextView
+            android:layout_width="0dp"
+            android:id="@+id/brojRezulata"
+            android:layout_height="80dp"
+            android:textSize="22sp"
+            android:text="broj"
+            android:paddingTop="20dp"
+            android:paddingLeft="10dp"
+
+            android:layout_weight="0.3"/>
 
 
     </LinearLayout>

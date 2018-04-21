@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -120,6 +121,8 @@ public class DetailFragment extends Fragment {
             viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
             ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),list21);
+            TabLayout tabLayout = (TabLayout)view.findViewById(R.id.tabDots);
+            tabLayout.setupWithViewPager(viewPager, true);
             viewPager.setAdapter(adapter1);
 
 //            // Then later, when you want to display image

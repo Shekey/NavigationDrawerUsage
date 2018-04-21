@@ -28,7 +28,7 @@
                 android:id="@+id/ivIconM"
                 android:padding="1dp"
                 android:layout_width="280dp"
-                android:layout_height="200dp" />
+                android:layout_height="170dp" />
 
             <ProgressBar
                 android:layout_width="wrap_content"
