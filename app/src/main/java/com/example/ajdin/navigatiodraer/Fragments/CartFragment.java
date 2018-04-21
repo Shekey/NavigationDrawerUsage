@@ -357,8 +357,11 @@ public class CartFragment extends Fragment {
                     if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
                         zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
                         db.addToStack(zadropBox);
+                        Intent intent = new Intent(getContext(), TimeService.class);
+                        getActivity().startService(intent);
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
+                        spreferencesEditor.commit();
                         clearCart();
 
                     }
@@ -370,6 +373,8 @@ public class CartFragment extends Fragment {
                     }
                     else {
                         db.addToStack(sharedPreferences.getString("path", ""));
+                        Intent intent = new Intent(getContext(), TimeService.class);
+                        getActivity().startService(intent);
                         clearCart();
                     }
 
@@ -405,7 +410,7 @@ public class CartFragment extends Fragment {
         MenuFragment fragment=new MenuFragment();
         NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
-        getActivity().getSupportFragmentManager().beginTransaction().remove(CartFragment.this).replace(R.id.content_main,fragment,"first_frag").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(CartFragment.this).replace(R.id.content_main,fragment,"first_frag").addToBackStack("first_frag").commit();
 
     }
     private List<CartItem> getCartItems(Cart cart) {

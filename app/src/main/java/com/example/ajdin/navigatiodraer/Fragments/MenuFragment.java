@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,6 +59,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.example.ajdin.navigatiodraer.Fragments.DetailFragment.hideSoftKeyboard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -202,7 +204,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
                         filteredAll=new ArrayList<>(filteredKategory);
                     }
-
+                    editsearch.clearFocus();
                     adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (savedInstanceState != null) {
@@ -246,7 +248,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
             }
         });
-
 
 
 //Creating the ArrayAdapter instance having the bank name list
@@ -471,7 +472,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 });
 
             }
-
+           editsearch.clearFocus();
 
 
 
@@ -741,8 +742,10 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
+        editsearch.clearFocus();
 
 
 
     }
+
 }

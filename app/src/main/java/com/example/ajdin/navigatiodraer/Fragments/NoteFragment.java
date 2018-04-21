@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.ajdin.navigatiodraer.R;
 import com.opencsv.CSVReader;
@@ -86,7 +87,18 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
         fab.setImageResource(R.drawable.ic_note_add_white_24px);
         ListView listView=view.findViewById(R.id.note_list);
         listView.setEmptyView(view.findViewById(R.id.emptyElementNote));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, files);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, files){
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                // do whatever you want with this text view
+                textView.setTextSize(30);
+
+                return view;
+            }
+        };
         listView.setAdapter(arrayAdapter);
 
         arrayAdapter.notifyDataSetChanged();

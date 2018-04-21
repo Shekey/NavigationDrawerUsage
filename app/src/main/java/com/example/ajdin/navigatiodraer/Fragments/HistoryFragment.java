@@ -36,7 +36,10 @@ import com.example.ajdin.navigatiodraer.adapters.HistoryCustomAdapter;
 import com.example.ajdin.navigatiodraer.helpers.CSVWriter;
 import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
+import com.example.ajdin.navigatiodraer.helpers.CartItem;
+import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
+import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.PreviewModel;
 import com.example.ajdin.navigatiodraer.models.Product;
@@ -62,7 +65,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,6 +79,7 @@ public class HistoryFragment extends Fragment {
 
 
     ListView lstView;
+    private CartItemAdapter cartItemAdapter;
 
     ArrayList<String> files;
     private ArrayList<PreviewModel> model;
@@ -173,7 +179,7 @@ public class HistoryFragment extends Fragment {
                     NavigationView navigationView =(NavigationView)getActivity().findViewById(R.id.nav_view);
                     navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
-                    ft.replace(R.id.content_main, fragment);
+                    ft.replace(R.id.content_main, fragment).addToBackStack("cart_frag");
                     ft.commit();
                     //DO OVDJE
 
@@ -257,6 +263,7 @@ public class HistoryFragment extends Fragment {
                 int count = 0;
                 String[] line;
                 long timeStart = System.nanoTime();
+                clearCart();
                 while ((line = csvReader.readNext()) != null) {
                     Artikli temp = db.getData(line[0]);
                     if (daysBetween(date, date2) > 1) {
@@ -317,7 +324,37 @@ public class HistoryFragment extends Fragment {
 return models;
 
     }
+    private void clearCart(){
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+        spreferencesEditor.clear();
+        spreferencesEditor.commit();
+        Cart cart = CartHelper.getCart();
+        cart.clear();
+        cartItemAdapter = new CartItemAdapter(getActivity());
+        cartItemAdapter.updateCartItems(getCartItems(cart));
+        cartItemAdapter.notifyDataSetChanged();
 
+
+
+    }
+    private List<CartItem> getCartItems(Cart cart) {
+        List<CartItem> cartItems = new ArrayList<CartItem>();
+
+
+        LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
+
+
+        for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct((Artikli) entry.getKey());
+            cartItem.setQuantity(entry.getValue());
+            cartItems.add(cartItem);
+        }
+
+
+        return cartItems;
+    }
 
 
 }

@@ -71,6 +71,7 @@ import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
 import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 
+import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.models.Slike;
@@ -108,8 +109,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import us.monoid.web.Resty;
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity
     private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
     private int sizeSlike;
     private ArrayList<Slike> downloadList;
+    private CartItemAdapter cartItemAdapter;
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -275,8 +279,8 @@ public class MainActivity extends AppCompatActivity
 
             getSupportFragmentManager().popBackStack();
             android.support.v4.app.Fragment f= getCurrentFragment();
-            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-            ftt.remove(f).commit();
+//            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+//            ftt.remove(f).commit();
 
 
             if (fragment6 != null && f.getTag() != fragment6.getTag()) {
@@ -312,6 +316,91 @@ public class MainActivity extends AppCompatActivity
 
                 }
             }
+                else if (fragment != null &&f.getTag() != fragment.getTag()) {
+//                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                            ft.show(fragment);
+//                            ft.commit();
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
+//
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
+                    setTitle("Svi proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_proizvodi);
+
+
+                }
+                else if (fragment1 != null &&  f.getTag() != fragment1.getTag()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment1);
+                    ft.commit();
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
+//
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
+                    setTitle("Novi proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+
+                }
+
+
+
+
+                else if (fragment5 != null && f.getTag() != fragment5.getTag()) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.show(fragment5);
+                    ft.commit();
+//                            fab.setImageResource(R.drawable.dodaj_osobu);
+                    SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
+//                                fab.setVisibility(View.VISIBLE);
+//                            } else {
+//                                fab.setVisibility(View.INVISIBLE);
+//                            }
+//
+//
+//                            fab.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    KupacFragment fragment1 = new KupacFragment();
+//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
+//
+////
+//                                }
+//                            });
+                    setTitle("Snizeni proizvodi");
+                    navigationView.setCheckedItem(R.id.nav_snizeno);
+
+                }
+
+
                 else if (fragment4 != null && f.getTag() != fragment4.getTag()) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.show(fragment4);
@@ -359,91 +448,8 @@ public class MainActivity extends AppCompatActivity
 
                         }
 
-            } else if (fragment != null && f.getTag() != fragment.getTag()) {
-//                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//                            ft.show(fragment);
-//                            ft.commit();
-//                            fab.setImageResource(R.drawable.dodaj_osobu);
-                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-//                                fab.setVisibility(View.VISIBLE);
-//                            } else {
-//                                fab.setVisibility(View.INVISIBLE);
-//                            }
-//
-//
-//                            fab.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    KupacFragment fragment1 = new KupacFragment();
-//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-//
-////
-//                                }
-//                            });
-                            setTitle("Svi proizvodi");
-                            navigationView.setCheckedItem(R.id.nav_proizvodi);
+            }
 
-
-                        }
-
-
-           else if (fragment1 != null && f.getTag() != fragment1.getTag()) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.show(fragment1);
-                            ft.commit();
-//                            fab.setImageResource(R.drawable.dodaj_osobu);
-                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-//                                fab.setVisibility(View.VISIBLE);
-//                            } else {
-//                                fab.setVisibility(View.INVISIBLE);
-//                            }
-//
-//
-//                            fab.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    KupacFragment fragment1 = new KupacFragment();
-//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-//
-////
-//                                }
-//                            });
-                            setTitle("Novi proizvodi");
-                            navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
-
-                        }
-
-
-
-
-            else if (fragment5 != null && f.getTag() != fragment5.getTag()) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.show(fragment5);
-                            ft.commit();
-//                            fab.setImageResource(R.drawable.dodaj_osobu);
-                            SharedPreferences sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
-//                            if (sharedPreferences.getString("ime", "").isEmpty()) {
-//                                fab.setVisibility(View.VISIBLE);
-//                            } else {
-//                                fab.setVisibility(View.INVISIBLE);
-//                            }
-//
-//
-//                            fab.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View view) {
-//                                    KupacFragment fragment1 = new KupacFragment();
-//                                    fragment1.show(getSupportFragmentManager(), "dodavanje_kupca");
-//
-////
-//                                }
-//                            });
-                            setTitle("Snizeni proizvodi");
-                            navigationView.setCheckedItem(R.id.nav_snizeno);
-
-                        }
 
 
 
@@ -476,6 +482,10 @@ public class MainActivity extends AppCompatActivity
         spreferencesEditor.commit();
         Cart cart = CartHelper.getCart();
         cart.clear();
+        cartItemAdapter = new CartItemAdapter(MainActivity.this);
+        cartItemAdapter.updateCartItems(getCartItems(cart));
+        cartItemAdapter.notifyDataSetChanged();
+
 
 
     }
@@ -518,7 +528,6 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_korpa);
             ft.addToBackStack(CurrentFragment.getTag());
             setTitle("Korpa");
-            ft.hide(CurrentFragment);
             ft.commit();
             // do something with f
 
@@ -529,7 +538,7 @@ public class MainActivity extends AppCompatActivity
             String  tag="first_frag";
             MenuFragment fragment=new MenuFragment();
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.remove(CurrentFragment).add(R.id.content_main, fragment, tag).addToBackStack(tag).commit();
+            ft.replace(R.id.content_main, fragment, tag).addToBackStack(tag).commit();
             navigationView.setCheckedItem(R.id.nav_proizvodi);
             setTitle("Svi proizvodi");
 
@@ -544,6 +553,18 @@ public class MainActivity extends AppCompatActivity
                     .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
+
+                            if (CurrentFragment.getTag().equals("cart_frag")){
+                                CartFragment fragment=new CartFragment();
+                                String  tag="cart_frag";
+
+                                android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.content_main, fragment, tag).addToBackStack("cart_frag");
+                                android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
+                                manager.popBackStack();
+                                ft.commit();
+                            }
                            clearCart();
                         }
                     })
@@ -575,7 +596,6 @@ public class MainActivity extends AppCompatActivity
             tag="first_frag";
 
         } else if (id == R.id.nav_history) {
-            clearCart();
             fragment=new HistoryFragment();
             setTitle("Historija kupovina");
 
@@ -632,8 +652,8 @@ public class MainActivity extends AppCompatActivity
             // do something with f
 
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-                ft.replace(R.id.content_main, fragment,tag);
+                ft.remove(CurrentFragment);
+                ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
                 ft.commit();
 
 
@@ -959,7 +979,23 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+    private List<CartItem> getCartItems(Cart cart) {
+        List<CartItem> cartItems = new ArrayList<CartItem>();
 
+
+        LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
+
+
+        for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct((Artikli) entry.getKey());
+            cartItem.setQuantity(entry.getValue());
+            cartItems.add(cartItem);
+        }
+
+
+        return cartItems;
+    }
 
 
 }

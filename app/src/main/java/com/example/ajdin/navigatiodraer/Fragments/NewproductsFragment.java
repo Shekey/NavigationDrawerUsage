@@ -77,7 +77,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
         }
-        getActivity().setTitle("Svi proizvodi");
+
         if (!getUserVisibleHint())
         {
             return;
@@ -175,7 +175,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
                         filteredAll=new ArrayList<>(filteredKategory);
                     }
-
+                    editsearch.clearFocus();
                     adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (state != null) {
@@ -446,7 +446,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
 
 
-
+            editsearch.clearFocus();
             adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
             if (state != null) {
@@ -604,5 +604,6 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
+        editsearch.clearFocus();
     }
 }

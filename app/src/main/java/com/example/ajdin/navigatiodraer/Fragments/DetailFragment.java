@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -146,7 +147,9 @@ public class DetailFragment extends Fragment {
                         if (new_price.getText().toString().trim().matches("")) {
                             cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
                             hideSoftKeyboard(view);
-                            getActivity().getSupportFragmentManager().popBackStack();
+                            FragmentTransaction ftt =getActivity().getSupportFragmentManager().beginTransaction();
+                            ftt.remove(DetailFragment.this).commit();
+                            getActivity().onBackPressed();
                             return;
 //cijena ""
                         }
@@ -168,7 +171,9 @@ public class DetailFragment extends Fragment {
                                 cart.add(pr, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                                 BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
                                 hideSoftKeyboard(view);
-                                getActivity().getSupportFragmentManager().popBackStack();
+                                FragmentTransaction ftt =getActivity().getSupportFragmentManager().beginTransaction();
+                                ftt.remove(DetailFragment.this).commit();
+                                getActivity().onBackPressed();
                                 return;
                             }
 

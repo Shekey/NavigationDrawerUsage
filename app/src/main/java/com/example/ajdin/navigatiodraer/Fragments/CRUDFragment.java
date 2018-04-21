@@ -39,6 +39,8 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static com.example.ajdin.navigatiodraer.Fragments.DetailFragment.hideSoftKeyboard;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -85,6 +87,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
                     NoteFragment fragment1=new NoteFragment();
                     FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_main,fragment1,"NoteFragment").addToBackStack("NoteFragment");
+                    hideSoftKeyboard(view);
                     ft.commit();
 
 
@@ -96,6 +99,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
                     fragment.setArguments(bundle);
                     fragment.show(getActivity().getSupportFragmentManager(),"save");
                     fragment.setTargetFragment(CRUDFragment.this,1);
+                    hideSoftKeyboard(view);
 
 
                 }

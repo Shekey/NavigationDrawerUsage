@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -87,14 +89,23 @@ public class KupacFragment extends DialogFragment {
                     if (CurrentFragment.getTag().equals("cart_frag")){
                         cart = CartHelper.getCart();
                         cartItemAdapter = new CartItemAdapter(getActivity());
-                        String zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        String zadropBox = exportDB(getCartItems(cart), getCartItems(cart).size(), sharedPreferences.getString("ime", ""));
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.clear();
                         spreferencesEditor.commit();
                         File file = new File(zadropBox);
-                        new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
-                        Intent intent = new Intent(getContext(), TimeService.class);
-                        getActivity().startService(intent);
+                        ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                        if (!info.isConnected()) {
+                            DatabaseHelper db = new DatabaseHelper(getActivity());
+                            db.addToStack(zadropBox);
+                            Intent intent = new Intent(getContext(), TimeService.class);
+                            getActivity().startService(intent);
+                        }
+                        else {
+                            new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+                        }
+
                         clearCart();
 
                     }

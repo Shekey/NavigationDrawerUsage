@@ -149,6 +149,8 @@ public class EditProduct extends Fragment {
                         manager.popBackStack();
                         CartFragment fragment=new CartFragment();
                         getActivity().getSupportFragmentManager().beginTransaction().remove(EditProduct.this).add(R.id.content_main,fragment).commit();
+                        getActivity().setTitle("Korpa");
+
 
                     }
 
@@ -172,6 +174,7 @@ public class EditProduct extends Fragment {
                         manager.popBackStack();
                         CartFragment fragment=new CartFragment();
                         getActivity().getSupportFragmentManager().beginTransaction().remove(EditProduct.this).add(R.id.content_main,fragment).commit();
+                        getActivity().setTitle("Korpa");
 
 
                         // ovdje ne moze ici Main

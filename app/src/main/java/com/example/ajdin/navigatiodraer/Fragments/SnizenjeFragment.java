@@ -176,7 +176,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
 
                         filteredAll=new ArrayList<>(filteredKategory);
                     }
-
+                    editsearch.clearFocus();
                     adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
                     if (state != null) {
@@ -447,7 +447,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
 
 
 
-
+            editsearch.clearFocus();
             adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
             if (state != null) {
@@ -606,7 +606,7 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
-
+        editsearch.clearFocus();
 
 
     }
