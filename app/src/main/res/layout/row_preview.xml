@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimaryDark"
                 android:text="@string/Cijena"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/tvYear"
@@ -43,7 +43,15 @@
                 android:text="@string/kolicina"
                 android:textColor="@color/colorPrimaryDark"
 
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:id="@+id/tvUkupno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Ukupno"
+                android:textColor="@color/colorPrimaryDark"
+
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
         </LinearLayout>

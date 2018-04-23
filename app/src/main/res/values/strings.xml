@@ -37,4 +37,5 @@
     <string name="detele_korpe">Da li želite očistiti korpu ?</string>
     <string name="hint_cijena">Unesite novu cijenu</string>
     <string name="text_nova_cijena">Nova cijena</string>
+    <string name="Ukupno">Ukupno:</string>
 </resources>

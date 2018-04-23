@@ -70,6 +70,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
     private Spinner spin;
     private String textGeteR;
     private FloatingActionButton fab;
+    private TextView brojrez;
 //
     @Override
     public void onResume() {
@@ -178,6 +179,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                     editsearch.clearFocus();
                     adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
                     lvArtikli.setAdapter(adapter);
+                    brojrez.setText(+filteredAll.size()+" rezultata");
                     if (state != null) {
                         Log.d(TAG, "trying to restore listview state..");
                         lvArtikli.onRestoreInstanceState(state);
@@ -289,6 +291,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
             new JSONTaskDatabase().execute();
             editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
+            brojrez = (TextView)view.findViewById(R.id.brojRezulata);
             editsearch.setOnQueryTextListener(NewproductsFragment.this);
         }
 
@@ -343,6 +346,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
 
         lvArtikli.setAdapter(adapter);
+        brojrez.setText(+filteredAll.size()+" rezultata");
         if(state != null) {
             Log.d(TAG, "trying to restore listview state..");
             lvArtikli.onRestoreInstanceState(state);
@@ -449,6 +453,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             editsearch.clearFocus();
             adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
             lvArtikli.setAdapter(adapter);
+            brojrez.setText(+filteredAll.size()+" rezultata");
             if (state != null) {
                 Log.d(TAG, "trying to restore listview state..");
                 lvArtikli.onRestoreInstanceState(state);
@@ -558,6 +563,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
                 });
                  adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, result);
                 lvArtikli.setAdapter(adapter);
+                brojrez.setText(+result.size()+" rezultata");
                 if(state != null) {
                     Log.d(TAG, "trying to restore listview state..");
                     lvArtikli.onRestoreInstanceState(state);
@@ -604,6 +610,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
         spin.setSelection(0);
+        brojrez.setText(+filteredAll.size()+" rezultata");
         editsearch.clearFocus();
     }
 }

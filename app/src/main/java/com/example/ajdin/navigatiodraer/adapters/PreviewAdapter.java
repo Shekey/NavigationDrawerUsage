@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.models.PreviewModel;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -43,6 +44,7 @@ public class PreviewAdapter extends ArrayAdapter {
             holder.tvMovie = (TextView) convertView.findViewById(R.id.tvMovie);
             holder.tvTagline = (TextView) convertView.findViewById(R.id.tvTagline);
             holder.tvYear = (TextView) convertView.findViewById(R.id.tvYear);
+            holder.tvUkupno = (TextView) convertView.findViewById(R.id.tvUkupno);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -53,9 +55,12 @@ public class PreviewAdapter extends ArrayAdapter {
 
 
         holder.tvMovie.setText(movieModelList.get(position).getNaziv());
-        holder.tvTagline.setText("Cijena: "+movieModelList.get(position).getKolicina()+" KM");
+        holder.tvTagline.setText("Cijena: "+movieModelList.get(position).getCijena()+" KM");
+        holder.tvYear.setText("Količina: "+movieModelList.get(position).getKolicina());
         double ukupno=Double.valueOf(movieModelList.get(position).getCijena())*Double.valueOf(movieModelList.get(position).getKolicina());
-        holder.tvYear.setText("Ukupno: " + String.valueOf(ukupno)+" KM");
+        DecimalFormat dec = new DecimalFormat("#0.00");
+
+        holder.tvUkupno.setText("Ukupno: " + String.valueOf(dec.format(ukupno))+" KM");
 
         // rating bar
 
@@ -69,6 +74,7 @@ public class PreviewAdapter extends ArrayAdapter {
         private TextView tvMovie;
         private TextView tvTagline;
         private TextView tvYear;
+        private TextView tvUkupno;
 
     }
 }

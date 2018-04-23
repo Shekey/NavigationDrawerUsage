@@ -179,7 +179,7 @@ public class HistoryFragment extends Fragment {
                     NavigationView navigationView =(NavigationView)getActivity().findViewById(R.id.nav_view);
                     navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
-                    ft.replace(R.id.content_main, fragment).addToBackStack("cart_frag");
+                    ft.replace(R.id.content_main, fragment,"cart_frag").addToBackStack("cart_frag");
                     getActivity().setTitle("Korpa");
                     ft.commit();
                     //DO OVDJE
