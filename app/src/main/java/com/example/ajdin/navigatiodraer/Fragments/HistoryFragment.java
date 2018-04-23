@@ -180,6 +180,7 @@ public class HistoryFragment extends Fragment {
                     navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
                     ft.replace(R.id.content_main, fragment).addToBackStack("cart_frag");
+                    getActivity().setTitle("Korpa");
                     ft.commit();
                     //DO OVDJE
 
@@ -266,9 +267,18 @@ public class HistoryFragment extends Fragment {
                 clearCart();
                 while ((line = csvReader.readNext()) != null) {
                     Artikli temp = db.getData(line[0]);
-                    if (daysBetween(date, date2) > 1) {
-                        models.add(new PreviewModel(temp.getNaziv(), line[2], line[1]));
-                    }
+
+                        if (daysBetween(date, date2) > 1) {
+                            if (temp!=null) {
+                                models.add(new PreviewModel(temp.getNaziv(), line[2], line[1]));
+                            }
+                            else {
+                                Toast.makeText(getActivity(), "Nažalost, neki artikli nedostaju !", Toast.LENGTH_SHORT).show();
+                                models.add(new PreviewModel("---", "0.0", "0.0"));
+
+                            }
+                        }
+
                 else {
                     if (line.length == 3) {
                         count++;

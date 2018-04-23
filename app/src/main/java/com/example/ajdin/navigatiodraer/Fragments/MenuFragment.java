@@ -512,7 +512,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                     fragment.setArguments(bundle);
                     ft.add(R.id.content_main, fragment,"detail_fragment");
 //                editsearch.setQuery("", false);
-                    ft.addToBackStack("detail_fragment");
+                   ft.addToBackStack("detail_fragment");
                     ft.commit();
 
                 }

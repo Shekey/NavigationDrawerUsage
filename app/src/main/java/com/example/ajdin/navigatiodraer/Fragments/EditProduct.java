@@ -148,7 +148,7 @@ public class EditProduct extends Fragment {
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         manager.popBackStack();
                         CartFragment fragment=new CartFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(EditProduct.this).add(R.id.content_main,fragment).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").addToBackStack("cart_frag").commit();
                         getActivity().setTitle("Korpa");
 
 
@@ -172,8 +172,9 @@ public class EditProduct extends Fragment {
 //                        getActivity().getSupportFragmentManager().popBackStack();
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         manager.popBackStack();
+                        manager.popBackStack();
                         CartFragment fragment=new CartFragment();
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(EditProduct.this).add(R.id.content_main,fragment).commit();
+                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").addToBackStack("cart_frag").commit();
                         getActivity().setTitle("Korpa");
 
 

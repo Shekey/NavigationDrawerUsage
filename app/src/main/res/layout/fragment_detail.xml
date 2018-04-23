@@ -27,6 +27,8 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="27dp"
                 android:text="@string/naziv"
+                android:textAlignment="center"
+                android:padding="6dp"
                 android:textAllCaps="true"
                 android:textSize="34sp"
                 android:textStyle="bold" />

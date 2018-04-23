@@ -96,13 +96,13 @@ public class HistoryCustomAdapter extends ArrayAdapter {
             } catch (ParseException e) {
                 e.printStackTrace();
             } finally {
-                if (daysBetween(date, date2) < 1) {
-                    holder.button.setVisibility(View.VISIBLE);
-                }
-                else{
+//                if (daysBetween(date, date2) < 1) {
+//                    holder.button.setVisibility(View.VISIBLE);
+//                }
+//                else{
                     holder.button.setVisibility(View.INVISIBLE);
 
-                }
+//                }
             }
         }
         else{

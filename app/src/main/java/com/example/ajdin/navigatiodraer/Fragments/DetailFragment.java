@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -285,6 +286,7 @@ public class DetailFragment extends Fragment {
             fragment.setArguments(bundle);
             ft.remove(DetailFragment.this).add(R.id.content_main,fragment,"detail_fragment");
             ft.commit();
+
         }
     }
     public void PreviousImage(){
@@ -306,6 +308,7 @@ public class DetailFragment extends Fragment {
             fragment.setArguments(bundle);
             ft.remove(DetailFragment.this).add(R.id.content_main,fragment,"detail_fragment");
             ft.commit();
+
         }
     }
 

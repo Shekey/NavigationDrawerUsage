@@ -7,6 +7,9 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,6 +38,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -275,45 +279,46 @@ public class MainActivity extends AppCompatActivity
             SnizenjeFragment fragment5 = (SnizenjeFragment) getSupportFragmentManager().findFragmentByTag("snizenje_frag");
             EditProduct fragment7 = (EditProduct) getSupportFragmentManager().findFragmentByTag("editFragment");
 
-
-
-            getSupportFragmentManager().popBackStack();
             android.support.v4.app.Fragment f= getCurrentFragment();
-            FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
-           ftt.remove(f).commit();
+            if (f!=null) {
+                if (f.getTag().equals("detail_fragment") && f.isVisible()) {
+
+                    FragmentTransaction ftt = getSupportFragmentManager().beginTransaction();
+                    ftt.remove(f).commit();
+                }
+            }
+            getSupportFragmentManager().popBackStackImmediate();
+
+            f=getCurrentFragment();
 
 
-
-                if (fragment6 != null && !f.getTag().equals(fragment6.getTag())) {
-
-                        if (!fragment6.isVisible()) {
+                if (fragment6 != null && f.getTag().equals(fragment6.getTag())) {
 
                             setTitle("Detalji proizvoda");
 
-                        }
                     }
-             else if (fragment7 != null && !f.getTag().equals(fragment7.getTag())) {
+             else if (fragment7 != null && f.getTag().equals(fragment7.getTag())) {
 
                 if (!fragment7.isVisible()) {
                     setTitle("Detalji proizvoda");
 
                 }
             }
-                else if (fragment4 != null && f.getTag() != fragment4.getTag()) {
+                else if (fragment4 != null && f.getTag().equals(fragment4.getTag())) {
 
 
                     setTitle("Korpa");
                     navigationView.setCheckedItem(R.id.nav_korpa);
 
                 }
-                else if (fragment != null &&f.getTag() != fragment.getTag()) {
+                else if (fragment != null &&f.getTag().equals(fragment.getTag())) {
 //
                     setTitle("Svi proizvodi");
                     navigationView.setCheckedItem(R.id.nav_proizvodi);
 
 
                 }
-                else if (fragment1 != null &&  f.getTag() != fragment1.getTag()) {
+                else if (fragment1 != null &&  f.getTag().equals(fragment1.getTag())) {
 
 //
                     setTitle("Novi proizvodi");
@@ -324,7 +329,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-                else if (fragment5 != null && f.getTag() != fragment5.getTag()) {
+                else if (fragment5 != null && f.getTag().equals(fragment5.getTag())) {
 
                     setTitle("Snizeni proizvodi");
                     navigationView.setCheckedItem(R.id.nav_snizeno);
@@ -334,9 +339,9 @@ public class MainActivity extends AppCompatActivity
 
 
 
-             else if (fragment2 != null && f.getTag() != fragment2.getTag()) {
+             else if (fragment2 != null && f.getTag().equals(fragment2.getTag())) {
 
-                        if (!fragment2.isVisible()) {
+
 
                            fab.setImageResource(R.drawable.ic_note_add_white_24px);
                            fab.setVisibility(View.VISIBLE);
@@ -355,17 +360,17 @@ public class MainActivity extends AppCompatActivity
                             navigationView.setCheckedItem(R.id.nav_napomene);
 
 
-                        }
 
-            } else if (fragment3 != null && f.getTag() != fragment3.getTag() ) {
 
-                        if (!fragment3.isVisible()) {
+            } else if (fragment3 != null && f.getTag().equals(fragment3.getTag()) ) {
+
+
 
                             setTitle("Historija računa");
 //                            fab.setVisibility(View.GONE);
                             navigationView.setCheckedItem(R.id.nav_history);
 
-                        }
+
 
             }
 
@@ -482,9 +487,12 @@ public class MainActivity extends AppCompatActivity
                                 ft.replace(R.id.content_main, fragment, tag).addToBackStack("cart_frag");
                                 android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
                                 manager.popBackStack();
+                                manager.popBackStack();
+
                                 ft.commit();
                             }
                            clearCart();
+                            setTitle("Korpa");
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.Ne), null)
