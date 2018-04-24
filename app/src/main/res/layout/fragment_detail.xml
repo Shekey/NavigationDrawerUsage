@@ -90,9 +90,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cijena"
+                android:textStyle="bold"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/colorAccent"
-                android:textSize="30sp" />
+                android:textSize="32sp" />
 
             <TextView
                 android:id="@+id/tvJedinicaMjere"

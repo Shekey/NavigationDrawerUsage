@@ -84,6 +84,7 @@ public class HistoryFragment extends Fragment {
     ArrayList<String> files;
     private ArrayList<PreviewModel> model;
     private HistoryCustomAdapter arrayAdapter;
+    private TextView tekst;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -162,10 +163,12 @@ public class HistoryFragment extends Fragment {
                 }
 
                 if (model !=null && model.size()>0){
+
                     PreviewFragment fragment=new PreviewFragment();
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("listPreview",(Serializable) model);
                     fragment.setArguments(bundle);
+
                     fragment.show(getActivity().getSupportFragmentManager(),"dijalog_preview");
                     fragment.setTargetFragment(HistoryFragment.this,1);
                 }

@@ -73,6 +73,7 @@ public class CartFragment extends Fragment {
     private Button bZavrsi;
     private String ime;
     private Button clear;
+    private Button nastavi;
     private TextView textView2;
     private Cart cart;
     private CartItemAdapter cartItemAdapter;
@@ -200,6 +201,16 @@ public class CartFragment extends Fragment {
         sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         ime=sharedPreferences.getString("ime","");
         clear = view.findViewById(R.id.clearAll);
+        nastavi = view.findViewById(R.id.nastavi);
+        nastavi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MenuFragment fragment=new MenuFragment();
+                android.support.v4.app.FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
+                getActivity().setTitle("Svi proizvodi");
+            }
+        });
 //        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -302,7 +313,7 @@ public class CartFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (cartItemAdapter.getCount()==0){
-                    Toast.makeText(getActivity(), "Nazalost, niste ni?ta unijeli", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Nazalost, niste ništta unijeli", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -319,7 +330,7 @@ public class CartFragment extends Fragment {
 //                        cartItemAdapter.notifyDataSetChanged();
 //                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
                         File file = new File(zadropBox);
-                        new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
                         clearCart();
@@ -340,7 +351,7 @@ public class CartFragment extends Fragment {
 //                    startActivity(intent);
                         String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
                         File file = new File(putanja);
-                        new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file,getActivity(). getApplicationContext()).execute();
+                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file,getActivity(). getApplicationContext()).execute();
                         clearCart();
                         return;
 

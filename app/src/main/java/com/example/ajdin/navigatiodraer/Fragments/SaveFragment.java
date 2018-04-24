@@ -3,6 +3,7 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static android.content.ContentValues.TAG;
+import static com.example.ajdin.navigatiodraer.Fragments.DetailFragment.hideSoftKeyboard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,13 +93,14 @@ public class SaveFragment extends DialogFragment {
 
                 }
                 getDialog().dismiss();
+
                 NoteFragment fragment1=new NoteFragment();
                 FragmentTransaction ft=getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_main,fragment1,"NoteFragment").addToBackStack("NoteFragment");
                 ft.commit();
             }
         });
-
+        hideSoftKeyboard(view);
 
         return view;
     }
@@ -110,17 +113,20 @@ public class SaveFragment extends DialogFragment {
         {
             exportDir.mkdirs();
         }
-        PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+
+        PrintWriter writer = new PrintWriter( Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
         writer.write(text);
         writer.close();
         ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if(info.isConnected()){
 
-            new UploadTaskNapomena(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+            new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
 
         }
         else {
+
             DatabaseHelper db=new DatabaseHelper(getActivity());
             db.addToStack(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt");
             Intent intent = new Intent(getContext(), TimeService.class);

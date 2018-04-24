@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.ajdin.navigatiodraer.R;
 import com.example.ajdin.navigatiodraer.adapters.PreviewAdapter;
@@ -37,6 +38,8 @@ import java.util.Date;
 public class PreviewFragment extends DialogFragment {
 
 
+    private TextView tekst;
+
     public PreviewFragment() {
         // Required empty public constructor
     }
@@ -49,11 +52,14 @@ public class PreviewFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_preview, container, false);
         ListView preview=view.findViewById(R.id.preview);
+        tekst = (TextView) view.findViewById(R.id.tekst);
         Bundle bundle=getArguments();
         if (bundle!=null){
             ArrayList<PreviewModel> models=(ArrayList)bundle.getSerializable("listPreview");
             PreviewAdapter adapter = new PreviewAdapter(getContext().getApplicationContext(), R.layout.row_preview, models);
+
             preview.setAdapter(adapter);
+
         }
 
 

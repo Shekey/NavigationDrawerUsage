@@ -86,7 +86,18 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginRight="10dp"
-        android:text="ZAVRSI NARUDZBU"/>
+        android:text="ZAVRŠI / POŠALJI"/>
+        <Button
+            android:id="@+id/nastavi"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/accent"
+            android:textColor="@color/primaryTtext"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:text="NASTAVI"/>
 
     <Button
         android:id="@+id/clearAll"
@@ -97,7 +108,7 @@
         android:textColor="@color/primaryTtext"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:text="ODUSTANI "/>
+        android:text="ODUSTANI"/>
 
     </LinearLayout>
 

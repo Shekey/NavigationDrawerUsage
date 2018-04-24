@@ -1,45 +1,30 @@
 package com.example.ajdin.navigatiodraer;
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -51,7 +36,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -72,28 +56,22 @@ import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
 import com.example.ajdin.navigatiodraer.helpers.CartItem;
 import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
-import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 
 import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.example.ajdin.navigatiodraer.models.Artikli;
 import com.example.ajdin.navigatiodraer.models.Product;
 import com.example.ajdin.navigatiodraer.models.Slike;
-import com.example.ajdin.navigatiodraer.services.ConnectionService;
-import com.example.ajdin.navigatiodraer.services.MyServiceUploading;
 import com.example.ajdin.navigatiodraer.services.TimeService;
 import com.google.gson.Gson;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -101,25 +79,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import us.monoid.web.Resty;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -438,6 +407,9 @@ public class MainActivity extends AppCompatActivity
             if (info.isConnected()) {
                 new JSONTask().execute(URL_TO_HIT);
             }
+            else{
+                Toast.makeText(mContext, "Uključite konekciju !", Toast.LENGTH_LONG).show();
+            }
 
 
         }
@@ -487,12 +459,12 @@ public class MainActivity extends AppCompatActivity
                                 ft.replace(R.id.content_main, fragment, tag).addToBackStack("cart_frag");
                                 android.support.v4.app.FragmentManager manager = getSupportFragmentManager();
                                 manager.popBackStack();
-                                manager.popBackStack();
 
                                 ft.commit();
+                                setTitle("Korpa");
                             }
                            clearCart();
-                            setTitle("Korpa");
+
                         }
                     })
                     .setNegativeButton(getResources().getString(R.string.Ne), null)
@@ -566,7 +538,8 @@ public class MainActivity extends AppCompatActivity
             setTitle("Novi proizvodi");
             tag="new_prod_frag";
 
-        } else {
+        }
+        else {
             fragment=new NoteFragment();
             setTitle("Napomene");
             tag="note_fragment";

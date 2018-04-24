@@ -71,6 +71,7 @@ public class KupacFragment extends DialogFragment {
         Button btn=view.findViewById(R.id.dodaj_kupca);
         txt = view.findViewById(R.id.txt);
         unos = view.findViewById(R.id.unos);
+        txt.setHint("Unesite ime kupca !");
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +104,7 @@ public class KupacFragment extends DialogFragment {
                             getActivity().startService(intent);
                         }
                         else {
-                            new UploadTask(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file, getActivity().getApplicationContext()).execute();
+                            new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
                         }
 
                         clearCart();

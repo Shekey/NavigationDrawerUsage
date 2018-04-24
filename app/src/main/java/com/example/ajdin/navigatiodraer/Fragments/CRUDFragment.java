@@ -3,6 +3,7 @@ package com.example.ajdin.navigatiodraer.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -80,6 +81,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             @Override
             public void onClick(View view) {
                 if (editText1.getText().toString().isEmpty()){
+                    hideSoftKeyboard(view);
                   getActivity().getSupportFragmentManager().popBackStack();
                 }
                 else if (putanja!=null) {
@@ -119,6 +121,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
         {
             exportDir.mkdirs();
         }
+
         PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
         writer.println(editText1.getText().toString());
         writer.close();
@@ -154,7 +157,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if(info.isConnected()){
 
-                new UploadTaskNapomena(DropboxClient.getClient("aLRppJLoiTAAAAAAAAAADkJLNGAbqPzA0hZ_oVvVlEhNiyiYA94B9ndRUrIXxV8G"), file2, getActivity().getApplicationContext()).execute();
+                new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file2, getActivity().getApplicationContext()).execute();
 
             }
             else {
