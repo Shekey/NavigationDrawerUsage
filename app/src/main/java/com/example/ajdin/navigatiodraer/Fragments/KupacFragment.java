@@ -92,7 +92,7 @@ public class KupacFragment extends DialogFragment {
                         cartItemAdapter = new CartItemAdapter(getActivity());
                         String zadropBox = exportDB(getCartItems(cart), getCartItems(cart).size(), sharedPreferences.getString("ime", ""));
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-                        spreferencesEditor.clear();
+                        spreferencesEditor.remove("ime");
                         spreferencesEditor.commit();
                         File file = new File(zadropBox);
                         ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -104,7 +104,7 @@ public class KupacFragment extends DialogFragment {
                             getActivity().startService(intent);
                         }
                         else {
-                            new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
+                            new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, getActivity().getApplicationContext()).execute();
                         }
 
                         clearCart();
@@ -154,9 +154,10 @@ public class KupacFragment extends DialogFragment {
         }
 
         String timeStamp = new SimpleDateFormat("dd MM yyyy HH:mm").format(Calendar.getInstance().getTime());
-
-        File file = new File(exportDir,imep+"---"+timeStamp+".txt");
-        File file2 = new File(exportDir2,imep+"---"+timeStamp+".txt");
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        String vlasnik= sharedPreferences.getString("vlasnik","");
+        File file = new File(exportDir,vlasnik+"-"+ imep+"-"+timeStamp+".txt");
+        File file2 = new File(exportDir2,vlasnik+"-"+imep+"-"+timeStamp+".txt");
 
         try
         {
@@ -185,8 +186,9 @@ public class KupacFragment extends DialogFragment {
             sqlEx.printStackTrace();
             // Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }
+
         return Environment.getExternalStorageDirectory().toString()+ "/racunidevice/"+
-                imep+"---"+timeStamp+".txt";
+                vlasnik+"-"+imep+"-"+timeStamp+".txt";
 
     }
 

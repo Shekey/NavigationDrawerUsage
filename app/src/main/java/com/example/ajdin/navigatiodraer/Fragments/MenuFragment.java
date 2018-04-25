@@ -259,14 +259,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 View view =super.getView(position, convertView, parent);
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
-                textView.setTextSize(22);
+                textView.setTextSize(18);
                 return view;
             }
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View v = super.getDropDownView(position, convertView, parent);
 
-                ((TextView) v).setTextSize(22);
+                ((TextView) v).setTextSize(18);
                 return v;
             }
         };
@@ -540,14 +540,14 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 View view =super.getView(position, convertView, parent);
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
-                textView.setTextSize(22);
+                textView.setTextSize(18);
                 return view;
             }
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View v = super.getDropDownView(position, convertView, parent);
 
-                ((TextView) v).setTextSize(22);
+                ((TextView) v).setTextSize(18);
                 return v;
             }
         };

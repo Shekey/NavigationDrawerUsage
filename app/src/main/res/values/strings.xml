@@ -38,4 +38,6 @@
     <string name="hint_cijena">Unesite novu cijenu</string>
     <string name="text_nova_cijena">Nova cijena</string>
     <string name="Ukupno">Ukupno:</string>
+    <string name="unesite_va_e_ime">Unesite vaše ime</string>
+    <string name="unesite_ime">Unesite ime</string>
 </resources>

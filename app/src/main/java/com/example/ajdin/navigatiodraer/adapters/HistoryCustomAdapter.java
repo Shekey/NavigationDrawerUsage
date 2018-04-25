@@ -77,7 +77,7 @@ public class HistoryCustomAdapter extends ArrayAdapter {
         String datum[] = movieModelList.get(position).split("[a-zA-Z-]");
 
         holder.tvDtm.setText(datum[datum.length - 1]);
-        holder.tvIMP.setText(ime[0]);
+        holder.tvIMP.setText(ime[1]);
         if (info.isConnected()) {
             Pattern MY_PATTERN = Pattern.compile("\\-(.*)");
             Matcher m = MY_PATTERN.matcher(movieModelList.get(position));

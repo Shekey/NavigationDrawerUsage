@@ -179,12 +179,15 @@ public class CartFragment extends Fragment {
                                             bZavrsi.setVisibility(View.GONE);
                                             tvTotalPrice.setVisibility(View.GONE);
                                             textView2.setVisibility(View.GONE);
+                                            nastavi.setVisibility(View.GONE);
                                         }
                                         else {
                                             clear.setVisibility(View.VISIBLE);
                                             bZavrsi.setVisibility(View.VISIBLE);
                                             tvTotalPrice.setVisibility(View.VISIBLE);
                                             textView2.setVisibility(View.VISIBLE);
+                                            nastavi.setVisibility(View.VISIBLE);
+
 
                                         }
                                     }
@@ -269,7 +272,8 @@ public class CartFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-                                spreferencesEditor.clear();
+                                spreferencesEditor.remove("ime");
+                                spreferencesEditor.remove("path");
                                 spreferencesEditor.commit();
                                 clearCart();
 //                                cart.clear();
@@ -297,12 +301,14 @@ public class CartFragment extends Fragment {
             bZavrsi.setVisibility(View.GONE);
             tvTotalPrice.setVisibility(View.GONE);
             textView2.setVisibility(View.GONE);
+            nastavi.setVisibility(View.GONE);
         }
         else {
             clear.setVisibility(View.VISIBLE);
             bZavrsi.setVisibility(View.VISIBLE);
             tvTotalPrice.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
+            nastavi.setVisibility(View.VISIBLE);
 
         }
 
@@ -323,14 +329,15 @@ public class CartFragment extends Fragment {
                     if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
                         zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-                        spreferencesEditor.clear();
+                        spreferencesEditor.remove("ime");
+                        spreferencesEditor.remove("path");
                         spreferencesEditor.commit();
 //                        cart.clear();
 //                        cartItemAdapter.updateCartItems(getCartItems(cart));
 //                        cartItemAdapter.notifyDataSetChanged();
 //                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
                         File file = new File(zadropBox);
-                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
+                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, getActivity().getApplicationContext()).execute();
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
                         clearCart();
@@ -350,8 +357,11 @@ public class CartFragment extends Fragment {
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                    startActivity(intent);
                         String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
+                        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+                        spreferencesEditor.remove("path");
+                        spreferencesEditor.commit();
                         File file = new File(putanja);
-                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file,getActivity(). getApplicationContext()).execute();
+                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file,getActivity(). getApplicationContext()).execute();
                         clearCart();
                         return;
 
@@ -371,7 +381,7 @@ public class CartFragment extends Fragment {
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-                        spreferencesEditor.clear();
+                        spreferencesEditor.remove("ime");
                         spreferencesEditor.commit();
                         clearCart();
 
@@ -383,7 +393,14 @@ public class CartFragment extends Fragment {
 
                     }
                     else {
-                        db.addToStack(sharedPreferences.getString("path", ""));
+                        exportDBold(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("path", ""));
+                        String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
+                        SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
+                        spreferencesEditor.remove("path");
+                        spreferencesEditor.commit();
+                        File file = new File(putanja);
+                        db.addToStack(putanja);
+
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
                         clearCart();
@@ -458,9 +475,9 @@ public class CartFragment extends Fragment {
         }
 
         String timeStamp = new SimpleDateFormat("dd MM yyyy HH:mm").format(Calendar.getInstance().getTime());
-
-        File file = new File(exportDir,imep+"---"+timeStamp+".txt");
-        File file2 = new File(exportDir2,imep+"---"+timeStamp+".txt");
+        String vlasnik= sharedPreferences.getString("vlasnik","");
+        File file = new File(exportDir,vlasnik+"-"+imep+"-"+timeStamp+".txt");
+        File file2 = new File(exportDir2,vlasnik+"-"+imep+"-"+timeStamp+".txt");
 
         try
         {
@@ -489,8 +506,9 @@ public class CartFragment extends Fragment {
             sqlEx.printStackTrace();
             // Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }
+
         return Environment.getExternalStorageDirectory().toString()+ "/racunidevice/"+
-                imep+"---"+timeStamp+".txt";
+                vlasnik+"-"+ imep+"-"+timeStamp+".txt";
 
     }
 

@@ -107,28 +107,28 @@ public class SaveFragment extends DialogFragment {
     public void Save(String fileName) throws IOException {
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "napomene");
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
-
-        File file = new File(exportDir,fileName+".txt");
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        String vlasnik= sharedPreferences.getString("vlasnik","");
+        File file = new File(exportDir,vlasnik+"__"+fileName+".txt");
         if (!exportDir.exists())
         {
             exportDir.mkdirs();
         }
-        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
 
-        PrintWriter writer = new PrintWriter( Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
+        PrintWriter writer = new PrintWriter( Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+vlasnik+"__"+fileName+".txt", "UTF-8");
         writer.write(text);
         writer.close();
         ConnectivityManager wifi = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if(info.isConnected()){
 
-            new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, getActivity().getApplicationContext()).execute();
+            new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, getActivity().getApplicationContext()).execute();
 
         }
         else {
 
             DatabaseHelper db=new DatabaseHelper(getActivity());
-            db.addToStack(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt");
+            db.addToStack(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+vlasnik+"__"+fileName+".txt");
             Intent intent = new Intent(getContext(), TimeService.class);
             getActivity().startService(intent);
         }

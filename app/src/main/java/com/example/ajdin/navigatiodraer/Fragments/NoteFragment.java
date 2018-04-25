@@ -94,7 +94,7 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
                 View view =super.getView(position, convertView, parent);
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
-                textView.setTextSize(30);
+                textView.setTextSize(27);
 
                 return view;
             }

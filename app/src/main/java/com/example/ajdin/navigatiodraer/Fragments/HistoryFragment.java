@@ -167,6 +167,8 @@ public class HistoryFragment extends Fragment {
                     PreviewFragment fragment=new PreviewFragment();
                     Bundle bundle=new Bundle();
                     bundle.putSerializable("listPreview",(Serializable) model);
+                    String ime[] = path.split("[0-9_-]");
+                    bundle.putString("naziv_racuna",ime[1]);
                     fragment.setArguments(bundle);
 
                     fragment.show(getActivity().getSupportFragmentManager(),"dijalog_preview");
@@ -243,19 +245,20 @@ public class HistoryFragment extends Fragment {
     public ArrayList<PreviewModel> Read(String path) throws ParseException {
         Artikli products;
         ArrayList<PreviewModel> models=new ArrayList<>();
-        Pattern MY_PATTERN = Pattern.compile("\\-(.*)");
-        Matcher m = MY_PATTERN.matcher(path);
-        String s=new String();
-        while (m.find()) {
-            s = m.group(0);
-            // s now contains "BAR"
-        }
+//        Pattern MY_PATTERN = Pattern.compile("\\-(.*)");
+//        Matcher m = MY_PATTERN.matcher(path);
+//        String s=new String();
+//        while (m.find()) {
+//            s = m.group(0);
+//            // s now contains "BAR"
+//        }
+        String datum[] = path.split("[a-zA-Z-]");
+        String datumpravi=datum[datum.length - 1];
 
-    String input = s, extracted;
+
         DateFormat df = new SimpleDateFormat("dd MM yyyy HH:mm");
-    extracted = input.substring(3,19);
     Date date=new Date();
-    Date date2=df.parse(extracted);
+    Date date2=df.parse(datumpravi);
 
 
         try {
@@ -340,7 +343,8 @@ return models;
     private void clearCart(){
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-        spreferencesEditor.clear();
+        spreferencesEditor.remove("path");
+        spreferencesEditor.remove("ime");
         spreferencesEditor.commit();
         Cart cart = CartHelper.getCart();
         cart.clear();

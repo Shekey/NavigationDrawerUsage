@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivIconcart"
+                android:layout_width="140dp"
+                android:src="@drawable/nemaslike"
+                android:layout_height="160dp" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBarcart"
+                android:layout_gravity="center" />
+        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+        android:id="@+id/tvCartItemName"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+
+                android:layout_marginBottom="0dp"
+        android:textColor="@android:color/black"
+        android:gravity="left"
+        android:textSize="16sp"
+                android:textAllCaps="true"
+        android:textStyle="normal"
+        android:text="NAZIV"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvCartItemQuantity"-->
+        <!--android:layout_width="0dip"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="0.2"-->
+        <!--android:gravity="center"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:text=""/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvCartItemUnitPrice"-->
+        <!--android:layout_width="0dip"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="0.15"-->
+        <!--android:textStyle="bold"-->
+
+        <!--android:textColor="@android:color/black"-->
+        <!--android:gravity="center"/>-->
+
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimaryDark"
+                android:gravity="left"
+                android:text="Cijena"/>
+            <TextView
+                android:id="@+id/tvKolicina"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:gravity="left"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="Kolicina"/>
+            <TextView
+                android:id="@+id/tvCartItemTotalPrice"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:layout_marginTop="0dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorAccent"
+                android:gravity="left"
+                android:text="UKUPNO"/>
+
+
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

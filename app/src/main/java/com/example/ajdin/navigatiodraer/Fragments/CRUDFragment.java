@@ -115,14 +115,15 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
     public void Save(String fileName) throws IOException {
         File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "napomene");
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
-
+        SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
+        String vlasnik= sharedPreferences.getString("vlasnik","");
         File file = new File(exportDir,fileName+"//"+timeStamp+".txt");
         if (!exportDir.exists())
         {
             exportDir.mkdirs();
         }
 
-        PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+fileName+".txt", "UTF-8");
+        PrintWriter writer = new PrintWriter(Environment.getExternalStorageDirectory().getAbsolutePath()+"/napomene/"+vlasnik+"-"+fileName+".txt", "UTF-8");
         writer.println(editText1.getText().toString());
         writer.close();
     }
@@ -157,7 +158,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if(info.isConnected()){
 
-                new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file2, getActivity().getApplicationContext()).execute();
+                new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file2, getActivity().getApplicationContext()).execute();
 
             }
             else {

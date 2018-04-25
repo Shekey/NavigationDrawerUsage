@@ -34,6 +34,10 @@
             android:id="@+id/nav_napomene"
             android:icon="@drawable/ic_event_note_black_24dp"
             android:title="Nova napomena" />
+        <item
+            android:id="@+id/komercijalista"
+            android:icon="@drawable/ic_group_add_black_24dp"
+            android:title="Postavke" />
 
     </group>
 

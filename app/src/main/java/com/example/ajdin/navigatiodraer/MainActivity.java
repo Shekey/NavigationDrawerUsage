@@ -45,6 +45,7 @@ import com.example.ajdin.navigatiodraer.Fragments.CRUDFragment;
 import com.example.ajdin.navigatiodraer.Fragments.DetailFragment;
 import com.example.ajdin.navigatiodraer.Fragments.EditProduct;
 import com.example.ajdin.navigatiodraer.Fragments.HistoryFragment;
+import com.example.ajdin.navigatiodraer.Fragments.KorisnikFragment;
 import com.example.ajdin.navigatiodraer.Fragments.KupacFragment;
 import com.example.ajdin.navigatiodraer.Fragments.MenuFragment;
 import com.example.ajdin.navigatiodraer.Fragments.NewproductsFragment;
@@ -94,7 +95,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = "MAIN" ;
     public ListView lvArtikli;
-    private final String URL_TO_HIT = "http://nurexport.com/demo/getJson.php";
+
+
     private final String BASE_URL = "http://nurexport.com/demo/";
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity
 //        adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,arrayList);
 //        lvArtikli.setAdapter(adapter);
         SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-        sharedPreferences.edit().clear().commit();
+        sharedPreferences.edit().remove("ime").commit();
         fab = (FloatingActionButton) findViewById(R.id.fab);
 //        if (sharedPreferences.getString("ime","").isEmpty()) {
 //            fab.setVisibility(View.VISIBLE);
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity
             CartFragment fragment4 = (CartFragment) getSupportFragmentManager().findFragmentByTag("cart_frag");
             SnizenjeFragment fragment5 = (SnizenjeFragment) getSupportFragmentManager().findFragmentByTag("snizenje_frag");
             EditProduct fragment7 = (EditProduct) getSupportFragmentManager().findFragmentByTag("editFragment");
+            KorisnikFragment fragment8 = (KorisnikFragment) getSupportFragmentManager().findFragmentByTag("postavke");
 
             android.support.v4.app.Fragment f= getCurrentFragment();
             if (f!=null) {
@@ -292,6 +295,13 @@ public class MainActivity extends AppCompatActivity
 //
                     setTitle("Novi proizvodi");
                     navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
+
+                }
+                else if (fragment8 != null &&  f.getTag().equals(fragment8.getTag())) {
+
+//
+                    setTitle("Postavke");
+                    navigationView.setCheckedItem(R.id.komercijalista);
 
                 }
 
@@ -371,7 +381,8 @@ public class MainActivity extends AppCompatActivity
     private void clearCart(){
         SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
-        spreferencesEditor.clear();
+        spreferencesEditor.remove("ime");
+        spreferencesEditor.remove("path");
         spreferencesEditor.commit();
         Cart cart = CartHelper.getCart();
         cart.clear();
@@ -405,6 +416,9 @@ public class MainActivity extends AppCompatActivity
             ConnectivityManager wifi = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if (info.isConnected()) {
+                final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
+                String licenca=sharedPreferences.getString("licenca","");
+                final String URL_TO_HIT = "http://nurexport.com/demo/mhnep/checkLicence.php?id="+licenca;
                 new JSONTask().execute(URL_TO_HIT);
             }
             else{
@@ -500,6 +514,11 @@ public class MainActivity extends AppCompatActivity
 
             tag="history_frag";
         }
+        else if (id == R.id.komercijalista) {
+            fragment = new KorisnikFragment();
+            setTitle("Postavke");
+            tag="postavke";
+        }
 
         else if (id == R.id.nav_kupac) {
             final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
@@ -511,7 +530,7 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sharedPreferences.edit().clear().commit();
+                                sharedPreferences.edit().remove("ime").commit();
 //                                fab.setVisibility(View.VISIBLE);
 
                             }

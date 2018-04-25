@@ -23,7 +23,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="NEMATE DODATIH NAPOMENA  ! "
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:textSize="25.0sp"
         android:visibility="gone" />
 

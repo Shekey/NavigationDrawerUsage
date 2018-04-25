@@ -53,10 +53,14 @@ public class PreviewFragment extends DialogFragment {
         View view= inflater.inflate(R.layout.fragment_preview, container, false);
         ListView preview=view.findViewById(R.id.preview);
         tekst = (TextView) view.findViewById(R.id.tekst);
+
         Bundle bundle=getArguments();
         if (bundle!=null){
             ArrayList<PreviewModel> models=(ArrayList)bundle.getSerializable("listPreview");
             PreviewAdapter adapter = new PreviewAdapter(getContext().getApplicationContext(), R.layout.row_preview, models);
+            String naziv=bundle.getString("naziv_racuna");
+            tekst.setText(naziv);
+
 
             preview.setAdapter(adapter);
 
