@@ -17,6 +17,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -80,8 +82,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -117,6 +121,8 @@ public class MainActivity extends AppCompatActivity
     private int sizeSlike;
     private ArrayList<Slike> downloadList;
     private CartItemAdapter cartItemAdapter;
+    private String url_to_hit;
+    private String macAdresa;
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -418,8 +424,20 @@ public class MainActivity extends AppCompatActivity
             if (info.isConnected()) {
                 final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
                 String licenca=sharedPreferences.getString("licenca","");
-                final String URL_TO_HIT = "http://nurexport.com/demo/mhnep/checkLicence.php?id="+licenca;
-                new JSONTask().execute(URL_TO_HIT);
+                int Ispravna=sharedPreferences.getInt("ispravnost",0);
+                if (licenca.equals("")){
+                    Toast.makeText(mContext, "Neispravna licenca", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if (Ispravna==0){
+                    macAdresa = getMacAddress(MainActivity.this);
+                    url_to_hit = "http://nurexport.com/demo/getJsonFake.php?id="+licenca+"&mac="+macAdresa;
+                }
+                else {
+                    url_to_hit = "http://nurexport.com/demo/getJson.php";
+
+                }
+                new JSONTask().execute(url_to_hit);
             }
             else{
                 Toast.makeText(mContext, "Uključite konekciju !", Toast.LENGTH_LONG).show();
@@ -604,6 +622,9 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(String... params) {
+            boolean ispravnost=true;
+            SharedPreferences sharedPreferences;
+            SharedPreferences.Editor editor;
             HttpURLConnection connection = null;
             BufferedReader reader = null;
 
@@ -638,8 +659,12 @@ public class MainActivity extends AppCompatActivity
                      * below single line of code from Gson saves you from writing the json parsing yourself
                      * which is commented below
                      */
-                    Artikli movieModel = gson.fromJson(finalObject.toString(), Artikli.class); // a single line json parsing using Gson
-
+                    Artikli movieModel = gson.fromJson(finalObject.toString(), Artikli.class);// a single line json parsing using Gson
+                    if(movieModel.getNaziv().equals("Neispravna licenca"))
+                    {
+                        ispravnost=false;
+                        db.deleteAll();
+                    }
                     movieModelList1.add(movieModel);
                     List<Slike> listaSlike=movieModel.getSlike();
                     if (listaSlike!=null) {
@@ -714,7 +739,12 @@ public class MainActivity extends AppCompatActivity
 
 //                List<Bitmap> yourimages = new DownloadImageTask().execute(URLLIST).get();
                 db.replace1(movieModelList1);
+        if (ispravnost){
 
+            sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
+            editor = sharedPreferences.edit();
+            editor.putInt("ispravnost", 1);
+        }
 
 
 
@@ -780,6 +810,14 @@ public class MainActivity extends AppCompatActivity
             lvArtikli.setAdapter(mAdapter);
         }
 
+    }
+    public String getMacAddress(Context context) {
+        WifiManager wimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        String macAddress = wimanager.getConnectionInfo().getMacAddress();
+        if (macAddress == null) {
+            macAddress = "Device don't have mac address or wi-fi is disabled";
+        }
+        return macAddress;
     }
     public void DownloadImageFromPath(String path,String filenamejpg){
         InputStream in =null;

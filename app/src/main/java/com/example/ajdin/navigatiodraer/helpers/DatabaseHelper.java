@@ -117,6 +117,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "\t Artikal_ID INTEGER not null "+");");
 
     }
+    public void deleteAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ "Images");
+        db.execSQL("delete from "+ "Artikli");
+        db.execSQL("delete from "+ "FileStack");
+        db.close();
+    }
     public void addToStack(String path){
         SQLiteDatabase db = this.getWritableDatabase();
 

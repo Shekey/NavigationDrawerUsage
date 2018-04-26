@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.ajdin.navigatiodraer.R;
 
+import static com.example.ajdin.navigatiodraer.Fragments.DetailFragment.hideSoftKeyboard;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -39,7 +41,6 @@ public class KorisnikFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_korisnik, container, false);
-        Button button=view.findViewById(R.id.butonsnimi);
         snimiLicencu = view.findViewById(R.id.snimiLicencu);
         textView = view.findViewById(R.id.editText);
         licencaedit = view.findViewById(R.id.licencaedit);
@@ -53,7 +54,7 @@ public class KorisnikFragment extends Fragment {
         if (!licenca.equals("")){
             licencaedit.setText(licenca);
         }
-        button.setOnClickListener(new View.OnClickListener() {
+        snimiLicencu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -62,31 +63,16 @@ public class KorisnikFragment extends Fragment {
                     return;
                 }
                 else {
-
+                    editor.putString("licenca", licencaedit.getText().toString());
                     editor.putString("vlasnik", textView.getText().toString());
                     editor.commit();
-
-                }
-            }
-        });
-        snimiLicencu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (TextUtils.isEmpty(licencaedit.getText().toString())) {
-                    licencaedit.setError("Unesite licencu");
-                    return;
-                }
-                else {
-
-                    editor.putString("licenca", licencaedit.getText().toString());
-                    editor.commit();
+                    hideSoftKeyboard(view);
                     MenuFragment fragment = new MenuFragment();
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");
                     ft.commit();
-
                 }
+
             }
         });
 
