@@ -742,18 +742,22 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         if (filteredKategory!=null)
             filteredAll = new ArrayList<Artikli>(filteredKategory);
         else if (productList!=null){
-            filteredAll=productList;
+            filteredAll=new ArrayList<Artikli>(productList);
         }
 
 
 
         textGeteR=null;
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
-        lvArtikli.setAdapter(adapter);
-        brojrez.setText(+filteredAll.size()+" rezultata");
-        spin.setSelection(0);
-        editsearch.clearFocus();
-
+        if (filteredAll==null) {
+            lvArtikli.setEmptyView(getView().findViewById(R.id.emptyElementMenu));
+        }
+        else {
+            lvArtikli.setAdapter(adapter);
+            brojrez.setText(+filteredAll.size() + " rezultata");
+            spin.setSelection(0);
+            editsearch.clearFocus();
+        }
 
 
     }

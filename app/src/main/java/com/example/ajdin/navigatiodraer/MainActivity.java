@@ -811,7 +811,7 @@ public class MainActivity extends AppCompatActivity
                     ft.replace(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");
                     ft.commit();
                 }
-            }, 25000);
+            }, 60000);
 
 
 
@@ -955,7 +955,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isFileExists(String filename){
         String path=Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+File.separator + "YourFolderName" + File.separator+filename;
         File file=new File(path);
-        if (file.exists()==true){
+        if (file.isFile()){
             return true;
         }
         else {
