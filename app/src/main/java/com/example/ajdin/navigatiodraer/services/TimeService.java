@@ -82,11 +82,11 @@ public class TimeService extends Service {
                                 for (String s : listaStack) {
                                     File file = new File(s);
                                     if (s.contains("napomene")){
-                                        new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, TimeService.this).execute();
+                                        new UploadTaskNapomena(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, TimeService.this).execute();
 
                                     }
                                     else {
-                                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAYt6hUOPRHKC2L9vZXuVkEVxJa7qRo8gWN38fMX_PfC53"), file, TimeService.this).execute();
+                                        new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, TimeService.this).execute();
                                     }
 
                                 }

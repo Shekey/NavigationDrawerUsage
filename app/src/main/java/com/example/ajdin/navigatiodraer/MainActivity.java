@@ -576,6 +576,20 @@ public class MainActivity extends AppCompatActivity
             tag="new_prod_frag";
 
         }
+        else if (id == R.id.izlaz) {
+            new AlertDialog.Builder(this)
+                    .setMessage("Da li ste sigurni da želite izici?")
+                    .setPositiveButton("Da", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearCart();
+                            MainActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton("Ne", null)
+                    .show();
+
+        }
         else {
             fragment=new NoteFragment();
             setTitle("Napomene");
@@ -702,7 +716,9 @@ public class MainActivity extends AppCompatActivity
                 for (Slike ss: downloadList) {
                     String kopija=ss.getImage();
                     URI uri = new URI(kopija.replace(" ", "%20"));
-                    downloadImageURL(ss.getId(),uri.toString());
+                    if(isFileExists(ss.getId()+".jpg")==false) {
+                        downloadImageURL(ss.getId(), uri.toString());
+                    }
 
                 }
 
@@ -908,8 +924,8 @@ public class MainActivity extends AppCompatActivity
      public void downloadImageURL(String fileName ,String imagePath){
         String filename = fileName+".jpg";
         String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
-        File direct =
-                new File(Environment.DIRECTORY_PICTURES,
+
+        File direct =new File(Environment.DIRECTORY_PICTURES,
                         File.separator + "YourFolderName" + File.separator);
 
 
@@ -918,24 +934,37 @@ public class MainActivity extends AppCompatActivity
             Log.d("DOWNLOADING IMAGE", "dir created for first time");
         }
 
-        DownloadManager dm = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri downloadUri = Uri.parse(downloadUrlOfImage);
-        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle(filename)
-                .setMimeType("image/jpeg")
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
-                        File.separator + "YourFolderName" + File.separator + filename);
+
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            Uri downloadUri = Uri.parse(downloadUrlOfImage);
+            DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(filename)
+                    .setMimeType("image/jpeg")
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                            File.separator + "YourFolderName" + File.separator + filename);
 
 
-
-        long id = dm.enqueue(request);
+            long id = dm.enqueue(request);
 
 
 
     }
+    private boolean isFileExists(String filename){
+        String path=Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+File.separator + "YourFolderName" + File.separator+filename;
+        File file=new File(path);
+        if (file.exists()==true){
+            return true;
+        }
+        else {
+            return false;
+        }
+
+
+    }
+
     private List<CartItem> getCartItems(Cart cart) {
         List<CartItem> cartItems = new ArrayList<CartItem>();
 

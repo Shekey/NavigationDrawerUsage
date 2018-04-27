@@ -199,20 +199,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 if (!pronadjen){
 
-                    String photoUri=Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES+
-                    "/"+ "YourFolderName" + "/" +id_delete+".jpg";
-                    File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
-                            File.separator + "YourFolderName" + File.separator +id_delete+".jpg");
-                    if(f.exists()){
-                        f.delete();
-//                        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(photoUri))));
-//
-                    }
                     db.execSQL("DELETE FROM Images WHERE IdSlika ='"+id_delete+"';");
 
-
-
-                    pronadjen=false;
+                   pronadjen=false;
                     id_delete="";
 
                 }
@@ -228,6 +217,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void replace1(ArrayList<Artikli> productList){
         SQLiteDatabase db = this.getWritableDatabase();
 
+        //518
         for (Artikli p:productList) {
 
             db.execSQL("REPLACE INTO Artikli(Naziv,isSnizeno,Cijena,Bar_kod,datumkreiranja,Stanje,Kategorija,Id,JM) VALUES('"+p.getNaziv()+"','"
@@ -243,7 +233,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-        ArrayList<Artikli> allproducts=getAll1();
+        ArrayList<Artikli> allproducts=getAll1();//518
         int sync_product=productList.size();
         String id_delete="";
         int database_size=allproducts.size();
@@ -258,13 +248,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 if (!pronadjen){
-
-                        File f=new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/" + Environment.DIRECTORY_PICTURES,
-                                File.separator + "YourFolderName" + File.separator +id_delete+".jpg");
-                        if(f.exists()){
-                            f.delete();
-                        }
-
 
                     db.execSQL("UPDATE  Images SET ImagePath=1 WHERE Artikal_ID ='"+id_delete+"';");
                     db.execSQL("DELETE FROM Artikli WHERE Id ='"+id_delete+"';");
@@ -799,7 +782,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Artikli> getAllNEWArtikli() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Artikli> list = new ArrayList<Artikli>();
-        Cursor productList = db.rawQuery("select * from Artikli WHERE julianday()-julianday(datumkreiranja)<=4", null);
+        Cursor productList = db.rawQuery("select * from Artikli WHERE julianday()-julianday(datumkreiranja)<=15", null);
         productList.moveToFirst();
         while (!productList.isAfterLast()) {
             Cursor slike = db.rawQuery("select * from Images WHERE Artikal_ID="+productList.getString(productList.getColumnIndex("Id")), null);

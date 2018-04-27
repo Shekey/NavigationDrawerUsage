@@ -699,7 +699,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
                 MenuAdapter adapter = new MenuAdapter(getActivity(), R.layout.row_menu, result);
 
                 lvArtikli.setAdapter(adapter);
-                lvArtikli.setAdapter(adapter);
                 brojrez.setText(+result.size()+" rezultata");
                 if(state != null) {
                     Log.d(TAG, "trying to restore listview state..");
@@ -742,9 +741,12 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
     public void resetSearch() {
         if (filteredKategory!=null)
             filteredAll = new ArrayList<Artikli>(filteredKategory);
-        else{
-            filteredAll=new ArrayList<>(productList);
+        else if (productList!=null){
+            filteredAll=productList;
         }
+
+
+
         textGeteR=null;
         adapter = new MenuAdapter(getContext().getApplicationContext(), R.layout.row_menu, filteredAll);
         lvArtikli.setAdapter(adapter);
