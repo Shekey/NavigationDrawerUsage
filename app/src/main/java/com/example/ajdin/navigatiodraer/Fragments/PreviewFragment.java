@@ -69,11 +69,6 @@ public class PreviewFragment extends DialogFragment {
 
         return view;
     }
-//    String input = dat, extracted;
-//    extracted = input.substring(3,16);
-//    Date date = new Date();
-//    DateFormat df = new SimpleDateFormat("dd MM yyyy HH:mm:ss");
-//    Date date1 = df.parse(dat);
 
 
 }

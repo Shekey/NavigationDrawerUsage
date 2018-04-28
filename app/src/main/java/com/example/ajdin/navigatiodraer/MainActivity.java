@@ -583,7 +583,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             clearCart();
-                            MainActivity.super.onBackPressed();
+                            finish();
                         }
                     })
                     .setNegativeButton("Ne", null)
