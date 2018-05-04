@@ -256,7 +256,7 @@ public class HistoryFragment extends Fragment {
         String datumpravi=datum[datum.length - 1];
 
 
-        DateFormat df = new SimpleDateFormat("dd MM yyyy HH:mm");
+        DateFormat df = new SimpleDateFormat("dd_MM_yyyy_HHmm");
     Date date=new Date();
     Date date2=df.parse(datumpravi);
 

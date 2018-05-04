@@ -474,7 +474,7 @@ public class CartFragment extends Fragment {
             exportDir2.mkdirs();
         }
 
-        String timeStamp = new SimpleDateFormat("dd MM yyyy HH:mm").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm").format(Calendar.getInstance().getTime());
         String vlasnik= sharedPreferences.getString("vlasnik","");
         File file = new File(exportDir,vlasnik+"-"+imep+"-"+timeStamp+".txt");
         File file2 = new File(exportDir2,vlasnik+"-"+imep+"-"+timeStamp+".txt");

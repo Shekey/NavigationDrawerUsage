@@ -153,7 +153,7 @@ public class KupacFragment extends DialogFragment {
             exportDir2.mkdirs();
         }
 
-        String timeStamp = new SimpleDateFormat("dd MM yyyy HH:mm").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat("dd_MM_yyyy_HHmm").format(Calendar.getInstance().getTime());
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         String vlasnik= sharedPreferences.getString("vlasnik","");
         File file = new File(exportDir,vlasnik+"-"+ imep+"-"+timeStamp+".txt");
