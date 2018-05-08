@@ -4,6 +4,7 @@ package com.example.ajdin.navigatiodraer.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -44,6 +45,8 @@ public class KorisnikFragment extends Fragment {
         snimiLicencu = view.findViewById(R.id.snimiLicencu);
         textView = view.findViewById(R.id.editText);
         licencaedit = view.findViewById(R.id.licencaedit);
+        FloatingActionButton fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         sharedPreferences = getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
       String vlasnik=sharedPreferences.getString("vlasnik","");

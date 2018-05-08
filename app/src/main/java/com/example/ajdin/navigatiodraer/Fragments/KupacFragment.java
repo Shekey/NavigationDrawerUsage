@@ -90,7 +90,8 @@ public class KupacFragment extends DialogFragment {
                     if (CurrentFragment.getTag().equals("cart_frag")){
                         cart = CartHelper.getCart();
                         cartItemAdapter = new CartItemAdapter(getActivity());
-                        String zadropBox = exportDB(getCartItems(cart), getCartItems(cart).size(), sharedPreferences.getString("ime", ""));
+                        String imefajla=sharedPreferences.getString("ime", "").replace(" ","");
+                        String zadropBox = exportDB(getCartItems(cart), getCartItems(cart).size(), imefajla);
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.remove("ime");
                         spreferencesEditor.commit();
@@ -254,9 +255,14 @@ public class KupacFragment extends DialogFragment {
 
 
         MenuFragment fragment=new MenuFragment();
+        String tag="first_frag";
         NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
+        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));
+        ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
+        ft.commit();
+//        getActivity().getSupportFragmentManager().beginTransaction().add(R.id.content_main,fragment,"first_frag").addToBackStack("first_frag").commit();
 
     }
 

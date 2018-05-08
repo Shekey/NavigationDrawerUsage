@@ -62,6 +62,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.support.v4.app.FragmentManager.*;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -210,8 +212,9 @@ public class CartFragment extends Fragment {
             public void onClick(View view) {
                 MenuFragment fragment=new MenuFragment();
                 android.support.v4.app.FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
+                ft.add(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
                 getActivity().setTitle("Svi proizvodi");
+
             }
         });
 //        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -327,7 +330,8 @@ public class CartFragment extends Fragment {
                 NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 if (info.isConnected()) {
                     if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
-                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        String imefajla=sharedPreferences.getString("ime", "").replace(" ","");
+                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(),imefajla );
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.remove("ime");
                         spreferencesEditor.remove("path");
@@ -376,7 +380,8 @@ public class CartFragment extends Fragment {
                 else {
                     DatabaseHelper db=new DatabaseHelper(getActivity());
                     if (sharedPreferences.getString("ime", "") != "" && sharedPreferences.getString("ime", "") != null) {
-                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("ime", ""));
+                        String imefajla=sharedPreferences.getString("ime", "").replace(" ","");
+                        zadropBox = exportDB(getCartItems(cart), cartItemAdapter.getCount(), imefajla);
                         db.addToStack(zadropBox);
                         Intent intent = new Intent(getContext(), TimeService.class);
                         getActivity().startService(intent);
@@ -436,9 +441,14 @@ public class CartFragment extends Fragment {
         textView2.setVisibility(View.GONE);
 
         MenuFragment fragment=new MenuFragment();
+        String tag="first_frag";
         NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
-        getActivity().getSupportFragmentManager().beginTransaction().remove(CartFragment.this).replace(R.id.content_main,fragment,"first_frag").addToBackStack("first_frag").commit();
+        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));
+        ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
+        ft.commit();
+
 
     }
     private List<CartItem> getCartItems(Cart cart) {

@@ -808,7 +808,7 @@ public class MainActivity extends AppCompatActivity
                     dialog.dismiss();
                     MenuFragment fragment = new MenuFragment();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");
+                    ft.remove(getSupportFragmentManager().findFragmentByTag("first_frag")).add(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");//bio replace
                     ft.commit();
                 }
             }, 60000);
