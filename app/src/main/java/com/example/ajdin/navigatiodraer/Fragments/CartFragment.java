@@ -212,7 +212,7 @@ public class CartFragment extends Fragment {
             public void onClick(View view) {
                 MenuFragment fragment=new MenuFragment();
                 android.support.v4.app.FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
-                ft.add(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
+                ft.replace(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
                 getActivity().setTitle("Svi proizvodi");
 
             }

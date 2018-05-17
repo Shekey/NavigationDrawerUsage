@@ -4,6 +4,7 @@ package com.example.ajdin.navigatiodraer.Fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,6 +39,7 @@ import com.example.ajdin.navigatiodraer.helpers.Cart;
 import com.example.ajdin.navigatiodraer.helpers.CartHelper;
 import com.example.ajdin.navigatiodraer.helpers.CartItem;
 import com.example.ajdin.navigatiodraer.helpers.CartItemAdapter;
+import com.example.ajdin.navigatiodraer.helpers.Constant;
 import com.example.ajdin.navigatiodraer.helpers.DatabaseHelper;
 import com.example.ajdin.navigatiodraer.helpers.Saleable;
 import com.example.ajdin.navigatiodraer.models.Artikli;
@@ -192,6 +194,31 @@ public class HistoryFragment extends Fragment {
                 }
             }
         });
+
+     lstView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+         @Override
+         public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+             new AlertDialog.Builder(getActivity())
+                     .setTitle(getResources().getString(R.string.delete_item))
+                     .setMessage(getResources().getString(R.string.delete_item_message))
+                     .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialog, int which) {
+                             File file=new File(Environment.getExternalStorageDirectory().toString() + "/racunidevice/"+files.get(i));
+                             if(file.exists()){
+                                 file.delete();
+                                 arrayAdapter.remove(arrayAdapter.getItem(i));
+                                 arrayAdapter.notifyDataSetChanged();
+                             }
+                         }
+
+                     })
+                     .setNegativeButton(getResources().getString(R.string.Ne), null)
+                     .show();
+                             return true;
+
+         }
+     });
 
         return view;
     }

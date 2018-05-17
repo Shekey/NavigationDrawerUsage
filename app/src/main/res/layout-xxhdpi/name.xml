@@ -8,6 +8,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:dividerHeight="1dp"
+        android:longClickable="true"
         android:layout_marginTop="40dp"
         android:divider="@color/colorPrimaryDark"
         android:focusableInTouchMode="false"

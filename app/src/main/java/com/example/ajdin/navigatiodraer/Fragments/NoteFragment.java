@@ -1,6 +1,8 @@
 package com.example.ajdin.navigatiodraer.Fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -87,7 +89,7 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
         fab.setImageResource(R.drawable.ic_note_add_white_24px);
         ListView listView=view.findViewById(R.id.note_list);
         listView.setEmptyView(view.findViewById(R.id.emptyElementNote));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, files){
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, files){
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -128,6 +130,29 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
                 ft.replace(R.id.content_main,fragment,"CRUDFragment").addToBackStack("CRUDFragment");
                 ft.commit();
 
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.delete_item))
+                        .setMessage(getResources().getString(R.string.delete_item_message))
+                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                File file=new File(Environment.getExternalStorageDirectory().toString()+"/napomene/"+files.get(i));
+                                if(file.exists()){
+                                    file.delete();
+                                    arrayAdapter.remove(arrayAdapter.getItem(i));
+                                    arrayAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                        })
+                        .setNegativeButton(getResources().getString(R.string.Ne), null)
+                        .show();
+                return  true;
             }
         });
 
