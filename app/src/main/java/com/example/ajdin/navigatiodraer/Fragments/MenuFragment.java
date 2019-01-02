@@ -154,18 +154,12 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
-        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
 
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
-//        if (sharedPreferences.getString("ime","").isEmpty()) {
-//            fab.setVisibility(View.VISIBLE);
-//        }
-//        else {
-//            fab.setVisibility(View.INVISIBLE);
-//        }
+
         getActivity().setTitle("Svi proizvodi");
-//        fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         spin = (Spinner)view.findViewById(R.id.simpleSpinner);
@@ -282,23 +276,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         if(db.isEmpty()){
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
             lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
-//            dialog = new ProgressDialog(getActivity());
-//            dialog.setIndeterminate(true);
-//            dialog.setCancelable(false);
-//            dialog.setMessage("Loading. Please wait...");
-//            // Create default options which will be used for every
-//            //  displayImage(...) call if no options will be passed to this method
-//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                    .cacheInMemory(true)
-//                    .cacheOnDisk(true)
-//                    .build();
-//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-//                    .defaultDisplayImageOptions(defaultOptions)
-//                    .build();
-//            ImageLoader.getInstance().init(config); // Do it on Application start
-//
-//            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
-//            new JSONTask().execute(URL_TO_HIT);
 
         }else
         {
@@ -306,15 +283,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             dialog.setIndeterminate(true);
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
-
-//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                    .cacheInMemory(true)
-//                    .cacheOnDisk(true)
-//                    .build();
-//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-//                    .defaultDisplayImageOptions(defaultOptions)
-//                    .build();
-//            ImageLoader.getInstance().init(config); // Do it on Application start
 
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
 
@@ -362,13 +330,6 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             }
         }
 
-//            if (odabranaKategorija > 0) {
-//                for (Product p : filteredValues) {
-//                    if (!p.getKategorija().equals(lables.get(odabranaKategorija))) {
-//                        filteredValues.remove(p);
-//                    }
-//                }
-//            }
         filteredAll = new ArrayList<>(filteredValues);
 
 

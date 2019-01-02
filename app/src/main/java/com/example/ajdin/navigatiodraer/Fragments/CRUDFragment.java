@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,7 +83,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             public void onClick(View view) {
                 if (editText1.getText().toString().isEmpty()){
                     hideSoftKeyboard(view);
-                  getActivity().getSupportFragmentManager().popBackStack();
+                    getActivity().getSupportFragmentManager().popBackStackImmediate();
                 }
                 else if (putanja!=null) {
                     SaveFileFromPath(editText1.getText().toString(),putanja);

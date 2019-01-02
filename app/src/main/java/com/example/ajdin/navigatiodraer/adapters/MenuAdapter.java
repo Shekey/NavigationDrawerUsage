@@ -54,14 +54,6 @@ public class MenuAdapter extends ArrayAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                .cacheInMemory(false)
-//                .cacheOnDisk(true)
-//                .build();
-//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-//                .defaultDisplayImageOptions(defaultOptions)
-//                .build();
-//        ImageLoader.getInstance().init(config); // Do it on Application start
         ViewHolder holder = null;
 
         if (convertView == null) {
@@ -95,99 +87,19 @@ public class MenuAdapter extends ArrayAdapter {
                     File.separator + "YourFolderName" + File.separator + slikes.get(size - 1).getId() + ".jpg");
             if (file.exists()) {
 
-//            Uri imageURI = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Integer.toString(columnIndex));
                 Picasso
                         .with(getContext())
                         .load(file)
                         .fit()
                         .centerInside()
                         .into(holder.ivMovieIcon);
-//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
-////            holder.ivMovieIcon.setImageBitmap(bMap);
-//            ImageLoader.getInstance().displayImage("file:///"+file.getAbsolutePath(),holder.ivMovieIcon);
-
-//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//            holder.ivMovieIcon.setImageBitmap(bMap);
 
             }
         }
-//        else {
-//
-//            Log.d("NEMASLIKE", "slika broj: "+slikes.get(size-1).getId()+".jpg");
-//            ImageLoader.getInstance().displayImage("http://nurexport.com/demo/"+slikes.get(size-1).getImage(), holder.ivMovieIcon, new ImageLoadingListener() {
-//                @Override
-//                public void onLoadingStarted(String imageUri, View view) {
-//                    progressBar.setVisibility(View.VISIBLE);
-//                    finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//                }
-//
-//                @Override
-//                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                    progressBar.setVisibility(View.GONE);
-//                    finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//                }
-//
-//                @Override
-//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                    progressBar.setVisibility(View.GONE);
-//                    finalHolder.ivMovieIcon.setVisibility(View.VISIBLE);
-//                    saveImage(slikes.get(size - 1).getId(), finalHolder.ivMovieIcon);
-//
-//
-//
-//                }
-//
-//                @Override
-//                public void onLoadingCancelled(String imageUri, View view) {
-//                    progressBar.setVisibility(View.GONE);
-//                    finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//                }
-//            });
-
-
-
-
-
-
-
-
-//            ImageLoader.getInstance().displayImage("http://nurexport.com/demo/upload/"+.getImage(), holder.ivMovieIcon, new ImageLoadingListener() {
-//
-//                @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//                progressBar.setVisibility(View.VISIBLE);
-//                finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                progressBar.setVisibility(View.GONE);
-//                finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                progressBar.setVisibility(View.GONE);
-//                finalHolder.ivMovieIcon.setVisibility(View.VISIBLE);
-//                saveImage(movieModelList.get(position).getBarkod(),finalHolder.ivMovieIcon);
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//                progressBar.setVisibility(View.GONE);
-//                finalHolder.ivMovieIcon.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//       }
 
         progressBar.setVisibility(View.GONE);
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+ " KM");
         holder.tvStanje.setText("Na stanju : " + movieModelList.get(position).getStanje());
-
-        // rating bar
-
-
-
 
         return convertView;
     }
@@ -199,8 +111,5 @@ public class MenuAdapter extends ArrayAdapter {
         private TextView tvTagline;
         private TextView tvYear;
         private TextView tvStanje;
-
-
     }
-
 }

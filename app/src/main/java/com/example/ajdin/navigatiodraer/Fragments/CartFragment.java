@@ -91,8 +91,6 @@ public class CartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
         SwipeMenuListView lvProducts = (SwipeMenuListView)view.findViewById(R.id.listCart);
-        //  lvProducts.addHeaderView(getActivity().getLayoutInflater().inflate(R.layout.cart_header, lvProducts, false));
-        //
         if(getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             getActivity().getActionBar().setDisplayShowHomeEnabled(true);
@@ -212,58 +210,11 @@ public class CartFragment extends Fragment {
             public void onClick(View view) {
                 MenuFragment fragment=new MenuFragment();
                 android.support.v4.app.FragmentTransaction ft =getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_main, fragment, "first_frag").addToBackStack("first_frag").commit();
+                ft.replace(R.id.content_main, fragment, "first_frag").commit();
                 getActivity().setTitle("Svi proizvodi");
 
             }
         });
-//        lvProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                if (position<0) {
-//                    return;
-//                }
-//                else {
-//                    List<CartItem> cartItems = getCartItems(cart);
-//                  Product pr= cartItems.get(position).getProduct();
-//                  pr.setCijena(String.valueOf(pr.getCijena()));
-//                  Bundle bundle=new Bundle();
-//                  bundle.putSerializable("productEdit",pr);
-//                  bundle.putString("kolEdit",String.valueOf(cartItems.get(position).getQuantity()));
-//                  EditProduct fragment=new EditProduct();
-//                    android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//                    ft.hide(CartFragment.this);
-//                    fragment.setArguments(bundle);
-//                    ft.add(R.id.content_main,fragment,"editFragment").addToBackStack("editFragment");
-//                    ft.commit();
-//                }
-//            }
-//        });
-//        lvProducts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-//                if (position<0) {
-//                    return false;
-//                }
-//                new AlertDialog.Builder(getActivity())
-//                        .setTitle(getResources().getString(R.string.delete_item))
-//                        .setMessage(getResources().getString(R.string.delete_item_message))
-//                        .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                List<CartItem> cartItems = getCartItems(cart);
-//                                cart.remove(cartItems.get(position).getProduct());
-//                                cartItems.remove(position);
-//                                cartItemAdapter.updateCartItems(cartItems);
-//                                cartItemAdapter.notifyDataSetChanged();
-//                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-//                            }
-//                        })
-//                        .setNegativeButton(getResources().getString(R.string.Ne), null)
-//                        .show();
-//                return false;
-//            }
-//        });
 
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,15 +230,6 @@ public class CartFragment extends Fragment {
                                 spreferencesEditor.remove("path");
                                 spreferencesEditor.commit();
                                 clearCart();
-//                                cart.clear();
-//                                cartItemAdapter.updateCartItems(getCartItems(cart));
-//                                cartItemAdapter.notifyDataSetChanged();
-//                                tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-//                                MenuFragment fragment=new MenuFragment();
-//                                NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
-//                                navigationView.setCheckedItem(R.id.nav_proizvodi);
-//                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"first_frag").commit();
-
 
                             }
                         })
@@ -312,7 +254,6 @@ public class CartFragment extends Fragment {
             tvTotalPrice.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
             nastavi.setVisibility(View.VISIBLE);
-
         }
 
         bZavrsi.setOnClickListener(new View.OnClickListener() {
@@ -336,10 +277,6 @@ public class CartFragment extends Fragment {
                         spreferencesEditor.remove("ime");
                         spreferencesEditor.remove("path");
                         spreferencesEditor.commit();
-//                        cart.clear();
-//                        cartItemAdapter.updateCartItems(getCartItems(cart));
-//                        cartItemAdapter.notifyDataSetChanged();
-//                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
                         File file = new File(zadropBox);
                         new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file, getActivity().getApplicationContext()).execute();
                         Intent intent = new Intent(getContext(), TimeService.class);
@@ -350,16 +287,6 @@ public class CartFragment extends Fragment {
 
 
                         exportDBold(getCartItems(cart), cartItemAdapter.getCount(), sharedPreferences.getString("path", ""));
-
-//
-//                        cart.clear();
-//                        cartItemAdapter.updateCartItems(getCartItems(cart));
-//                        cartItemAdapter.notifyDataSetChanged();
-//                        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
-//                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//                    intent.putExtra("pathFile",Environment.getExternalStorageDirectory().toString()+"/racunidevice/"+sharedPreferences.getString("path",""));
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
                         String putanja = Environment.getExternalStorageDirectory().toString() + "/racunidevice/" + sharedPreferences.getString("path", "");
                         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
                         spreferencesEditor.remove("path");
@@ -368,13 +295,10 @@ public class CartFragment extends Fragment {
                         new UploadTask(DropboxClient.getClient("-moQGOzCYwAAAAAAAAAAZSEoz5K3N_iBvmP9Ns9EelOBx3BlnO5MSDHwbz5js2bK"), file,getActivity(). getApplicationContext()).execute();
                         clearCart();
                         return;
-
-
                     }
                     else {
                         KupacFragment fragment1=new KupacFragment();
                         fragment1.show(getActivity().getSupportFragmentManager(),"Mydialog");
-
                     }
                 }
                 else {
@@ -413,18 +337,6 @@ public class CartFragment extends Fragment {
 
 
                 }
-                //  helper.InsertIntoRacun(cartItemAdapter, cartItemAdapter.getCount());
-
-
-
-
-//                SharedPreferences shared=getSharedPreferences("path",Context.MODE_PRIVATE);
-//                shared.edit().clear();
-//                shared.edit().commit();
-
-
-
-
             }
         });
 
@@ -437,6 +349,7 @@ public class CartFragment extends Fragment {
         tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+Constant.CURRENCY));
         clear.setVisibility(View.GONE);
         bZavrsi.setVisibility(View.GONE);
+        nastavi.setVisibility(View.GONE);
         tvTotalPrice.setVisibility(View.GONE);
         textView2.setVisibility(View.GONE);
 
@@ -446,10 +359,8 @@ public class CartFragment extends Fragment {
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));
-        ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
+        ft.add(R.id.content_main, fragment,tag);
         ft.commit();
-
-
     }
     private List<CartItem> getCartItems(Cart cart) {
         List<CartItem> cartItems = new ArrayList<CartItem>();
@@ -464,8 +375,6 @@ public class CartFragment extends Fragment {
             cartItem.setQuantity(entry.getValue());
             cartItems.add(cartItem);
         }
-
-
         return cartItems;
     }
 
@@ -555,7 +464,6 @@ public class CartFragment extends Fragment {
             CSVWriter csvWrite = new CSVWriter(new FileWriter(file2));
             CSVWriter csvWrite2 = new CSVWriter(new FileWriter(file3));
             SQLiteDatabase db = dbhelper.getReadableDatabase();
-            // Cursor curCSV = db.rawQuery("SELECT * FROM Artikli",null);
 
             for (int i=0;i<count;i++){
 

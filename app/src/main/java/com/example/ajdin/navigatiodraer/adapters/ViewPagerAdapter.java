@@ -56,8 +56,6 @@ public class ViewPagerAdapter extends PagerAdapter {
                     .fit()
                     .centerInside()
                     .into(view1);
-//            Bitmap bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//            view1.setImageBitmap(bMap);
 
         }
         else {

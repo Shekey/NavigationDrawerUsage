@@ -149,44 +149,17 @@ public class MainActivity extends AppCompatActivity
         dialog.setCancelable(false);
         dialog.setMessage("Loading. Please wait...");
 
-//        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                .cacheInMemory(false)
-//                .cacheOnDisk(false)
-//                .build();
-//        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MainActivity.this)
-//                .defaultDisplayImageOptions(defaultOptions)
-//                .build();
-//        ImageLoader.getInstance().init(config); // Do it on Application start
-
-
         db = new DatabaseHelper(MainActivity.this);
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Ajdin");
         arrayList.add("Husan");
         arrayList.add("Amira");
         arrayList.add("Seval");
-//        adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,arrayList);
-//        lvArtikli.setAdapter(adapter);
         SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
         sharedPreferences.edit().remove("ime").apply();
         fab = findViewById(R.id.fab);
-//        if (sharedPreferences.getString("ime","").isEmpty()) {
-//            fab.setVisibility(View.VISIBLE);
-//        }
-//        else {
-//            fab.setVisibility(View.INVISIBLE);
-//        }
         fab.setImageResource(R.drawable.ic_note_add_white_24px);
         fab.setVisibility(View.INVISIBLE);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-////                KupacFragment fragment1=new KupacFragment();
-////                fragment1.show(getSupportFragmentManager(),"dodavanje_kupca");
-//
-//            }
-//        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -214,18 +187,6 @@ public class MainActivity extends AppCompatActivity
     public android.support.v4.app.Fragment getCurrentFragment() {
         return this.getSupportFragmentManager().findFragmentById(R.id.content_main);
     }
-    public android.support.v4.app.Fragment getVisibleFragment(){
-        android.support.v4.app.FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<android.support.v4.app.Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(android.support.v4.app.Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    return fragment;
-            }
-        }
-        return null;
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -254,39 +215,28 @@ public class MainActivity extends AppCompatActivity
                     ftt.remove(f).commit();
                 }
             }
-            getSupportFragmentManager().popBackStackImmediate();
+                getSupportFragmentManager().popBackStackImmediate();
 
-            f=getCurrentFragment();
-
-
+                f=getCurrentFragment();
                 if (fragment6 != null && f.getTag().equals(fragment6.getTag())) {
-
                             setTitle("Detalji proizvoda");
-
                     }
              else if (fragment7 != null && f.getTag().equals(fragment7.getTag())) {
-
                 if (!fragment7.isVisible()) {
                     setTitle("Detalji proizvoda");
-
                 }
             }
                 else if (fragment4 != null && f.getTag().equals(fragment4.getTag())) {
-
-
                     setTitle("Korpa");
                     navigationView.setCheckedItem(R.id.nav_korpa);
 
                 }
                 else if (fragment != null &&f.getTag().equals(fragment.getTag())) {
-//
                     setTitle("Svi proizvodi");
                     navigationView.setCheckedItem(R.id.nav_proizvodi);
 
-
                 }
                 else if (fragment1 != null &&  f.getTag().equals(fragment1.getTag())) {
-
 //
                     setTitle("Novi proizvodi");
                     navigationView.setCheckedItem(R.id.nav_novi_proizvodi);
@@ -299,24 +249,12 @@ public class MainActivity extends AppCompatActivity
                     navigationView.setCheckedItem(R.id.komercijalista);
 
                 }
-
-
-
-
                 else if (fragment5 != null && f.getTag().equals(fragment5.getTag())) {
-
                     setTitle("Snizeni proizvodi");
                     navigationView.setCheckedItem(R.id.nav_snizeno);
-
                 }
 
-
-
-
              else if (fragment2 != null && f.getTag().equals(fragment2.getTag())) {
-
-
-
                            fab.setImageResource(R.drawable.ic_note_add_white_24px);
                            fab.setVisibility(View.VISIBLE);
                            fab.setOnClickListener(new View.OnClickListener() {
@@ -326,33 +264,16 @@ public class MainActivity extends AppCompatActivity
                                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                     ft.replace(R.id.content_main, fragment, "CRUDFragment").addToBackStack("CRUDFragment");
                                     ft.commit();
-
-//
                                 }
                             });
                             setTitle("Napomene ");
                             navigationView.setCheckedItem(R.id.nav_napomene);
 
-
-
-
             } else if (fragment3 != null && f.getTag().equals(fragment3.getTag()) ) {
-
-
-
                             setTitle("Historija računa");
 //                            fab.setVisibility(View.GONE);
                             navigationView.setCheckedItem(R.id.nav_history);
-
-
-
             }
-
-
-
-
-
-
     }
 
         else {
@@ -367,9 +288,6 @@ public class MainActivity extends AppCompatActivity
                     })
                     .setNegativeButton("Ne", null)
                     .show();
-
-
-
         }
 
     }
@@ -384,18 +302,11 @@ public class MainActivity extends AppCompatActivity
         cartItemAdapter = new CartItemAdapter(MainActivity.this);
         cartItemAdapter.updateCartItems(getCartItems(cart));
         cartItemAdapter.notifyDataSetChanged();
-
-
-
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
-
         return true;
     }
 
@@ -442,9 +353,9 @@ public class MainActivity extends AppCompatActivity
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
             ft.add(R.id.content_main, fragment, tag);
-            ft.hide(CurrentFragment);
+            ft.remove(CurrentFragment);
             navigationView.setCheckedItem(R.id.nav_korpa);
-            ft.addToBackStack(CurrentFragment.getTag());
+          //  ft.addToBackStack(CurrentFragment.getTag());
             setTitle("Korpa");
             ft.commit();
             // do something with f
@@ -456,7 +367,7 @@ public class MainActivity extends AppCompatActivity
             String  tag="first_frag";
             MenuFragment fragment=new MenuFragment();
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment, tag).addToBackStack(tag).commit();
+            ft.replace(R.id.content_main, fragment, tag);
             navigationView.setCheckedItem(R.id.nav_proizvodi);
             setTitle("Svi proizvodi");
 
@@ -492,8 +403,6 @@ public class MainActivity extends AppCompatActivity
                     .setNegativeButton(getResources().getString(R.string.Ne), null)
                     .show();
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -594,7 +503,7 @@ public class MainActivity extends AppCompatActivity
 
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.remove(CurrentFragment);
-                ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
+                ft.add(R.id.content_main, fragment,tag);
                 ft.commit();
 
 
@@ -610,8 +519,6 @@ public class MainActivity extends AppCompatActivity
 
         return true;
     }
-
-
 
     @SuppressLint("StaticFieldLeak")
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
@@ -824,93 +731,6 @@ public class MainActivity extends AppCompatActivity
         }
         return macAddress;
     }
-    public void DownloadImageFromPath(String path,String filenamejpg){
-        InputStream in;
-        Bitmap bmp;
-        int responseCode;
-        int br=0;
-        try{
-
-            URL url = new URL(path);//"http://192.xx.xx.xx/mypath/img1.jpg
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setDoInput(true);
-            con.connect();
-            responseCode = con.getResponseCode();
-            if(responseCode == HttpURLConnection.HTTP_OK)
-            {
-                //download
-                in = con.getInputStream();
-                bmp = BitmapFactory.decodeStream(in);
-                in.close();
-                FileOutputStream outStream = null;
-
-                File dir=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
-                        File.separator + "YourFolderName/"+filenamejpg);
-                String fileName = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+"/YourFolderName/"+filenamejpg;
-                File outFile = new File(fileName);
-                try {
-                    outStream = new FileOutputStream(outFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                bmp.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
-                br++;
-                Log.d(TAG, "DownloadImageFromPath: "+String.valueOf(br));
-                try {
-                    assert outStream != null;
-                    outStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-        catch(Exception ex){
-            Log.e("Exception",ex.toString());
-        }
-    }
-    class IndexTarget implements Target {
-
-        private final int mIndex;
-
-        public IndexTarget(int index){
-            this.mIndex = index;
-        }
-
-        @Override
-        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    File file = new File(Environment.getExternalStorageDirectory().getPath() +"/img"+mIndex+".jpg");
-                    try {
-                        file.createNewFile();
-                        FileOutputStream ostream = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, ostream);
-                        ostream.close();
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-        }
-    }
      public void downloadImageURL(String fileName ,String imagePath){
         String filename = fileName+".jpg";
         String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
@@ -950,7 +770,6 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-
     private List<CartItem> getCartItems(Cart cart) {
         List<CartItem> cartItems = new ArrayList<>();
 
@@ -968,6 +787,4 @@ public class MainActivity extends AppCompatActivity
 
         return cartItems;
     }
-
-
 }

@@ -62,9 +62,6 @@ public class PreviewAdapter extends ArrayAdapter {
 
         holder.tvUkupno.setText("Ukupno: " + String.valueOf(dec.format(ukupno))+" KM");
 
-        // rating bar
-
-
         return convertView;
     }
 

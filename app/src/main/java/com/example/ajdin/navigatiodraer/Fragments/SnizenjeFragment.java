@@ -84,16 +84,6 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
             return;
         }
 
-//        fab.setImageResource(R.drawable.dodaj_osobu);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                KupacFragment fragment1=new KupacFragment();
-//                fragment1.show(getActivity().getSupportFragmentManager(),"dodavanje_kupca");
-//
-////
-//            }
-//        });
         super.onResume();
     }
 
@@ -130,14 +120,8 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
 
         fab.setVisibility(View.GONE);
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
-//        if (sharedPreferences.getString("ime","").isEmpty()) {
-//            fab.setVisibility(View.VISIBLE);
-//        }
-//        else {
-//            fab.setVisibility(View.INVISIBLE);
-//        }
+
         getActivity().setTitle("Svi proizvodi");
-//        fab.setImageResource(R.drawable.dodaj_osobu);
         ListView list=(ListView)getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
         spin = (Spinner)view.findViewById(R.id.simpleSpinner);
@@ -254,23 +238,6 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
         if(db.isEmpty()){
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
             lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
-//            dialog = new ProgressDialog(getActivity());
-//            dialog.setIndeterminate(true);
-//            dialog.setCancelable(false);
-//            dialog.setMessage("Loading. Please wait...");
-//            // Create default options which will be used for every
-//            //  displayImage(...) call if no options will be passed to this method
-//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                    .cacheInMemory(true)
-//                    .cacheOnDisk(true)
-//                    .build();
-//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-//                    .defaultDisplayImageOptions(defaultOptions)
-//                    .build();
-//            ImageLoader.getInstance().init(config); // Do it on Application start
-//
-//            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
-//            new JSONTask().execute(URL_TO_HIT);
 
         }else
         {
@@ -279,14 +246,6 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
 
-//            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-//                    .cacheInMemory(true)
-//                    .cacheOnDisk(true)
-//                    .build();
-//            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext().getApplicationContext())
-//                    .defaultDisplayImageOptions(defaultOptions)
-//                    .build();
-//            ImageLoader.getInstance().init(config); // Do it on Application start
 
             lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
 
@@ -333,13 +292,6 @@ public class SnizenjeFragment extends Fragment implements SearchView.OnQueryText
             }
         }
 
-//            if (odabranaKategorija > 0) {
-//                for (Product p : filteredValues) {
-//                    if (!p.getKategorija().equals(lables.get(odabranaKategorija))) {
-//                        filteredValues.remove(p);
-//                    }
-//                }
-//            }
         filteredAll = new ArrayList<>(filteredValues);
 
 

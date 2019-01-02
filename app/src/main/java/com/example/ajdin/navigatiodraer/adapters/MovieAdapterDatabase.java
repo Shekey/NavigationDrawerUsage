@@ -64,11 +64,6 @@ public class MovieAdapterDatabase extends ArrayAdapter {
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena());
         holder.tvSnizeno.setText("Snizeno: " + movieModelList.get(position).getSnizeno());
 
-        // rating bar
-
-
-
-
         return convertView;
     }
 

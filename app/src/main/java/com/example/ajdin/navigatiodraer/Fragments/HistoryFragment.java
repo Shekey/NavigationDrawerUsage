@@ -100,46 +100,11 @@ public class HistoryFragment extends Fragment {
         lstView = (ListView) view.findViewById(R.id.list_history);
         lstView.setEmptyView(view.findViewById(R.id.emptyElement4));
 
-
-//        if (!tokenExists()){
-//
-//            Intent intent = new Intent(getActivity(), LoginActivity.class);
-//
-//            startActivity(intent);
-//
-//        }
-
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             files = getList();
 
-            //lv_arr = (String[]) listOfStrings.toArray();
-//            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_2, android.R.id.text1, files) {
-//
-//                @NonNull
-//                @Override
-//                public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//                    View view = super.getView(position, convertView, parent);
-//                    TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-//                    TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-//                    text1.setPadding(16, 0, 16, 0);
-//                    text2.setPadding(16, 0, 16, 0);
-//                    text1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-//
-//                    text1.setAllCaps(true);
-//                    text2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-//                    text2.setTextColor(Color.parseColor("#867e7e"));
-//                    String ime[] = files.get(position).split("[0-9_-]");
-//                    String datum[] = files.get(position).split("[a-zA-Z-]");
-//
-//                    text2.setText(datum[datum.length - 1]);
-//                    text1.setText(ime[0]);
-//                    return view;
-//
-//
-//                }
-//            };
 
             arrayAdapter = new HistoryCustomAdapter(getActivity(), R.layout.history_custom_row,files);
             lstView.setAdapter(arrayAdapter);
@@ -186,7 +151,7 @@ public class HistoryFragment extends Fragment {
                     NavigationView navigationView =(NavigationView)getActivity().findViewById(R.id.nav_view);
                     navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
-                    ft.replace(R.id.content_main, fragment,"cart_frag").addToBackStack("cart_frag");
+                    ft.replace(R.id.content_main, fragment,"cart_frag");
                     getActivity().setTitle("Korpa");
                     ft.commit();
                     //DO OVDJE

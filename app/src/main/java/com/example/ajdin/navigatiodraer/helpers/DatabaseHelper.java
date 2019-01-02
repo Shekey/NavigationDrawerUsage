@@ -262,60 +262,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void replace(ArrayList<Product> productList){
-        SQLiteDatabase db = this.getWritableDatabase();
-        for (Product p:productList) {
-
-            db.execSQL("REPLACE INTO Artikli(Naziv,isSnizeno,Cijena,Bar_kod,ImageUrl,ImageDevice,datumkreiranja,Kategorija) VALUES('"+p.getNaziv()+"','"
-                    +p.getSnizeno()+"','"
-                    +p.getCijena()+"','"
-                    +p.getBarkod()+"','"
-                    +p.getImageUrl()+"','"+
-                    Environment.getExternalStorageDirectory().getAbsolutePath() + "/YourFolderName/"+ p.getBarkod()+".jpg"+"','"+
-                    p.getDatum_kreiranja()+
-                    "','"+p.getKategorija()+"');");
-
-        }
-
-        ArrayList<Product> allproducts=getAll();
-        int sync_product=productList.size();
-        String barkod_delete="";
-        int database_size=allproducts.size();
-        if (sync_product<database_size) {
-            for (Product p : allproducts) {
-                boolean pronadjen=false;
-            for (Product r:productList){
-                if (p.getBarkod().equals(r.getBarkod())){
-                    pronadjen=true;
-                }else{
-                    barkod_delete=p.getBarkod();
-                }
-            }
-            if (!pronadjen){
-                db.execSQL("DELETE FROM Artikli WHERE Bar_kod ='"+barkod_delete+"';");
-                pronadjen=false;
-                barkod_delete="";
-
-            }
-            }
-
-        }
-    }
-    public String getBarkod(String Naziv){
-        SQLiteDatabase db=this.getWritableDatabase();
-        String naziv;
-        Cursor productList=db.rawQuery("SELECT Bar_kod From Artikli WHERE Naziv='"+Naziv+"' ;",null);
-        if(productList!=null){
-            productList.moveToFirst();
-            naziv= productList.getString(productList.getColumnIndex("Bar_kod"));
-
-        }
-        else {
-            naziv="";
-        }
-        return naziv;
-
-    }
     public Artikli getData(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
@@ -347,44 +293,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return product;
 
     }
-    public String getDataString(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
-        if (productList.getCount()==0){
-
-            return null;
-        }
-        productList.moveToFirst();
-        Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
-                productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
-        db.close();
-        return product.getName();
-
-    }
-
-
-
-    public void clearDatabase(Context context) {
-        DatabaseHelper helper = new DatabaseHelper(context);
-        SQLiteDatabase database = helper.getWritableDatabase();
-        database.execSQL("drop table Artikli");
-        database.execSQL("PRAGMA encoding='UTF-16'");
-        database.execSQL("CREATE TABLE `Artikli` (\n " +
-                "\t`Artikal_id`\t INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "\t`Id`\tTEXT NOT NULL DEFAULT '---',\n" +
-                "\t`Naziv`\tTEXT NOT NULL DEFAULT '---',\n" +
-                "\t`JM`\tTEXT NOT NULL DEFAULT '---',\n" +
-                "\t datumkreiranja REAL  DEFAULT 'julianday()',\n" +
-                "\t isSnizeno INTEGER DEFAULT 0 ,\n"+
-                "\t`Cijena`\tTEXT NOT NULL DEFAULT 0,\n" +
-                "\t`Kategorija`\tTEXT ,\n" +
-                "\t`Bar_kod`\tTEXT NOT NULL, \n" +
-                "\t`ImageUrl`\tTEXT NOT NULL, \n" +
-                "\t`ImageDevice`\tTEXT  \n" + ");");
-
-
-        database.close();
-    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -394,97 +302,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
-    public void ReadFile() throws IOException {
-
-
-        String csvFile = Environment.getExternalStorageDirectory().toString() + "/racuni/art.txt";
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ";";
-        ArrayList<Product> products = new ArrayList<Product>();
-        Product product;
-
-        try {
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] lista = line.split(cvsSplitBy);
-                String cijena = lista[3];
-                cijena = cijena.replace(",", ".");
-//                InsertArtikal(lista[4], lista[2], lista[1], cijena, null);
-
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                    InsertArtikal(products);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        System.out.println("Done");
-    }
-
-
-    public void UbaciArtikal(Product p) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Barkod", p.getBarkod());
-        contentValues.put("JM", "---");
-        contentValues.put("Kategorija", "---");
-        contentValues.put("ImageUrl", "---");
-        contentValues.put("Naziv", "---");
-        contentValues.put("Cijena", p.getCijena().toString());
-        contentValues.put("ImageDevice", "---");
-        long result = db.insert("Artikli", null, contentValues);
-
-        Log.d(TAG, "Inserted " + result);
-    }
-
     public void InsertArtikal1(ArrayList<Artikli> products) {
-
-
-
-    }
-    public void InsertArtikal(ArrayList<Product> products) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String danas =dateFormat.format(date);
-
-        for (Product p : products) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("Bar_kod", p.getBarkod());
-            contentValues.put("JM", "KOM");
-            contentValues.put("Kategorija", p.getKategorija());
-            contentValues.put("ImageUrl", p.getImageUrl());
-            contentValues.put("datumkreiranja", p.getDatum_kreiranja());
-            contentValues.put("Naziv", p.getNaziv());
-            contentValues.put("Cijena", p.getCijena());
-            contentValues.put("isSnizeno", p.getSnizeno());
-            contentValues.put("ImageDevice", Environment.getExternalStorageDirectory().getAbsolutePath() + "/YourFolderName/" + p.getCijena() + ".jpg");
-//            contentValues.put("Barkod", p.getBarkod());
-//            contentValues.put("JM", p.getJM());
-//            contentValues.put("Kategorija", p.getKategorija());
-//            contentValues.put("ImageUrl", p.getImageUrl());
-//            contentValues.put("Naziv", p.getNaziv());
-//            contentValues.put("Cijena", p.getCijena().toString());
-//            contentValues.put("ImageDevice", p.getImageDevice());
-            long result = db.insert("Artikli", null, contentValues);
-
-            Log.d(TAG, "Inserted " + result);
-        }
-        //here
-        db.close();
-
 
     }
 
@@ -502,28 +320,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean InsertArtikal(String bar_kod, String jedinica_mjere, String naziv_artikla, String cijena, String ImageDevice, String ImageUrl, String Kategorija) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Barkod", bar_kod);
-        contentValues.put("JM", jedinica_mjere);
-        contentValues.put("Kategorija", Kategorija);
-        contentValues.put("ImageUrl", ImageUrl);
-        contentValues.put("Naziv", naziv_artikla);
-        contentValues.put("Cijena", cijena);
-        contentValues.put("ImageDevice", ImageDevice);
-        long result = db.insertWithOnConflict("Artikli", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
-        //  long result = db.insert("Artikli", null, contentValues);
-
-        if (result == -1) {
-
-            return false;
-        } else {
-
-            return true;
-        }
-    }
     public ArrayList<Slike> getAllSlike(){
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Slike> listaSlike = new ArrayList<Slike>();
@@ -593,8 +389,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return list;
     }
-
-
     public ArrayList<Product> getAll() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Product> list = new ArrayList<Product>();
@@ -609,36 +403,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         productList.close();
         //here
         db.close();
-        return list;
-    }
-    public boolean razlikaDana(String real){
-        SQLiteDatabase db = this.getWritableDatabase();
-       Cursor razlike = db.rawQuery("Select julianday()-julianday("+real+")",null);
-       razlike.moveToFirst();
-       double razlikaCalc= Double.valueOf(razlike.getString(0));
-       if (razlikaCalc>7){
-           return false;
-       }
-       else {
-           return true;
-       }
-// select * from Artikli where julianday()-julianday(d1) >7
-    }
-    public ArrayList<Product> getAllSnizeno() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<Product> list = new ArrayList<Product>();
-        Cursor productList = db.rawQuery("select * from Artikli WHERE isSnizeno = 1", null);
-        if (productList!=null){
-        productList.moveToFirst();
-        while (!productList.isAfterLast()) {
-            Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
-                    productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
-            list.add(product);
-            productList.moveToNext();
-        }
-        }
-        productList.close();
-
         return list;
     }
     public ArrayList<Artikli> getAllSnizenoArtikli() {
@@ -675,54 +439,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //here
         db.close();
         return list;
-    }
-    public void getdatum(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        Cursor lista=db.rawQuery("SELECT * from Artikli",null);
-        lista.moveToFirst();
-        while (!lista.isAfterLast()){
-            String datumkrairanja =lista.getString(lista.getColumnIndex("datumkreiranja"));
-            lista.moveToNext();
-        }
-
-    }
-    public List<Product> getProductsKategory(String kategory){
-        List<Product> labels = new ArrayList<Product>();
-
-
-        // Select All Query
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from Artikli WHERE Kategorija='"+kategory+"';",null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-
-            Product product = new Product(cursor.getString(cursor.getColumnIndex("Naziv")), cursor.getInt(cursor.getColumnIndex("Artikal_id")),
-                    cursor.getString(cursor.getColumnIndex("Bar_kod")), cursor.getString(cursor.getColumnIndex("JM")), cursor.getString(cursor.getColumnIndex("Kategorija")), cursor.getString(cursor.getColumnIndex("Cijena")), cursor.getString(cursor.getColumnIndex("ImageUrl")), cursor.getString(cursor.getColumnIndex("ImageDevice")),cursor.getString(cursor.getColumnIndex("isSnizeno")),cursor.getString(cursor.getColumnIndex("datumkreiranja")));
-            labels.add(product);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        db.close();
-
-
-        // returning lables
-        return labels;
-    }
-    public List<Product> getProductsKategoryFiltered(String kategory,List<Product> filtered){
-        List<Product> labels = new ArrayList<Product>();
-
-
-        // Select All Query
-
-      for (Product p:filtered){
-          if (p.getKategorija().equals(kategory))
-              labels.add(p);
-      }
-
-        // returning lables
-        return labels;
     }
     public List<Artikli> getProductsKategoryFiltered1(String kategory,List<Artikli> filtered){
         List<Artikli> labels = new ArrayList<Artikli>();
@@ -761,24 +477,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // returning lables
         return labels;
     }
-
-    public ArrayList<Product> getAllNEW() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<Product> list = new ArrayList<Product>();
-        Cursor productList = db.rawQuery("select * from Artikli WHERE julianday()-julianday(datumkreiranja)<=4", null);
-        productList.moveToFirst();
-        while (!productList.isAfterLast()) {
-
-            Product product = new Product(productList.getString(productList.getColumnIndex("Naziv")), productList.getInt(productList.getColumnIndex("Artikal_id")),
-                    productList.getString(productList.getColumnIndex("Bar_kod")), productList.getString(productList.getColumnIndex("JM")), productList.getString(productList.getColumnIndex("Kategorija")), productList.getString(productList.getColumnIndex("Cijena")), productList.getString(productList.getColumnIndex("ImageUrl")), productList.getString(productList.getColumnIndex("ImageDevice")),productList.getString(productList.getColumnIndex("isSnizeno")),productList.getString(productList.getColumnIndex("datumkreiranja")));
-            list.add(product);
-            productList.moveToNext();
-        }
-        productList.close();
-
-        return list;
-    }
-
     public ArrayList<Artikli> getAllNEWArtikli() {
         SQLiteDatabase db = this.getWritableDatabase();
         ArrayList<Artikli> list = new ArrayList<Artikli>();
@@ -811,58 +509,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //here
         db.close();
         return list;
-    }
-
-
-//    public Product getData(String id) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor productList = db.rawQuery("select * from Artikli  where Bar_kod='" + id + "'", null);
-//        if (productList.getCount()==0){
-//            Product product=null;
-//            return product;
-//        }
-//        productList.moveToFirst();
-//        BigDecimal decimal= BigDecimal.valueOf(Double.valueOf(productList.getString(3)));
-////        Product product=new Product();
-//        db.close();
-//        return product;
-//
-//    }
-
-    public void update_database(String bar_kod, String jedinica_mjere, String naziv_artikla, String cijena,String ImageUrl, String Kategorija){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE Artikli " +
-
-                "Naziv ='"+naziv_artikla+"' , "+
-                "Cijena ='"+ cijena+"' , "+
-                "ImageUrl = '"+ImageUrl+"' , "+
-
-                "WHERE Bar_kod='"+bar_kod+"'");
-    }
-
-    public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Cursor res = db.rawQuery("select * from Artikli ", null);
-        if (res.moveToFirst()) {
-            do {
-                String data = res.getString(res.getColumnIndex("data"));
-                // do what ever you want here
-            } while (res.moveToNext());
-        }
-        res.close();
-
-        return res;
-
-    }
-
-
-    public void showMessage(String title, String message, Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
-
     }
 }

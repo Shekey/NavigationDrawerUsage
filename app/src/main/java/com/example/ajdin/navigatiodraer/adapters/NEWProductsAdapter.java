@@ -81,11 +81,6 @@ public class NEWProductsAdapter extends ArrayAdapter {
         holder.tvTagline.setText(movieModelList.get(position).getKategorija());
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena()+" KM");
 
-        // rating bar
-
-
-
-
         return convertView;
     }
 

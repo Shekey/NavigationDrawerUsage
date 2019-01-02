@@ -64,11 +64,6 @@ public class SnizenoAdapter extends ArrayAdapter {
         holder.tvTagline.setText(movieModelList.get(position).getKategorija());
         holder.tvYear.setText("Cijena: " + movieModelList.get(position).getCijena() +" KM");
 
-        // rating bar
-
-
-
-
         return convertView;
     }
 
@@ -78,8 +73,5 @@ public class SnizenoAdapter extends ArrayAdapter {
         private TextView tvMovie;
         private TextView tvTagline;
         private TextView tvYear;
-
-
     }
-
 }

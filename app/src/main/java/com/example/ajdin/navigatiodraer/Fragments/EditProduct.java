@@ -119,9 +119,6 @@ public class EditProduct extends Fragment {
             ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),slike);
             viewPager.setAdapter(adapter1);
 
-//            // Then later, when you want to display image
-//            File file = new File(movieModel.getImageDevice());
-//            ivMovieIcon.setImageURI(Uri.parse(file.getAbsolutePath()));
             progressBar.setVisibility(View.GONE);
             tvMovie.setText(movieModel.getNaziv());
             tvStanje.setText(movieModel.getStanje());
@@ -141,10 +138,6 @@ public class EditProduct extends Fragment {
                         cart.remove(movieModel);
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), "");
                         hideSoftKeyboard(view);
-//                        List<CartItem> cartItems = getCartItems(cart);
-//                        cartItemAdapter.updateCartItems(cartItems);
-//                        cartItemAdapter.notifyDataSetChanged();
-//                        getActivity().getSupportFragmentManager().popBackStack();
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         manager.popBackStack();
                         CartFragment fragment=new CartFragment();
@@ -166,27 +159,12 @@ public class EditProduct extends Fragment {
                         cart.add(movieModel, Double.valueOf(Kolicina.getText().toString()), new_price.getText().toString());
                         BigDecimal decimal = BigDecimal.valueOf(Double.valueOf(new_price.getText().toString()));
                         hideSoftKeyboard(view);
-//                        List<CartItem> cartItems = getCartItems(cart);
-//                        cartItemAdapter.updateCartItems(cartItems);
-//                        cartItemAdapter.notifyDataSetChanged();
-//                        getActivity().getSupportFragmentManager().popBackStack();
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         manager.popBackStack();
                         manager.popBackStack();
                         CartFragment fragment=new CartFragment();
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main,fragment,"cart_frag").addToBackStack("cart_frag").commit();
                         getActivity().setTitle("Korpa");
-
-
-                        // ovdje ne moze ici Main
-//                        MenuFragment fragment = new MenuFragment();
-//                        android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//                        getActivity().getSupportFragmentManager().popBackStack();
-//                        ft.replace(R.id.content_main, fragment);
-//                        ft.commit();
-
-
-
 
                     }
                 } else {
@@ -199,13 +177,6 @@ public class EditProduct extends Fragment {
 
                 }
 
-
-
-
-
-
-
-
             }
         });
 
@@ -215,9 +186,7 @@ public class EditProduct extends Fragment {
     private List<CartItem> getCartItems(Cart cart) {
         List<CartItem> cartItems = new ArrayList<CartItem>();
 
-
         LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
-
 
         for (Map.Entry<Saleable, Double> entry : itemMap.entrySet()) {
             CartItem cartItem = new CartItem();
@@ -226,9 +195,6 @@ public class EditProduct extends Fragment {
             cartItems.add(cartItem);
         }
 
-
         return cartItems;
     }
-
-
 }

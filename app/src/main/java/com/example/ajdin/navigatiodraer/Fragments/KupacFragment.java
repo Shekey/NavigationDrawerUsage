@@ -111,8 +111,6 @@ public class KupacFragment extends DialogFragment {
                         clearCart();
 
                     }
-//                    FloatingActionButton fab=(FloatingActionButton) getActivity().findViewById(R.id.fab);
-//                    fab.setVisibility(View.GONE);
                     dismiss();
 
                 }
@@ -174,8 +172,6 @@ public class KupacFragment extends DialogFragment {
                 String arrStr[] ={items.get(i).getProduct().getBarkod(), String.valueOf(items.get(i).getQuantity()), String.valueOf(items.get(i).getProduct().getPrice())};
                 csvWrite.writeNext(arrStr);
                 csvWrite2.writeNext(arrStr);
-
-
             }
 
             csvWrite.close();
@@ -185,7 +181,6 @@ public class KupacFragment extends DialogFragment {
         catch(Exception sqlEx)
         {
             sqlEx.printStackTrace();
-            // Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }
 
         return Environment.getExternalStorageDirectory().toString()+ "/racunidevice/"+
@@ -193,61 +188,6 @@ public class KupacFragment extends DialogFragment {
 
     }
 
-
-    private void exportDBold(List<CartItem> cartItems, int count, String pathfile) {
-
-        File dbFile=getActivity().getDatabasePath("NUR.db");
-        DatabaseHelper dbhelper = new DatabaseHelper(getActivity().getApplicationContext());
-        File exportDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "racuni");
-        File exportDir2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "racunidevice");
-        if (!exportDir.exists())
-        {
-            exportDir.mkdirs();
-        }
-
-        if (!exportDir2.exists())
-        {
-            exportDir2.mkdirs();
-        }
-
-
-        File file = new File(exportDir,pathfile);
-
-        if (file.delete()){
-            Toast.makeText(getActivity(),"izbrisan fajl", Toast.LENGTH_SHORT);
-        }
-        File file2 = new File(exportDir,pathfile);
-        File file3 = new File(exportDir2,pathfile);
-
-        try
-        {
-            file2.createNewFile();
-            file3.createNewFile();
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(file2));
-            CSVWriter csvWrite2 = new CSVWriter(new FileWriter(file3));
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            // Cursor curCSV = db.rawQuery("SELECT * FROM Artikli",null);
-
-            for (int i=0;i<count;i++){
-
-                String arrStr[] ={cartItems.get(i).getProduct().getBarkod(), String.valueOf(cartItems.get(i).getQuantity()), String.valueOf(cartItems.get(i).getProduct().getPrice())};
-
-                csvWrite.writeNext(arrStr);
-                csvWrite2.writeNext(arrStr);
-
-            }
-
-            csvWrite.close();
-            csvWrite2.close();
-
-        }
-        catch(Exception sqlEx)
-        {
-            sqlEx.getStackTrace();
-        }
-
-
-    }
     private void clearCart(){
         cart.clear();
         cartItemAdapter.updateCartItems(getCartItems(cart));
@@ -262,7 +202,6 @@ public class KupacFragment extends DialogFragment {
         ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));
         ft.add(R.id.content_main, fragment,tag).addToBackStack(tag);
         ft.commit();
-//        getActivity().getSupportFragmentManager().beginTransaction().add(R.id.content_main,fragment,"first_frag").addToBackStack("first_frag").commit();
 
     }
 

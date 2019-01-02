@@ -84,25 +84,19 @@ public class HistoryCustomAdapter extends ArrayAdapter {
             String s = new String();
             while (m.find()) {
                 s = m.group(0);
-                // s now contains "BAR"
             }
 
             String input = s, extracted;
             DateFormat df = new SimpleDateFormat("dd MM yyyy HH:mm");
             extracted = input.substring(3, 19);
-            Date date = new Date();
             try {
                 date2 = df.parse(extracted);
             } catch (ParseException e) {
                 e.printStackTrace();
             } finally {
-//                if (daysBetween(date, date2) < 1) {
-//                    holder.button.setVisibility(View.VISIBLE);
-//                }
-//                else{
+
                     holder.button.setVisibility(View.INVISIBLE);
 
-//                }
             }
         }
         else{
@@ -121,9 +115,6 @@ public class HistoryCustomAdapter extends ArrayAdapter {
                 }
             });
 
-            // rating bar
-
-
             return convertView;
         }
 
@@ -135,13 +126,4 @@ public class HistoryCustomAdapter extends ArrayAdapter {
 
     }
 
-    private static int daysBetween(Date one, Date two) {
-        DateTime d1=new DateTime(one);
-        DateTime d2=new DateTime(two);
-        int days= Days.daysBetween(d1.toLocalDate(), d2.toLocalDate()).getDays();
-
-        return Math.abs(days);
-
-
-    }
 }
