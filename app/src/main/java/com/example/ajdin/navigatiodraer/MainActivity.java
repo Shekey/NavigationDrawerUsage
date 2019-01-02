@@ -1,6 +1,8 @@
 package com.example.ajdin.navigatiodraer;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.Fragment;
@@ -19,10 +21,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
@@ -126,35 +130,20 @@ public class MainActivity extends AppCompatActivity
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1: {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-        }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.INTERNET}, 1);
-        lvArtikli = (ListView) findViewById(R.id.lista);
+        lvArtikli = findViewById(R.id.lista);
         dialog = new ProgressDialog(MainActivity.this);
         dialog.setIndeterminate(true);
         dialog.setCancelable(false);
@@ -179,8 +168,8 @@ public class MainActivity extends AppCompatActivity
 //        adapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,arrayList);
 //        lvArtikli.setAdapter(adapter);
         SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
-        sharedPreferences.edit().remove("ime").commit();
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        sharedPreferences.edit().remove("ime").apply();
+        fab = findViewById(R.id.fab);
 //        if (sharedPreferences.getString("ime","").isEmpty()) {
 //            fab.setVisibility(View.VISIBLE);
 //        }
@@ -199,13 +188,13 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         final MenuFragment fragment = new MenuFragment();
@@ -240,7 +229,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -389,7 +378,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor spreferencesEditor = sharedPreferences.edit();
         spreferencesEditor.remove("ime");
         spreferencesEditor.remove("path");
-        spreferencesEditor.commit();
+        spreferencesEditor.apply();
         Cart cart = CartHelper.getCart();
         cart.clear();
         cartItemAdapter = new CartItemAdapter(MainActivity.this);
@@ -420,6 +409,7 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_sync) {
             ConnectivityManager wifi = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+            assert wifi != null;
             NetworkInfo info=wifi.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             if (info.isConnected()) {
                 final SharedPreferences sharedPreferences=getSharedPreferences("podaci", Context.MODE_PRIVATE);
@@ -509,7 +499,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
 
         android.support.v4.app.Fragment fragment = null;
@@ -548,7 +538,7 @@ public class MainActivity extends AppCompatActivity
                         .setPositiveButton(getResources().getString(R.string.da), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sharedPreferences.edit().remove("ime").commit();
+                                sharedPreferences.edit().remove("ime").apply();
 //                                fab.setVisibility(View.VISIBLE);
 
                             }
@@ -610,7 +600,7 @@ public class MainActivity extends AppCompatActivity
 
 
         }
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -623,6 +613,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+    @SuppressLint("StaticFieldLeak")
     public class JSONTask extends AsyncTask<String, String, Void> implements com.example.ajdin.navigatiodraer.JSONTask {
 
 
@@ -648,8 +639,8 @@ public class MainActivity extends AppCompatActivity
                 connection.connect();
                 InputStream stream = connection.getInputStream();
                  reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
+                StringBuilder buffer = new StringBuilder();
+                String line;
                 while ((line = reader.readLine()) != null) {
 
                     buffer.append(line);
@@ -669,10 +660,6 @@ public class MainActivity extends AppCompatActivity
                 Gson gson = new Gson();
                 for (int i = 0; i < parentArray.length(); i++) {
                     JSONObject finalObject = parentArray.getJSONObject(i);
-                    /**
-                     * below single line of code from Gson saves you from writing the json parsing yourself
-                     * which is commented below
-                     */
                     Artikli movieModel = gson.fromJson(finalObject.toString(), Artikli.class);// a single line json parsing using Gson
                     if(movieModel.getNaziv().equals("Neispravna licenca"))
                     {
@@ -716,7 +703,7 @@ public class MainActivity extends AppCompatActivity
                 for (Slike ss: downloadList) {
                     String kopija=ss.getImage();
                     URI uri = new URI(kopija.replace(" ", "%20"));
-                    if(isFileExists(ss.getId()+".jpg")==false) {
+                    if(!isFileExists(ss.getId() + ".jpg")) {
                         downloadImageURL(ss.getId(), uri.toString());
                     }
 
@@ -760,6 +747,7 @@ public class MainActivity extends AppCompatActivity
             sharedPreferences = getSharedPreferences("podaci", Context.MODE_PRIVATE);
             editor = sharedPreferences.edit();
             editor.putInt("ispravnost", 1);
+            editor.apply();
         }
 
 
@@ -828,7 +816,8 @@ public class MainActivity extends AppCompatActivity
 
     }
     public String getMacAddress(Context context) {
-        WifiManager wimanager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wimanager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        assert wimanager != null;
         String macAddress = wimanager.getConnectionInfo().getMacAddress();
         if (macAddress == null) {
             macAddress = "Device don't have mac address or wi-fi is disabled";
@@ -836,9 +825,9 @@ public class MainActivity extends AppCompatActivity
         return macAddress;
     }
     public void DownloadImageFromPath(String path,String filenamejpg){
-        InputStream in =null;
-        Bitmap bmp=null;
-        int responseCode = -1;
+        InputStream in;
+        Bitmap bmp;
+        int responseCode;
         int br=0;
         try{
 
@@ -868,6 +857,7 @@ public class MainActivity extends AppCompatActivity
                 br++;
                 Log.d(TAG, "DownloadImageFromPath: "+String.valueOf(br));
                 try {
+                    assert outStream != null;
                     outStream.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -947,7 +937,8 @@ public class MainActivity extends AppCompatActivity
                             File.separator + "YourFolderName" + File.separator + filename);
 
 
-            long id = dm.enqueue(request);
+         assert dm != null;
+         long id = dm.enqueue(request);
 
 
 
@@ -955,18 +946,13 @@ public class MainActivity extends AppCompatActivity
     private boolean isFileExists(String filename){
         String path=Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES+File.separator + "YourFolderName" + File.separator+filename;
         File file=new File(path);
-        if (file.isFile()){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return file.isFile();
 
 
     }
 
     private List<CartItem> getCartItems(Cart cart) {
-        List<CartItem> cartItems = new ArrayList<CartItem>();
+        List<CartItem> cartItems = new ArrayList<>();
 
 
         LinkedHashMap<Saleable, Double> itemMap = cart.getItemWithQuantity();
