@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
     public ListView lvArtikli;
 
 
-    private final String BASE_URL = "http://nurexport.com/demo/";
+    private final String BASE_URL = "http://nurexport.com/katalog/";
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
     DatabaseHelper db;
@@ -332,10 +332,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 if (Ispravna==0){
                     macAdresa = getMacAddress(MainActivity.this);
-                    url_to_hit = "http://nurexport.com/demo/getJsonFake.php?id="+licenca+"&mac="+macAdresa;
+                    url_to_hit = "http://nurexport.com/katalog/getJsonFake.php?id="+licenca+"&mac="+macAdresa;
                 }
                 else {
-                    url_to_hit = "http://nurexport.com/demo/getJson.php";
+                    url_to_hit = "http://nurexport.com/katalog/getJson.php";
 
                 }
                 new JSONTask().execute(url_to_hit);
@@ -359,18 +359,6 @@ public class MainActivity extends AppCompatActivity
             setTitle("Korpa");
             ft.commit();
             // do something with f
-
-
-        }
-        if (id == R.id.nav_All) {
-            android.support.v4.app.Fragment CurrentFragment= getSupportFragmentManager().findFragmentById(R.id.content_main);
-            String  tag="first_frag";
-            MenuFragment fragment=new MenuFragment();
-            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_main, fragment, tag);
-            navigationView.setCheckedItem(R.id.nav_proizvodi);
-            setTitle("Svi proizvodi");
-
 
 
         }
@@ -578,32 +566,10 @@ public class MainActivity extends AppCompatActivity
                     if (listaSlike!=null) {
                         for (Slike s:movieModel.getSlike()) {
                             slikeURL.add(s);
-
-//                            slikeURL.add(BASE_URL+uri.toString());
-//                            DownloadImageFromPath(BASE_URL+uri.toString(),s.getId()+".jpg");
-
-//                            downloadThroughManager(s.getImage(),s.getId(),MainActivity.this);
-//                            brojac++;
                             Log.d(TAG, "doInBackground: "+String.valueOf(brojac));
 
                         }
-
-
-
                     }
-//                    for (Slike s:movieModel.getSlike()) {
-//                        String kopija=s.getImage();
-//                        URI uri = new URI(kopija.replace(" ", "%20"));
-//                        if (brojac>=100){
-//                            sveSlike.add(s);
-//                        }
-//                        else {
-//                            downloadImage(s.getId(), uri.toString());
-//                            brojac++;
-//                            Log.d(TAG, "doInBackground: " + uri.toString() +" -" +String.valueOf(brojac));
-//                        }
-//
-//                    }
 
                 }
                 downloadList = db.replaceSlike(slikeURL);
@@ -616,38 +582,6 @@ public class MainActivity extends AppCompatActivity
 
                 }
 
-//                String kopija="upload/04-16-2018_0435pmdetergenti.jpg";
-//                URI uri = new URI(kopija.replace(" ", "%20"));
-//                Log.d(TAG, "doInBackground: "+uri.toString());
-//                downloadImageURL("146",uri.toString());
-////
-//
-//                kopija="upload/Bitmap in DETERĐENT-MARAMICE-2.jpg";
-//                uri = new URI(kopija.replace(" ", "%20"));
-//                Log.d(TAG, "doInBackground: "+uri.toString());
-//                downloadImageURL("147",uri.toString());
-////
-//                kopija="upload/04-12-2018_0638amBitmap in DETERĐENT-MARAMICE-3ghgfh.jpg";
-//                uri = new URI(kopija.replace(" ", "%20"));
-//                Log.d(TAG, "doInBackground: "+uri.toString());
-//
-//                downloadImageURL("148",uri.toString());
-
-
-
-//                Log.d(TAG, "doInBackground: "uri.toString());
-
-//                int index = 0;
-//                for (String ruta : slikeURL) {
-//                    Picasso.with(MainActivity.this)
-//                            .load(ruta)
-//                            .into(new IndexTarget(index));
-//                    index++;
-//                }
-
-
-
-//                List<Bitmap> yourimages = new DownloadImageTask().execute(URLLIST).get();
                 db.replace1(movieModelList1);
         if (ispravnost){
 
@@ -656,8 +590,6 @@ public class MainActivity extends AppCompatActivity
             editor.putInt("ispravnost", 1);
             editor.apply();
         }
-
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -685,25 +617,15 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void params) {
-//            for (Slike s:sveSlike) {
-//                String kopija=s.getImage();
-//                try {
-//                    URI uri = new URI(kopija.replace(" ", "%20"));
-//                    downloadImage(s.getId(),s.getImage());
-//                    brojac++;
-//                    Log.d(TAG, "doInBackground: " + uri.toString() + " - "+String.valueOf(brojac));
-//                } catch (URISyntaxException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     dialog.dismiss();
                     MenuFragment fragment = new MenuFragment();
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.remove(getSupportFragmentManager().findFragmentByTag("first_frag")).add(R.id.content_main, fragment,"first_frag").addToBackStack("first_frag");//bio replace
+                    ft.remove(getSupportFragmentManager().findFragmentByTag("first_frag"));
+                    ft.add(R.id.content_main, fragment,"first_frag");//bio replace
                     ft.commit();
                 }
             }, 60000);
@@ -733,7 +655,7 @@ public class MainActivity extends AppCompatActivity
     }
      public void downloadImageURL(String fileName ,String imagePath){
         String filename = fileName+".jpg";
-        String downloadUrlOfImage = "http://nurexport.com/demo/"+imagePath;
+        String downloadUrlOfImage = "http://nurexport.com/katalog/"+imagePath;
 
         File direct =new File(Environment.DIRECTORY_PICTURES,
                         File.separator + "YourFolderName" + File.separator);
