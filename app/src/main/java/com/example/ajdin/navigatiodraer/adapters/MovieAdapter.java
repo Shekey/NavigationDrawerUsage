@@ -50,16 +50,16 @@ public class MovieAdapter extends ArrayAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
-            holder.ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIcon);
-            holder.tvMovie = (TextView)convertView.findViewById(R.id.tvMovie);
-            holder.tvTagline = (TextView)convertView.findViewById(R.id.tvTagline);
-            holder.tvYear = (TextView)convertView.findViewById(R.id.tvYear);
+            holder.ivMovieIcon = convertView.findViewById(R.id.ivIcon);
+            holder.tvMovie = convertView.findViewById(R.id.tvMovie);
+            holder.tvTagline = convertView.findViewById(R.id.tvTagline);
+            holder.tvYear = convertView.findViewById(R.id.tvYear);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBar);
+        final ProgressBar progressBar = convertView.findViewById(R.id.progressBar);
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;

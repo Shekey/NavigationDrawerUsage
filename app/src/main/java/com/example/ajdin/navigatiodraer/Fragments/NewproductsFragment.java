@@ -126,7 +126,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
         db=new DatabaseHelper(getContext());
-        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
 //        if (sharedPreferences.getString("ime","").isEmpty()) {
@@ -137,10 +137,10 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 //        }
         getActivity().setTitle("Novi proizvodi");
 //        fab.setImageResource(R.drawable.dodaj_osobu);
-        ListView list=(ListView)getActivity().findViewById(R.id.lista);
+        ListView list= getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        spin = (Spinner)view.findViewById(R.id.simpleSpinner);
-        spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
+        spin = view.findViewById(R.id.simpleSpinner);
+        spin2 = view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
         spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -229,7 +229,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
-                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView= view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
                 textView.setTextSize(18);
                 return view;
@@ -251,7 +251,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
 //        spin2.setAdapter(aa2);
 
         if(db.isEmpty()){
-            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+            lvArtikli = view.findViewById(R.id.lvMovies);
             lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
 
         }else
@@ -262,11 +262,11 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             dialog.setMessage("Loading. Please wait...");
 
 
-            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+            lvArtikli = view.findViewById(R.id.lvMovies);
 
             new JSONTaskDatabase().execute();
-            editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
-            brojrez = (TextView)view.findViewById(R.id.brojRezulata);
+            editsearch = view.findViewById(R.id.simpleSearchView);
+            brojrez = view.findViewById(R.id.brojRezulata);
             editsearch.setOnQueryTextListener(NewproductsFragment.this);
         }
 
@@ -476,7 +476,7 @@ public class NewproductsFragment extends Fragment implements SearchView.OnQueryT
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
-                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView= view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
                 textView.setTextSize(18);
                 return view;

@@ -69,14 +69,14 @@ public class CartItemAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.adapter_cart_item, parent, false);
-            tvName = (TextView) convertView.findViewById(R.id.tvCartItemName);
-            tvKolicina = (TextView) convertView.findViewById(R.id.tvKolicina);
-            ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIconcart);
-            tvPrice=(TextView) convertView.findViewById(R.id.tvPrice);
+            tvName = convertView.findViewById(R.id.tvCartItemName);
+            tvKolicina = convertView.findViewById(R.id.tvKolicina);
+            ivMovieIcon = convertView.findViewById(R.id.ivIconcart);
+            tvPrice= convertView.findViewById(R.id.tvPrice);
 
 //            tvUnitPrice = (TextView) convertView.findViewById(R.id.tvCartItemUnitPrice);
 //            tvQuantity = (TextView) convertView.findViewById(R.id.tvCartItemQuantity);
-                tvTotalPrice = (TextView) convertView.findViewById(R.id.tvCartItemTotalPrice);
+                tvTotalPrice = convertView.findViewById(R.id.tvCartItemTotalPrice);
             convertView.setTag(new ViewHolder(tvName, tvTotalPrice,tvKolicina,tvPrice,ivMovieIcon));
         } else {
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();
@@ -86,7 +86,7 @@ public class CartItemAdapter extends BaseAdapter {
             tvTotalPrice = viewHolder.tvCartItemTotalPrice;
             tvKolicina = viewHolder.tvKolicina;
         }
-        final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBarcart);
+        final ProgressBar progressBar = convertView.findViewById(R.id.progressBarcart);
         final Cart cart = CartHelper.getCart();
 
         final CartItem cartItem = getItem(position);

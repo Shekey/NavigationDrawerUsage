@@ -94,20 +94,20 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_detail, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        list = (ListView)getActivity().findViewById(R.id.lista);
+        list = getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        ivMovieIcon = (ImageView)view.findViewById(R.id.ivIcon);
-        tvMovie = (TextView)view.findViewById(R.id.tvNaziv);
-        tvTagline = (TextView)view.findViewById(R.id.tvJedinicaMjere);
-        tvYear = (TextView)view.findViewById(R.id.tvCijena);
-        tvStanje = (TextView)view.findViewById(R.id.tvStanjeDetalji);
-        new_price=(EditText)view.findViewById(R.id.new_price);
-        Kolicina=(EditText)view.findViewById(R.id.quantity);
+        ivMovieIcon = view.findViewById(R.id.ivIcon);
+        tvMovie = view.findViewById(R.id.tvNaziv);
+        tvTagline = view.findViewById(R.id.tvJedinicaMjere);
+        tvYear = view.findViewById(R.id.tvCijena);
+        tvStanje = view.findViewById(R.id.tvStanjeDetalji);
+        new_price= view.findViewById(R.id.new_price);
+        Kolicina= view.findViewById(R.id.quantity);
         Kolicina.clearFocus();
-        bOrder = (Button)view. findViewById(R.id.bOrder);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        bOrder = view. findViewById(R.id.bOrder);
+        progressBar = view.findViewById(R.id.progressBar);
         getActivity().setTitle("Detalji proizvoda");
         String [] images;
 
@@ -119,10 +119,10 @@ public class DetailFragment extends Fragment {
             movieModelLista = (ArrayList<Artikli>) bundle.getSerializable("lista");
             pozicija=bundle.getInt("pozicija");
             ArrayList<String> list21=bundle.getStringArrayList("listaSlike");
-            viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2);
+            viewPager = view.findViewById(R.id.viewPager2);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
             ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),list21);
-            TabLayout tabLayout = (TabLayout)view.findViewById(R.id.tabDots);
+            TabLayout tabLayout = view.findViewById(R.id.tabDots);
             tabLayout.setupWithViewPager(viewPager, true);
             viewPager.setAdapter(adapter1);
 

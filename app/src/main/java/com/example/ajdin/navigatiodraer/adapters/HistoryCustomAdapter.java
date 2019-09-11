@@ -63,9 +63,9 @@ public class HistoryCustomAdapter extends ArrayAdapter {
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
 
-            holder.tvIMP = (TextView) convertView.findViewById(R.id.tVIMP);
-            holder.tvDtm = (TextView) convertView.findViewById(R.id.tvDtm);
-            holder.button = (Button) convertView.findViewById(R.id.btnSync);
+            holder.tvIMP = convertView.findViewById(R.id.tVIMP);
+            holder.tvDtm = convertView.findViewById(R.id.tvDtm);
+            holder.button = convertView.findViewById(R.id.btnSync);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

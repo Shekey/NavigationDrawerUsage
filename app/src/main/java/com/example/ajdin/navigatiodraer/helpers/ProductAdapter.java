@@ -57,9 +57,9 @@ public class ProductAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context)
                     .inflate(R.layout.adapter_product, parent, false);
-            tvName = (TextView) convertView.findViewById(R.id.tvProductName);
-            tvPrice = (TextView) convertView.findViewById(R.id.tvProductPrice);
-            tvJM = (TextView) convertView.findViewById(R.id.ivBarCode);
+            tvName = convertView.findViewById(R.id.tvProductName);
+            tvPrice = convertView.findViewById(R.id.tvProductPrice);
+            tvJM = convertView.findViewById(R.id.ivBarCode);
             convertView.setTag(new ViewHolder(tvName, tvPrice, tvJM));
         } else {
             ViewHolder viewHolder = (ViewHolder) convertView.getTag();

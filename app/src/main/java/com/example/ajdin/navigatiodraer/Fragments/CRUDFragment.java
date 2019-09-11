@@ -76,7 +76,7 @@ public class CRUDFragment extends Fragment implements SaveFragment.OnSaveClicked
             editText1.setText(textFrom);
 
         }
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         save_note.setOnClickListener(new View.OnClickListener() {
             @Override

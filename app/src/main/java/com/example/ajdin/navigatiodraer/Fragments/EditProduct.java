@@ -85,20 +85,20 @@ public class EditProduct extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.edit_product, container, false);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-        list = (ListView)getActivity().findViewById(R.id.lista);
+        list = getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        ivMovieIcon = (ImageView)view.findViewById(R.id.ivIcon);
-        tvMovie = (TextView)view.findViewById(R.id.tvNazivEdited);
-        tvStanje = (TextView)view.findViewById(R.id.tvStanjeDetaljiEdited);
-        tvTagline = (TextView)view.findViewById(R.id.tvJedinicaMjereEdited);
-        tvYear = (TextView)view.findViewById(R.id.tvCijenaEdited);
-        new_price=(EditText)view.findViewById(R.id.new_priceEdited);
-        Kolicina=(EditText)view.findViewById(R.id.quantityEdited);
+        ivMovieIcon = view.findViewById(R.id.ivIcon);
+        tvMovie = view.findViewById(R.id.tvNazivEdited);
+        tvStanje = view.findViewById(R.id.tvStanjeDetaljiEdited);
+        tvTagline = view.findViewById(R.id.tvJedinicaMjereEdited);
+        tvYear = view.findViewById(R.id.tvCijenaEdited);
+        new_price= view.findViewById(R.id.new_priceEdited);
+        Kolicina= view.findViewById(R.id.quantityEdited);
         Kolicina.clearFocus();
-        bOrder = (Button)view. findViewById(R.id.bOrderEdited);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBarEdited);
+        bOrder = view. findViewById(R.id.bOrderEdited);
+        progressBar = view.findViewById(R.id.progressBarEdited);
         getActivity().setTitle("Detalji proizvoda");
         cart = CartHelper.getCart();
         cartItemAdapter = new CartItemAdapter(getActivity());
@@ -114,7 +114,7 @@ public class EditProduct extends Fragment {
                 slike.add(s.getId());
 
             }
-            viewPager = (WrapContentHeightViewPager) view.findViewById(R.id.viewPager2Edited);
+            viewPager = view.findViewById(R.id.viewPager2Edited);
             WrapContentHeightViewPager adapter = new WrapContentHeightViewPager(this.getActivity());
             ViewPagerAdapter adapter1=new ViewPagerAdapter(this.getActivity(),slike);
             viewPager.setAdapter(adapter1);

@@ -90,7 +90,7 @@ public class CartFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product, container, false);
-        SwipeMenuListView lvProducts = (SwipeMenuListView)view.findViewById(R.id.listCart);
+        SwipeMenuListView lvProducts = view.findViewById(R.id.listCart);
         if(getActivity().getActionBar() != null) {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             getActivity().getActionBar().setDisplayShowHomeEnabled(true);
@@ -98,11 +98,11 @@ public class CartFragment extends Fragment {
         cart = CartHelper.getCart();
         cartItemAdapter = new CartItemAdapter(getActivity());
 
-        tvTotalPrice=(TextView)view.findViewById(R.id.tvTotalPrice);
+        tvTotalPrice= view.findViewById(R.id.tvTotalPrice);
         cartItemAdapter.updateCartItems(getCartItems(cart));
        tvTotalPrice.setText(String.valueOf(cart.getTotalPrice().setScale(2, BigDecimal.ROUND_HALF_UP)+" "+ Constant.CURRENCY));
 
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
         lvProducts.setAdapter(cartItemAdapter);
         lvProducts.setEmptyView(view.findViewById(R.id.emptyElement));
@@ -355,7 +355,7 @@ public class CartFragment extends Fragment {
 
         MenuFragment fragment=new MenuFragment();
         String tag="first_frag";
-        NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));

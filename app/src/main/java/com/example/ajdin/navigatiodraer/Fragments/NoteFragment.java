@@ -83,7 +83,7 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note, container, false);
-        fab = (FloatingActionButton)getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.VISIBLE);
         files=getList();
         fab.setImageResource(R.drawable.ic_note_add_white_24px);
@@ -94,7 +94,7 @@ public class NoteFragment extends Fragment implements SaveFragment.OnSaveClicked
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
-                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView= view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
                 textView.setTextSize(27);
 

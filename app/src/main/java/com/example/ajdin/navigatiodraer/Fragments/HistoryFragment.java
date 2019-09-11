@@ -95,9 +95,9 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.name, container, false);
 
-        FloatingActionButton fab =(FloatingActionButton)getActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
-        lstView = (ListView) view.findViewById(R.id.list_history);
+        lstView = view.findViewById(R.id.list_history);
         lstView.setEmptyView(view.findViewById(R.id.emptyElement4));
 
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
@@ -133,7 +133,7 @@ public class HistoryFragment extends Fragment {
 
                     PreviewFragment fragment=new PreviewFragment();
                     Bundle bundle=new Bundle();
-                    bundle.putSerializable("listPreview",(Serializable) model);
+                    bundle.putSerializable("listPreview", model);
                     String ime[] = path.split("[0-9_-]");
                     bundle.putString("naziv_racuna",ime[1]);
                     fragment.setArguments(bundle);
@@ -148,7 +148,7 @@ public class HistoryFragment extends Fragment {
                     SharedPreferences sharedPreferences = getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("path", path);
-                    NavigationView navigationView =(NavigationView)getActivity().findViewById(R.id.nav_view);
+                    NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
                     navigationView.setCheckedItem(R.id.nav_korpa);
                     editor.commit();
                     ft.replace(R.id.content_main, fragment,"cart_frag");

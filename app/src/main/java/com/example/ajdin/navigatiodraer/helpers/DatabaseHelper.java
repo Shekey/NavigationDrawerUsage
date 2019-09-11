@@ -312,11 +312,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor mcursor = db.rawQuery(count, null);
         mcursor.moveToFirst();
         int icount = mcursor.getInt(0);
-        if (icount > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return icount <= 0;
 
     }
 
@@ -420,7 +416,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     images.add(slike1);
                     slike.moveToNext();
                 }
-                slike.close();;
+                slike.close();
                 Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
                         productList.getString(productList.getColumnIndex("Bar_kod")),
                         productList.getString(productList.getColumnIndex("Id")),
@@ -491,7 +487,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 images.add(slike1);
                 slike.moveToNext();
             }
-            slike.close();;
+            slike.close();
             Artikli product = new Artikli(productList.getString(productList.getColumnIndex("Naziv")),
                     productList.getString(productList.getColumnIndex("Bar_kod")),
                     productList.getString(productList.getColumnIndex("Id")),

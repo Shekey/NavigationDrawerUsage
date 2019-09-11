@@ -45,7 +45,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view =inflater.inflate(R.layout.custom_layout,null);
-        ImageView view1=(ImageView) view.findViewById(R.id.imageView2);
+        ImageView view1= view.findViewById(R.id.imageView2);
 
         File file=new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+Environment.DIRECTORY_PICTURES,
                 File.separator + "YourFolderName" + File.separator+images.get(position)+".jpg");

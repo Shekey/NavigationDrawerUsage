@@ -41,10 +41,10 @@ public class PreviewAdapter extends ArrayAdapter {
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
 
-            holder.tvMovie = (TextView) convertView.findViewById(R.id.tvMovie);
-            holder.tvTagline = (TextView) convertView.findViewById(R.id.tvTagline);
-            holder.tvYear = (TextView) convertView.findViewById(R.id.tvYear);
-            holder.tvUkupno = (TextView) convertView.findViewById(R.id.tvUkupno);
+            holder.tvMovie = convertView.findViewById(R.id.tvMovie);
+            holder.tvTagline = convertView.findViewById(R.id.tvTagline);
+            holder.tvYear = convertView.findViewById(R.id.tvYear);
+            holder.tvUkupno = convertView.findViewById(R.id.tvUkupno);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

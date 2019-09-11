@@ -52,7 +52,7 @@ public class PreviewFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_preview, container, false);
         ListView preview=view.findViewById(R.id.preview);
-        tekst = (TextView) view.findViewById(R.id.tekst);
+        tekst = view.findViewById(R.id.tekst);
 
         Bundle bundle=getArguments();
         if (bundle!=null){

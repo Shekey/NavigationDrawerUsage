@@ -196,7 +196,7 @@ public class KupacFragment extends DialogFragment {
 
         MenuFragment fragment=new MenuFragment();
         String tag="first_frag";
-        NavigationView navigationView = (NavigationView)getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_proizvodi);
         android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.remove(getActivity().getSupportFragmentManager().findFragmentByTag("cart_frag"));

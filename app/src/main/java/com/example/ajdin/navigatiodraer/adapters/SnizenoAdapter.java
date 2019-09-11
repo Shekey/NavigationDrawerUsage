@@ -44,16 +44,16 @@ public class SnizenoAdapter extends ArrayAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
-            holder.ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIconSn);
-            holder.tvMovie = (TextView)convertView.findViewById(R.id.tvMovieSn);
-            holder.tvTagline = (TextView)convertView.findViewById(R.id.tvTaglineSn);
-            holder.tvYear = (TextView)convertView.findViewById(R.id.tvYearSn);
+            holder.ivMovieIcon = convertView.findViewById(R.id.ivIconSn);
+            holder.tvMovie = convertView.findViewById(R.id.tvMovieSn);
+            holder.tvTagline = convertView.findViewById(R.id.tvTaglineSn);
+            holder.tvYear = convertView.findViewById(R.id.tvYearSn);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBar);
+        final ProgressBar progressBar = convertView.findViewById(R.id.progressBar);
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;

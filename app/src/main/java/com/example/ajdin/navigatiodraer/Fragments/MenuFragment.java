@@ -160,10 +160,10 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
         SharedPreferences sharedPreferences=getActivity().getSharedPreferences("podaci", Context.MODE_PRIVATE);
 
         getActivity().setTitle("Svi proizvodi");
-        ListView list=(ListView)getActivity().findViewById(R.id.lista);
+        ListView list= getActivity().findViewById(R.id.lista);
         list.setVisibility(View.INVISIBLE);
-        spin = (Spinner)view.findViewById(R.id.simpleSpinner);
-        spin2 = (Spinner)view.findViewById(R.id.kategorySpinner);
+        spin = view.findViewById(R.id.simpleSpinner);
+        spin2 = view.findViewById(R.id.kategorySpinner);
         spin.setOnItemSelectedListener(this);
         spin2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -251,7 +251,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
-                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView= view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
                 textView.setTextSize(18);
                 return view;
@@ -274,7 +274,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
 //        spin2.setAdapter(aa2);
 
         if(db.isEmpty()){
-            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+            lvArtikli = view.findViewById(R.id.lvMovies);
             lvArtikli.setEmptyView(view.findViewById(R.id.emptyElementMenu));
 
         }else
@@ -284,11 +284,11 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             dialog.setCancelable(false);
             dialog.setMessage("Loading. Please wait...");
 
-            lvArtikli = (ListView)view.findViewById(R.id.lvMovies);
+            lvArtikli = view.findViewById(R.id.lvMovies);
 
             new JSONTaskDatabase().execute();
-            editsearch = (SearchView)view.findViewById(R.id.simpleSearchView);
-            brojrez = (TextView)view.findViewById(R.id.brojRezulata);
+            editsearch = view.findViewById(R.id.simpleSearchView);
+            brojrez = view.findViewById(R.id.brojRezulata);
             editsearch.setOnQueryTextListener(MenuFragment.this);
         }
 
@@ -499,7 +499,7 @@ public class MenuFragment extends Fragment implements SearchView.OnQueryTextList
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view =super.getView(position, convertView, parent);
-                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView= view.findViewById(android.R.id.text1);
                 // do whatever you want with this text view
                 textView.setTextSize(18);
                 return view;

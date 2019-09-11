@@ -47,16 +47,16 @@ public class NEWProductsAdapter extends ArrayAdapter {
         if(convertView == null){
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
-            holder.ivMovieIcon = (ImageView)convertView.findViewById(R.id.ivIconNEW);
-            holder.tvMovie = (TextView)convertView.findViewById(R.id.tvMovieNEW);
-            holder.tvTagline = (TextView)convertView.findViewById(R.id.tvTaglineNEW);
-            holder.tvYear = (TextView)convertView.findViewById(R.id.tvYearNEW);
+            holder.ivMovieIcon = convertView.findViewById(R.id.ivIconNEW);
+            holder.tvMovie = convertView.findViewById(R.id.tvMovieNEW);
+            holder.tvTagline = convertView.findViewById(R.id.tvTaglineNEW);
+            holder.tvYear = convertView.findViewById(R.id.tvYearNEW);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final ProgressBar progressBar = (ProgressBar)convertView.findViewById(R.id.progressBarNEW);
+        final ProgressBar progressBar = convertView.findViewById(R.id.progressBarNEW);
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;

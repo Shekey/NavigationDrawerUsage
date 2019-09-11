@@ -59,18 +59,18 @@ public class MenuAdapter extends ArrayAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(resource, null);
-            holder.ivMovieIcon = (ImageView) convertView.findViewById(R.id.ivIconM);
-            holder.tvMovie = (TextView) convertView.findViewById(R.id.tvMovieM);
-            holder.tvTagline = (TextView) convertView.findViewById(R.id.tvTaglineM);
-            holder.tvYear = (TextView) convertView.findViewById(R.id.tvYearM);
-            holder.tvStanje = (TextView) convertView.findViewById(R.id.tvStanje);
+            holder.ivMovieIcon = convertView.findViewById(R.id.ivIconM);
+            holder.tvMovie = convertView.findViewById(R.id.tvMovieM);
+            holder.tvTagline = convertView.findViewById(R.id.tvTaglineM);
+            holder.tvYear = convertView.findViewById(R.id.tvYearM);
+            holder.tvStanje = convertView.findViewById(R.id.tvStanje);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final ProgressBar progressBar = (ProgressBar) convertView.findViewById(R.id.progressBarM);
+        final ProgressBar progressBar = convertView.findViewById(R.id.progressBarM);
 
         // Then later, when you want to display image
         final ViewHolder finalHolder = holder;
